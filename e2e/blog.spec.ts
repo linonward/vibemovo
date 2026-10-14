@@ -8,27 +8,27 @@ test("the blog lists each locale's posts, newest first", async ({ page }) => {
   const titles = page.getByRole("main").getByRole("heading", { level: 2 });
   await expect(titles).toHaveText([
     "How to Make an AI Rap Video of Two People from Photos",
-    "Writing a post",
-    "Welcome to the blog",
+    "How to Turn a Photo into a Video with AI",
   ]);
 
   await page.goto("/zh/blog");
-  await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(["欢迎来到博客"]);
+  await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveCount(0);
+  await expect(page.getByRole("main")).toContainText("还没有文章。");
 });
 
 test("a post shows its title, date and body", async ({ page }) => {
   await page.goto("/en/blog");
-  await page.getByRole("link", { name: "Welcome to the blog" }).click();
+  await page.getByRole("link", { name: "How to Turn a Photo into a Video with AI" }).click();
 
-  await expect(page).toHaveURL("/en/blog/welcome");
-  await expect(page.getByRole("heading", { level: 1, name: "Welcome to the blog" })).toBeVisible();
-  await expect(page).toHaveTitle("Welcome to the blog · vibemovo");
-  await expect(page.getByRole("main").getByRole("time")).toHaveAttribute("datetime", "2026-10-01");
-  await expect(page.getByRole("main")).toContainText("content/blog/<locale>/");
+  await expect(page).toHaveURL("/en/blog/photo-to-video-ai");
+  await expect(page.getByRole("heading", { level: 1, name: "How to Turn a Photo into a Video with AI" })).toBeVisible();
+  await expect(page).toHaveTitle("How to Turn a Photo into a Video with AI · vibemovo");
+  await expect(page.getByRole("main").getByRole("time")).toHaveAttribute("datetime", "2026-10-14");
+  await expect(page.getByRole("main").getByRole("heading", { level: 2, name: "Write a prompt that moves" })).toBeVisible();
 });
 
 test("a post that doesn't exist in a locale gets the 404 page", async ({ page }) => {
-  await page.goto("/zh/blog/writing-a-post");
+  await page.goto("/zh/blog/photo-to-video-ai");
 
   await expect(page.getByRole("heading", { level: 1, name: "页面不存在" })).toBeVisible();
 });
@@ -41,7 +41,7 @@ test("the header links to the blog in the current locale", async ({ page }) => {
 });
 
 test("a post's tags open a page of the posts with that tag", async ({ page }) => {
-  await page.goto("/en/blog/writing-a-post");
+  await page.goto("/en/blog/photo-to-video-ai");
   await page.getByRole("main").getByRole("link", { name: "guides" }).click();
 
   await expect(page).toHaveURL("/en/blog/tags/guides");
@@ -49,16 +49,8 @@ test("a post's tags open a page of the posts with that tag", async ({ page }) =>
   await expect(page).toHaveTitle("Posts tagged “guides” · vibemovo");
   await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
     "How to Make an AI Rap Video of Two People from Photos",
-    "Writing a post",
+    "How to Turn a Photo into a Video with AI",
   ]);
-});
-
-test("tags work in every locale's own words", async ({ page }) => {
-  await page.goto("/zh/blog");
-  await page.getByRole("main").getByRole("link", { name: "公告" }).click();
-
-  await expect(page.getByRole("heading", { level: 1, name: "标签为“公告”的文章" })).toBeVisible();
-  await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText(["欢迎来到博客"]);
 });
 
 test("a tag no post in the locale has gets the 404 page", async ({ page }) => {
