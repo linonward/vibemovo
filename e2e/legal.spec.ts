@@ -16,7 +16,7 @@ for (const { path, heading } of pages) {
     await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
     await expect(page).toHaveTitle(`${heading} · vibemovo`);
     await expect(
-      page.getByRole("main").getByRole("link", { name: "support@vibemovo.com" }),
+      page.getByRole("main").getByRole("link", { name: "support@vibemovo.com" }).last(),
     ).toHaveAttribute("href", "mailto:support@vibemovo.com");
     await expect(page.getByRole("note")).toHaveCount(0);
   });
