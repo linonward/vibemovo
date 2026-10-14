@@ -1,4 +1,4 @@
-import { afterEach, expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { cleanup, fireEvent, screen } from "@testing-library/react";
 import { useState } from "react";
 import { renderWithIntl } from "@/test/intl";
@@ -7,6 +7,10 @@ import { ImageGenerator } from "@/components/images/image-generator";
 import { RapGenerator } from "@/components/videos/rap-generator";
 import { VideoGenerator } from "@/components/videos/video-generator";
 import { CreditsProvider, useCredits } from "./credits";
+
+vi.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn(), push: vi.fn(), replace: vi.fn() }),
+}));
 
 afterEach(cleanup);
 

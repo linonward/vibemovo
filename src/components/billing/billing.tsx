@@ -7,6 +7,7 @@ import { useCreditBalance } from "@/components/dashboard/credits";
 import { CreditTransactions, type Transaction } from "@/components/credits/credit-transactions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAwaitCredits } from "./await-credits";
 import { Chosen, CHOSEN, useRevealChoice } from "./chosen";
 import { redirectFrom } from "./redirect";
 
@@ -54,6 +55,7 @@ export function Billing({
   const [buying, setBuying] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const chosen = useRevealChoice();
+  const credited = useAwaitCredits(checkout === "success", balance);
 
   // Amounts are in the currency's smallest unit; packs use two-decimal currencies.
   const price = (amount: number, currency: string) =>
@@ -71,7 +73,7 @@ export function Billing({
     <div className="flex flex-col gap-10">
       {checkout && (
         <p role="status" className="rounded-xl border bg-card px-5 py-4 text-pretty">
-          {t(checkout === "success" ? "success" : "canceled")}
+          {t(checkout === "cancel" ? "canceled" : credited ? "credited" : "success")}
         </p>
       )}
 

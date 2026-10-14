@@ -1,7 +1,16 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { cleanup, fireEvent, screen, within } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
+import en from "../../../messages/en.json";
 import { renderWithIntl } from "@/test/intl";
-import { Billing, type BillingProps } from "./billing";
+
+const refresh = vi.fn();
+vi.mock("@/i18n/navigation", () => ({
+  useRouter: () => ({ refresh, push: vi.fn(), replace: vi.fn() }),
+}));
+
+const { Billing } = await import("./billing");
+type BillingProps = import("./billing").BillingProps;
 
 const fetchMock = vi.fn();
 const assign = vi.fn();
@@ -16,6 +25,8 @@ afterEach(() => {
   vi.unstubAllGlobals();
   fetchMock.mockReset();
   assign.mockReset();
+  refresh.mockReset();
+  vi.useRealTimers();
 });
 
 const props: BillingProps = {
@@ -91,6 +102,40 @@ test("confirms a finished checkout and an empty history", () => {
   expect(screen.getByRole("status").textContent).toMatch(/Payment received/);
   expect(screen.getByText("No orders yet.")).toBeTruthy();
   expect(screen.getByText("No credit activity yet.")).toBeTruthy();
+});
+
+test("refreshes after a checkout until the credits arrive", () => {
+  vi.useFakeTimers();
+  const { rerender } = renderWithIntl(<Billing {...props} checkout="success" />);
+
+  expect(screen.getByRole("status").textContent).not.toMatch(/Reload/);
+  vi.advanceTimersByTime(3000);
+  expect(refresh).toHaveBeenCalledTimes(1);
+
+  rerender(
+    <NextIntlClientProvider locale="en" messages={en} timeZone="UTC">
+      <Billing {...props} balance={1300} checkout="success" />
+    </NextIntlClientProvider>,
+  );
+  expect(screen.getByRole("status").textContent).toBe("Payment received. Your credits are here.");
+  vi.advanceTimersByTime(30000);
+  expect(refresh).toHaveBeenCalledTimes(1);
+});
+
+test("stops refreshing after a minute", () => {
+  vi.useFakeTimers();
+  renderWithIntl(<Billing {...props} checkout="success" />);
+
+  vi.advanceTimersByTime(120000);
+  expect(refresh).toHaveBeenCalledTimes(20);
+});
+
+test("doesn't refresh without a finished checkout", () => {
+  vi.useFakeTimers();
+  renderWithIntl(<Billing {...props} checkout="cancel" />);
+
+  vi.advanceTimersByTime(10000);
+  expect(refresh).not.toHaveBeenCalled();
 });
 
 test("marks the pack chosen on the pricing page and focuses its button", () => {
