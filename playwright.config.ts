@@ -13,6 +13,7 @@ export const GOOGLE_CLIENT_ID = "e2e-google-client-id";
 export const STRIPE_WEBHOOK_SECRET = "whsec_e2e";
 export const ADMIN_EMAIL = "admin@example.com";
 export const CRON_SECRET = "e2e-cron-secret-0123456789abcdef0123";
+export const INDEXNOW_KEY = "e2e0123456789abcdef";
 
 export default defineConfig({
   testDir: "./e2e",
@@ -35,6 +36,7 @@ export default defineConfig({
       BETTER_AUTH_SECRET: "e2e-better-auth-secret-0123456789abcdef",
       ADMIN_EMAILS: ADMIN_EMAIL,
       CRON_SECRET,
+      INDEXNOW_KEY,
       RESEND_API_KEY: "",
       EMAIL_OUTBOX_DIR,
       GOOGLE_CLIENT_ID,

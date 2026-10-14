@@ -42,6 +42,7 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `BETTER_AUTH_SECRET` | Yes               | Signs sessions. 32+ characters. Rotating it signs everyone out |
 | `BETTER_AUTH_URL`    | Yes               | Public base URL. Magic links point here. `https://` in production, except on localhost. Also set it when building: prerendered pages use it for canonical and `hreflang` links, which are relative paths without it |
 | `CRON_SECRET`        | In production with images, videos or yearly plans | Bearer token for `/api/cron/sweep` (`GET` or `POST`). 32+ characters. Empty closes the route |
+| `INDEXNOW_KEY`       | No                | IndexNow key, 8-128 letters, digits or hyphens. Served at `/indexnow.txt`; `POST /api/indexnow` needs it and `CRON_SECRET` ([IndexNow](#indexnow)). Empty turns IndexNow off |
 | `CLIENT_IP_HEADER`   | No                | Request header with the client IP for sign-in rate limits. Default `x-forwarded-for` (Vercel and most proxies). Set `cf-connecting-ip` on Cloudflare. Only this header is trusted |
 | `ADMIN_EMAILS`       | No                | Emails that can open `/admin`, separated by commas. Empty means no admins |
 | `LOG_LEVEL`          | No                | `debug`, `info` (default), `warn` or `error`. Drops server log events below it |
@@ -357,6 +358,16 @@ Posts are MDX files in `content/blog/<locale>/<slug>.mdx`; the file name is the 
 - `/blog` lists posts newest first. A missing title, description or `YYYY-MM-DD` date fails the build, and so does a post called `tags`.
 - Posts appear in the sitemap and `/llms.txt`. Each post's page names its canonical URL, links only the translations that exist, carries schema.org `BlogPosting` JSON-LD (`blogPosting` in `src/lib/seo.ts`) and has its own preview image.
 - Tags are optional words in the post's language, such as `guides` or `公告`, without `/` or `%`. Each links to `/blog/tags/<tag>`, which lists the locale's posts with it and stays out of the sitemap.
+
+## IndexNow
+
+[IndexNow](https://www.indexnow.org) tells Bing, Yandex, Naver, Seznam and Yep which URLs changed, so they crawl them sooner. Google doesn't use it; submit the sitemap in Google Search Console instead.
+
+1. Generate a key with `openssl rand -hex 16`. Set it as `INDEXNOW_KEY` in Production, next to `CRON_SECRET`.
+2. Deploy. Check that `<BETTER_AUTH_URL>/indexnow.txt` shows the key.
+3. After each deploy that adds or changes public pages, run `curl -fsS -X POST -H "Authorization: Bearer $CRON_SECRET" <BETTER_AUTH_URL>/api/indexnow`.
+
+The route sends every sitemap URL (`src/app/sitemap.ts`) and answers `{ "submitted": <count>, "status": <engine status> }`: 200 when the engines accept, 502 when they refuse. A 403 status means the engines couldn't fetch the key at `/indexnow.txt`. Without `INDEXNOW_KEY` or `CRON_SECRET`, both routes answer 404.
 
 ## Languages
 
