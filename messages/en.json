@@ -1,0 +1,796 @@
+{
+  "Metadata": {
+    "title": "starter",
+    "homeTitle": "starter – Next.js SaaS starter with AI, credits and payments",
+    "description": "A Next.js SaaS starter with passwordless sign-in, credits, Stripe or Waffo payments, AI chat, images and video, an admin area, and English and Chinese."
+  },
+  "Home": {
+    "hero": {
+      "eyebrow": "v0.1 · open template",
+      "title": "Everything before your first feature, done.",
+      "body": "Sign-in, credits, payments, AI generation and two languages are already wired up. Replace this copy with what your product does.",
+      "cta": "Create your account",
+      "secondary": "See how it works"
+    },
+    "mock": {
+      "label": "Product screenshot placeholder",
+      "overview": "Overview",
+      "nav": {
+        "1": "Overview",
+        "2": "Members",
+        "3": "Billing",
+        "4": "Settings"
+      },
+      "stats": {
+        "1": {
+          "label": "Users",
+          "value": "1,284"
+        },
+        "2": {
+          "label": "Retention",
+          "value": "47.2%"
+        },
+        "3": {
+          "label": "Uptime",
+          "value": "99.94%"
+        }
+      },
+      "activity": "Recent sign-ins",
+      "rows": {
+        "1": {
+          "email": "priya.mehta@meridian.dev",
+          "method": "Magic link",
+          "time": "09:42"
+        },
+        "2": {
+          "email": "lars.eriksson@hokkaido.co",
+          "method": "Google",
+          "time": "09:17"
+        },
+        "3": {
+          "email": "nia.okafor@vantage.bio",
+          "method": "Magic link",
+          "time": "08:55"
+        }
+      }
+    },
+    "features": {
+      "title": "What's already built",
+      "items": {
+        "1": {
+          "title": "Sign in without passwords",
+          "body": "Magic links by email through Resend, or one click with Google. New users get an account on first sign-in."
+        },
+        "2": {
+          "title": "Credits and payments",
+          "body": "Credit packs and monthly or yearly plans through Stripe or Waffo. Every credit change goes into a ledger the user can read."
+        },
+        "3": {
+          "title": "AI chat, images and video",
+          "body": "Chat with DeepSeek, turn prompts into images and images into videos. A failed job gives its credits back."
+        },
+        "4": {
+          "title": "Notifications and admin",
+          "body": "Users hear when a job finishes or a payment arrives. Admins manage users, orders, broadcasts and metrics."
+        },
+        "5": {
+          "title": "English and 中文",
+          "body": "Every page, title and error message ships in both languages, with a blog, a sitemap and llms.txt."
+        },
+        "6": {
+          "title": "Accounts and legal pages",
+          "body": "Users delete their own account. Privacy, terms and refund templates are linked from every footer."
+        }
+      },
+      "eyebrow": "What's included"
+    },
+    "steps": {
+      "title": "How it works",
+      "items": {
+        "1": {
+          "title": "Sign in",
+          "body": "Enter your email or continue with Google. There's no password to create."
+        },
+        "2": {
+          "title": "Get free credits",
+          "body": "Every new account starts with free credits to try chat and images."
+        },
+        "3": {
+          "title": "Create",
+          "body": "Chat, generate images and turn them into videos. Buy more credits when you need them."
+        }
+      },
+      "eyebrow": "Three steps",
+      "step": "Step {n}"
+    },
+    "faq": {
+      "title": "Questions",
+      "items": {
+        "1": {
+          "title": "Do I need a password?",
+          "body": "No. We email you a sign-in link, or you can use your Google account."
+        },
+        "2": {
+          "title": "How do credits work?",
+          "body": "Chat messages, images and seconds of video each cost credits. New accounts start with free credits. Buy a pack or subscribe on the Credits & billing page. Credits never expire, and a failed generation gives them back."
+        },
+        "3": {
+          "title": "Can I delete my account?",
+          "body": "Yes. Open your profile and choose Delete account. It's permanent and signs you out everywhere."
+        },
+        "4": {
+          "title": "Which languages are supported?",
+          "body": "English and Chinese. Switch at the top of any page; your choice is remembered."
+        },
+        "5": {
+          "title": "How do I contact support?",
+          "body": "Email <email></email>. We reply within 3 business days."
+        }
+      },
+      "eyebrow": "FAQ"
+    },
+    "cta": {
+      "title": "Ready when you are.",
+      "body": "It takes one email to start.",
+      "button": "Create your account",
+      "eyebrow": "Start free",
+      "points": {
+        "1": "Magic-link sign-in",
+        "2": "Credits and payments",
+        "3": "English and 中文"
+      }
+    }
+  },
+  "LocaleSwitcher": {
+    "label": "Language",
+    "current": "Language: {name}"
+  },
+  "Theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "NotFound": {
+    "title": "Page not found",
+    "home": "Go to the home page"
+  },
+  "SignIn": {
+    "title": "Sign in",
+    "subtitle": "No password to remember. We email you a link, or you continue with Google."
+  },
+  "LoginForm": {
+    "google": "Continue with Google",
+    "googleError": "Google sign-in isn't available. Use a magic link instead.",
+    "or": "or",
+    "email": "Email",
+    "send": "Send magic link",
+    "sent": "Check your email for a sign-in link.",
+    "sendError": "Couldn't send the link. Try again."
+  },
+  "Profile": {
+    "title": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "emailVerified": "Email verified",
+    "yes": "Yes",
+    "no": "No",
+    "memberSince": "Member since",
+    "deleteTitle": "Delete account",
+    "deleteDescription": "Permanently deletes your account and signs you out everywhere.",
+    "delete": "Delete account",
+    "confirmDelete": "Delete permanently",
+    "cancel": "Cancel",
+    "staleSession": "For your security, sign in again before deleting your account.",
+    "deleteError": "Couldn't delete your account. Try again.",
+    "confirmTitle": "Delete your account?",
+    "confirmDescription": "This permanently deletes <email></email> and signs you out on every device. You can't undo it.",
+    "activeSubscription": "Cancel your subscription on the <link>Credits & billing</link> page before deleting your account.",
+    "description": "Your account details."
+  },
+  "Legal": {
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "refund": "Refund Policy",
+    "descriptions": {
+      "privacy": "How {name} collects, uses, shares and protects your personal information.",
+      "terms": "The terms for using {name}: your account, acceptable use, your content and payments.",
+      "refund": "When {name} refunds a purchase, and how to ask for a refund."
+    },
+    "templateNotice": "This is a template. Have it reviewed by a lawyer before you publish it.",
+    "contact": "Contact",
+    "eyebrow": "Legal",
+    "nav": "Legal documents"
+  },
+  "Blog": {
+    "title": "Blog",
+    "eyebrow": "Blog",
+    "description": "Notes on what we're building and how to use it.",
+    "empty": "No posts yet.",
+    "back": "All posts",
+    "tagged": "Posts tagged “{tag}”",
+    "taggedDescription": "Every post tagged “{tag}”, newest first."
+  },
+  "Pricing": {
+    "title": "Pricing",
+    "eyebrow": "Pricing",
+    "description": "Pay with credits for what you use. Subscribe for credits every month, or buy a pack once.",
+    "price": "<amount>{price}</amount> per month",
+    "pricePerYear": "<amount>{price}</amount> per year",
+    "plansTitle": "Subscription",
+    "packsTitle": "Credit packs",
+    "packsNote": "One-time purchase. Credits never expire.",
+    "costsTitle": "What credits buy",
+    "costs": {
+      "image": "{count, plural, one {# credit} other {# credits}} per image",
+      "chat": "{count, plural, one {# credit} other {# credits}} per chat message",
+      "video": "From {count, plural, one {# credit} other {# credits}} per second of video",
+      "signup": "Every new account starts with {count} free credits"
+    }
+  },
+  "Footer": {
+    "blurb": "A minimal SaaS starter. Sign-in, credits, payments and AI are already wired up.",
+    "product": "Product",
+    "support": "Support",
+    "legal": "Legal",
+    "rights": "© {name}. All rights reserved."
+  },
+  "Layout": {
+    "skip": "Skip to main content"
+  },
+  "Dashboard": {
+    "title": "Dashboard",
+    "loading": "Loading…",
+    "nav": "Dashboard navigation",
+    "groups": {
+      "create": "Create",
+      "account": "Account"
+    },
+    "openMenu": "Open menu",
+    "signOut": "Sign out",
+    "signedInAs": "Signed in as {email}",
+    "emptyTitle": "Your product goes here",
+    "emptyBody": "This is the main view of your app. Replace this page with what users come here to do.",
+    "emptyAction": "Open your profile",
+    "billing": "Credits & billing",
+    "admin": "Admin",
+    "adminUsers": "Users",
+    "chat": "AI chat",
+    "images": "Image generator",
+    "videos": "Video generator",
+    "collapse": "Collapse sidebar",
+    "expand": "Expand sidebar",
+    "account": "Account menu",
+    "plan": "{name} plan",
+    "planFree": "Free",
+    "plans": {
+      "pro": "Pro"
+    },
+    "creditsLeft": "{count, plural, one {credit left} other {credits left}}",
+    "upgrade": "Upgrade",
+    "manageSubscription": "Manage subscription",
+    "profile": "Profile",
+    "language": "Language",
+    "stats": {
+      "label": "Overview",
+      "credits": {
+        "label": "Credits",
+        "note": "Available to spend"
+      },
+      "chats": {
+        "label": "Chats",
+        "note": "Saved conversations"
+      },
+      "images": {
+        "label": "Images",
+        "note": "Generated so far"
+      },
+      "videos": {
+        "label": "Videos",
+        "note": "Generated so far"
+      },
+      "loading": "Loading your numbers…"
+    },
+    "imageLibrary": "All images",
+    "pages": "Pages",
+    "pageOf": "Page {page} of {pages}",
+    "previous": "Previous",
+    "next": "Next",
+    "videoRap": "Rap duo",
+    "videoLibrary": "All videos",
+    "adminOrders": "Orders",
+    "adminBroadcasts": "Broadcasts",
+    "examples": "Examples",
+    "adminMetrics": "Metrics",
+    "apiKeys": "API keys",
+    "feedback": "Feedback",
+    "adminFeedback": "User feedback"
+  },
+  "Billing": {
+    "title": "Credits & billing",
+    "balance": "Credit balance",
+    "credits": "{count, plural, one {# credit} other {# credits}}",
+    "selected": "Selected",
+    "buyTitle": "Buy credits",
+    "buy": "Buy",
+    "buyLabel": "Buy {credits} for {price}",
+    "disabled": "Payments aren't set up yet.",
+    "checkoutError": "Couldn't start checkout. Try again.",
+    "success": "Payment received. Your credits appear here within a minute. Reload the page to update it.",
+    "canceled": "Checkout canceled. You weren't charged.",
+    "ordersTitle": "Orders",
+    "noOrders": "No orders yet.",
+    "date": "Date",
+    "pack": "Pack",
+    "amount": "Amount",
+    "status": "Status",
+    "statuses": {
+      "pending": "Pending",
+      "paid": "Paid",
+      "expired": "Expired",
+      "failed": "Failed"
+    },
+    "subscription": {
+      "title": "Subscription",
+      "interval": "Billing period",
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "perMonth": "{credits} every month",
+      "price": "{price} per month",
+      "pricePerYear": "{price} per year",
+      "subscribe": "Subscribe",
+      "subscribeLabel": "Subscribe for {price} per month",
+      "subscribeLabelYearly": "Subscribe for {price} per year",
+      "note": "Unused credits carry over. Cancel anytime.",
+      "active": "Active.",
+      "renewsOn": "Renews on {date}.",
+      "endsOn": "Ends on {date}. You keep your credits.",
+      "pastDue": "The last payment failed. Update your card to keep your subscription.",
+      "manage": "Manage subscription",
+      "portalError": "Couldn't open subscription management. Try again.",
+      "checkoutPending": "You already started a subscription checkout. Finish it, or try again in half an hour."
+    },
+    "loading": "Loading…",
+    "description": "Your balance, subscription, credit packs and history."
+  },
+  "Admin": {
+    "title": "Admin",
+    "usersTitle": "Users",
+    "email": "Email",
+    "name": "Name",
+    "noName": "Not set",
+    "joined": "Joined",
+    "count": "{total, plural, one {# user} other {# users}} in total.",
+    "searchLabel": "Search users",
+    "searchPlaceholder": "Email or name",
+    "search": "Search",
+    "matches": "{total, plural, one {# user matches} other {# users match}} “{query}”.",
+    "noMatch": "No users match “{query}”.",
+    "pages": "Pages",
+    "pageOf": "Page {page} of {pages}",
+    "previous": "Previous",
+    "next": "Next",
+    "empty": "No users yet.",
+    "loading": "Loading…",
+    "credits": "Credits",
+    "actions": "Actions",
+    "addCredits": "Add credits to {email}",
+    "addTitle": "Add credits",
+    "addDescription": "Add credits to <email></email>. The user sees them in their credit history as added by an admin.",
+    "amountLabel": "Credits to add",
+    "cancel": "Cancel",
+    "add": "Add",
+    "addError": "Couldn't add the credits. Try again.",
+    "allUsers": "All users",
+    "profile": "Profile",
+    "verification": "Email verification",
+    "verified": "Verified",
+    "unverified": "Not verified",
+    "subscription": "Subscription",
+    "noSubscription": "No subscription.",
+    "perMonth": "{credits, number} credits per month",
+    "active": "Active.",
+    "renewsOn": "Active, renews on {date}.",
+    "endsOn": "Canceled, ends on {date}.",
+    "pastDue": "The last payment failed.",
+    "orders": {
+      "title": "Orders",
+      "count": "{total, plural, one {# order} other {# orders}} in total.",
+      "matches": "{total, plural, one {# order matches} other {# orders match}} these filters.",
+      "searchLabel": "Search orders",
+      "searchPlaceholder": "Email, order ID or session ID",
+      "status": "Status",
+      "provider": "Provider",
+      "allStatuses": "All statuses",
+      "allProviders": "All providers",
+      "filter": "Filter",
+      "clear": "Clear filters",
+      "buyer": "Buyer",
+      "pack": "Pack",
+      "amount": "Amount",
+      "date": "Date",
+      "id": "Order ID",
+      "credits": "{count, plural, one {# credit} other {# credits}}",
+      "empty": "No orders yet.",
+      "noMatch": "No orders match these filters.",
+      "statuses": {
+        "pending": "Pending",
+        "paid": "Paid",
+        "expired": "Expired",
+        "failed": "Failed"
+      },
+      "providers": {
+        "stripe": "Stripe",
+        "waffo": "Waffo Pancake"
+      }
+    },
+    "broadcasts": {
+      "title": "Broadcasts",
+      "description": "Send a notification to every user or to one user. It appears under their bell.",
+      "formTitle": "New notification",
+      "audience": "Send to",
+      "everyone": "All users",
+      "oneUser": "One user",
+      "email": "User's email",
+      "titleLabel": "Title",
+      "bodyLabel": "Message",
+      "send": "Send",
+      "confirmTitle": "Send this notification?",
+      "confirmEveryone": "Every user who has an account now gets it. You can't take it back.",
+      "confirmOne": "{email} gets it. You can't take it back.",
+      "confirm": "Send",
+      "cancel": "Cancel",
+      "sent": "{count, plural, one {Sent to # user.} other {Sent to # users.}}",
+      "error": "Couldn't send the notification. Try again.",
+      "unknownUser": "No user has this email.",
+      "historyTitle": "Sent notifications",
+      "recipients": "Recipients",
+      "sentBy": "Sent by",
+      "date": "Date",
+      "empty": "No notifications sent yet."
+    },
+    "metrics": {
+      "title": "Metrics",
+      "description": "How the app did over the chosen range.",
+      "range": "Range",
+      "days": "{count, plural, =1 {24 hours} other {# days}}",
+      "cards": {
+        "newUsers": "New users",
+        "spent": "Credits spent",
+        "bought": "Credits bought",
+        "paidOrders": "Paid orders"
+      },
+      "usersTotal": "{count, plural, one {# user} other {# users}} in total",
+      "refunded": "{count, number} refunded",
+      "boughtNote": "Credit packs and subscriptions, less refunded payments",
+      "noRevenue": "No revenue",
+      "generations": "Generations",
+      "kind": "Kind",
+      "columns": {
+        "jobs": "Jobs",
+        "succeeded": "Succeeded",
+        "failed": "Failed",
+        "pending": "Pending",
+        "successRate": "Success rate",
+        "median": "Median time",
+        "p95": "p95 time"
+      },
+      "kinds": {
+        "image": "Images",
+        "video": "Videos"
+      },
+      "timingNote": "Times run from the request to the stored file, for jobs that succeeded. The success rate leaves out pending jobs.",
+      "failures": {
+        "image": "Image failures",
+        "video": "Video failures"
+      },
+      "noFailures": {
+        "image": "No image failures.",
+        "video": "No video failures."
+      }
+    },
+    "feedback": {
+      "title": "User feedback",
+      "description": "{total} submissions, newest first.",
+      "empty": "No feedback yet.",
+      "openImage": "Open image {number}",
+      "image": "Feedback image {number}"
+    }
+  },
+  "Chat": {
+    "title": "AI chat",
+    "loading": "Loading…",
+    "cost": "Each message costs 1 credit. Chats are saved to your account.",
+    "disabled": "Chat is not set up yet.",
+    "log": "Conversation",
+    "empty": "Ask anything to start a conversation.",
+    "thinking": "Thinking…",
+    "noCredits": "You're out of credits.",
+    "buy": "Buy credits",
+    "failed": "Something went wrong. Try again.",
+    "label": "Message",
+    "placeholder": "Ask anything…",
+    "send": "Send",
+    "list": "Conversations",
+    "newChat": "New chat",
+    "noChats": "No saved chats yet.",
+    "deleteLabel": "Delete “{title}”",
+    "confirmTitle": "Delete this chat?",
+    "confirmDescription": "<title></title> and all its messages will be deleted. You can't undo it.",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "deleteError": "Couldn't delete the chat. Try again.",
+    "description": "Ask questions and keep the conversations."
+  },
+  "Credits": {
+    "balance": "Credit balance",
+    "credits": "{count, plural, one {# credit} other {# credits}}",
+    "historyTitle": "Credit history",
+    "date": "Date",
+    "reason": "Reason",
+    "amount": "Credits",
+    "reasons": {
+      "signup": "Signup bonus",
+      "purchase": "Credit pack",
+      "subscription": "Subscription",
+      "chat": "AI chat",
+      "chat refund": "AI chat refund",
+      "image": "Image",
+      "image refund": "Image refund",
+      "admin": "Added by an admin",
+      "video": "Video",
+      "video refund": "Video refund",
+      "refunded payment": "Refunded payment"
+    },
+    "empty": "No credit activity yet.",
+    "limited": "Showing the latest {count} entries."
+  },
+  "Images": {
+    "title": "Image generator",
+    "prompt": "Prompt",
+    "placeholder": "Describe the image, for example: a flower shop with wooden windows, morning light",
+    "aspect": "Aspect ratio",
+    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
+    "generating": "Submitting…",
+    "balance": "{count, plural, one {# credit left} other {# credits left}}",
+    "buyCredits": "Buy credits",
+    "disabled": "Image generation isn't set up yet.",
+    "historyTitle": "Your images",
+    "empty": "No images yet.",
+    "pending": "Generating… This takes 10 to 30 seconds.",
+    "failed": "Generation failed. The credit was refunded.",
+    "download": "Download",
+    "loading": "Loading images…",
+    "errors": {
+      "credits": "Not enough credits. Buy more on the Credits & billing page.",
+      "blocked": "The prompt or image was blocked by content moderation. Try a different prompt.",
+      "failed": "Generation failed. The credit was refunded. Try again."
+    },
+    "description": "Turn a prompt into an image.",
+    "libraryTitle": "All images",
+    "libraryDescription": "Every image you've generated, newest first.",
+    "generateLink": "Generate an image",
+    "detailTitle": "Image details",
+    "status": "Status",
+    "created": "Created",
+    "statuses": {
+      "pending": "Generating",
+      "succeeded": "Done",
+      "failed": "Failed"
+    },
+    "viewAll": "View all",
+    "viewFullScreen": "View full screen",
+    "close": "Close",
+    "examples": {
+      "flowerShop": {
+        "label": "Flower shop",
+        "prompt": "A small flower shop with wooden windows on a quiet street, soft morning light, watercolor style"
+      },
+      "product": {
+        "label": "Product shot",
+        "prompt": "A white ceramic coffee mug on a marble table, studio lighting, clean background, product photography"
+      },
+      "portrait": {
+        "label": "Portrait",
+        "prompt": "Portrait of an elderly fisherman with a weathered face, golden hour light, shallow depth of field, 85mm photo"
+      },
+      "cityNight": {
+        "label": "Night city",
+        "prompt": "A rainy city street at night with neon signs reflected in puddles, cinematic, wide angle"
+      },
+      "poster": {
+        "label": "Poster",
+        "prompt": "A minimalist travel poster of snowy mountains and a lake, flat illustration, limited color palette"
+      }
+    }
+  },
+  "Videos": {
+    "title": "Video generator",
+    "startImage": "Start image",
+    "imageHint": "JPEG, PNG or WebP, up to {size} MB. The video starts from this image.",
+    "preview": "Start image preview",
+    "prompt": "Prompt",
+    "placeholder": "Describe the motion, for example: the fox turns its head and runs into the forest",
+    "duration": "Length",
+    "seconds": "{count} s",
+    "resolution": "Resolution",
+    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
+    "generating": "Uploading…",
+    "balance": "{count, plural, one {# credit left} other {# credits left}}",
+    "buyCredits": "Buy credits",
+    "disabled": "Video generation isn't set up yet.",
+    "historyTitle": "Your videos",
+    "empty": "No videos yet.",
+    "pending": "Generating… This takes 1 to 5 minutes.",
+    "failed": "Generation failed. The credits were refunded.",
+    "download": "Download",
+    "loading": "Loading videos…",
+    "errors": {
+      "credits": "Not enough credits. Buy more on the Credits & billing page.",
+      "image": "Use a JPEG, PNG or WebP image up to {size} MB.",
+      "imageSize": "Use an image {min, number} to {max, number} pixels on each side, with the long side at most {ratio} times the short side.",
+      "failed": "Generation failed. The credits were refunded. Try again.",
+      "blocked": "The prompt or start image was blocked by content moderation. Try a different one.",
+      "moderation": "The start image couldn't be checked right now. No credits were spent. Try again in a minute."
+    },
+    "description": "Turn an image into a short video.",
+    "libraryTitle": "All videos",
+    "libraryDescription": "Every video you've generated, newest first.",
+    "generateLink": "Generate a video",
+    "viewAll": "View all",
+    "detailTitle": "Video details",
+    "spent": "Credits spent",
+    "credits": "{count, plural, one {# credit} other {# credits}}",
+    "status": "Status",
+    "created": "Created",
+    "statuses": {
+      "pending": "Generating",
+      "succeeded": "Done",
+      "failed": "Failed"
+    },
+    "examples": {
+      "pushIn": {
+        "label": "Push in",
+        "prompt": "The camera slowly pushes in toward the subject. Smooth, steady motion"
+      },
+      "wind": {
+        "label": "Wind",
+        "prompt": "A light wind moves the hair, clothes and leaves. The subject stays still"
+      },
+      "turn": {
+        "label": "Turn and smile",
+        "prompt": "The person turns toward the camera and smiles"
+      },
+      "timeLapse": {
+        "label": "Time-lapse",
+        "prompt": "Clouds drift across the sky in a time-lapse. Light changes over the scene"
+      },
+      "orbit": {
+        "label": "Orbit",
+        "prompt": "The camera orbits slowly around the subject, cinematic"
+      }
+    }
+  },
+  "RapVideos": {
+    "title": "Rap duo",
+    "description": "Two photos and two names become a 15-second rap video. Each person raps a line written for them.",
+    "left": {
+      "photo": "Left photo",
+      "preview": "Left photo preview",
+      "name": "Left name"
+    },
+    "right": {
+      "photo": "Right photo",
+      "preview": "Right photo preview",
+      "name": "Right name"
+    },
+    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light.",
+    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
+    "generating": "Writing the lines…",
+    "balance": "{count, plural, one {# credit left} other {# credits left}}",
+    "buyCredits": "Buy credits",
+    "disabled": "The rap duo isn't set up yet.",
+    "historyTitle": "Your videos",
+    "empty": "No videos yet.",
+    "viewAll": "View all",
+    "errors": {
+      "credits": "Not enough credits. Buy more on the Credits & billing page.",
+      "invalid": "Use JPEG, PNG or WebP photos up to {size} MB each, and names up to {max} characters.",
+      "imageSize": "Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
+      "failed": "Generation failed. The credits were refunded. Try again.",
+      "blocked": "A name or photo was blocked by content moderation. Try different ones.",
+      "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
+    }
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "description": "Updates about your images, videos, payments and credits, newest first.",
+    "bellUnread": "Notifications, {count} unread",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all",
+    "loading": "Loading notifications…",
+    "empty": "No notifications yet.",
+    "unread": "Unread",
+    "refunded": "{count, plural, one {# credit was refunded.} other {# credits were refunded.}}",
+    "types": {
+      "image_succeeded": "Your image is ready",
+      "image_failed": "Your image failed",
+      "video_succeeded": "Your video is ready",
+      "video_failed": "Your video failed",
+      "order_paid": "Payment received",
+      "subscription_paid": "Subscription payment received",
+      "subscription_past_due": "Subscription payment failed",
+      "subscription_ended": "Your subscription ended",
+      "credits_added": "Credits added"
+    },
+    "added": "{count, plural, one {# credit was added.} other {# credits were added.}}",
+    "planCredits": "{plan} plan: {count, plural, one {# credit was added.} other {# credits were added.}}",
+    "pastDue": "Update your payment method to keep the {plan} plan.",
+    "ended": "The {plan} plan has ended. You keep your credits."
+  },
+  "ApiKeys": {
+    "title": "API keys",
+    "description": "Call the image and video API from your own scripts. Each call spends your credits, as in the app.",
+    "createTitle": "New key",
+    "name": "Name",
+    "namePlaceholder": "For example: nightly batch",
+    "expiry": "Expires",
+    "expiries": {
+      "30": "In 30 days",
+      "90": "In 90 days",
+      "365": "In 1 year",
+      "never": "Never"
+    },
+    "create": "Create key",
+    "creating": "Creating…",
+    "createdTitle": "Copy your key now",
+    "createdBody": "You won't see it again. Keep it secret, like a password.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "done": "Done",
+    "listTitle": "Your keys",
+    "count": "{count} of {max} keys",
+    "empty": "No keys yet.",
+    "columns": {
+      "name": "Name",
+      "key": "Key",
+      "created": "Created",
+      "lastUsed": "Last used",
+      "expires": "Expires",
+      "actions": "Actions"
+    },
+    "never": "Never",
+    "notUsed": "Not used yet",
+    "expired": "Expired",
+    "revoke": "Revoke",
+    "revokeLabel": "Revoke {name}",
+    "revokeTitle": "Revoke this key?",
+    "revokeBody": "Scripts that use “{name}” stop working at once. This can’t be undone.",
+    "cancel": "Cancel",
+    "errors": {
+      "tooMany": "You have {max} keys, the most allowed. Revoke one to create another.",
+      "failed": "Couldn't create the key. Try again.",
+      "revokeFailed": "Couldn't revoke the key. Try again."
+    },
+    "docsTitle": "Use a key",
+    "docsBody": "Send the key in the x-api-key header. Only the image and video routes accept it. Submit a job, ask about it until its status isn’t pending, then download the result."
+  },
+  "Feedback": {
+    "title": "Feedback",
+    "description": "Report a problem or suggest an improvement.",
+    "message": "Your feedback",
+    "hint": "Up to {max} characters. Administrators can see your feedback and account email.",
+    "submit": "Submit feedback",
+    "sending": "Submitting…",
+    "sent": "Your feedback has been submitted. Thank you.",
+    "error": "Could not submit feedback. Your text and images are kept here. Please try again.",
+    "rateLimited": "Too many submissions. Please wait a minute and try again.",
+    "unauthorized": "Your session has expired. Sign in again to submit feedback.",
+    "images": "Images",
+    "imagesHint": "Choose files or paste images into the feedback box. JPEG, PNG or WebP. Up to {count} images, {mb} MB total.",
+    "invalidImages": "These files exceed the limits or use an unsupported image format.",
+    "removeImage": "Remove {name}",
+    "remove": "Remove",
+    "storageDisabled": "Image uploads are unavailable. Try again later or submit text only."
+  }
+}

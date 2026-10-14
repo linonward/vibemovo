@@ -1,0 +1,198 @@
+import { expect, test } from "@playwright/test";
+
+// Search engines find the public pages in every locale, and nothing behind
+// sign-in or the API.
+test("the sitemap lists the public pages in every locale", async ({ request, baseURL }) => {
+  const response = await request.get("/sitemap.xml");
+
+  expect(response.status()).toBe(200);
+  const xml = await response.text();
+  const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
+  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/blog", "/blog/welcome"];
+  expect(locs.sort()).toEqual(
+    [
+      ...pages.flatMap((page) => [`${baseURL}/en${page}`, `${baseURL}/zh${page}`]),
+      // English only, so no Chinese entry.
+      `${baseURL}/en/blog/writing-a-post`,
+      `${baseURL}/en/blog/ai-rap-video-two-people`,
+    ].sort(),
+  );
+  expect(xml).toContain(`hreflang="zh" href="${baseURL}/zh/privacy"`);
+  expect(xml).toContain(`hreflang="x-default" href="${baseURL}/en/privacy"`);
+});
+
+test("robots.txt keeps crawlers out of the API and points to the sitemap", async ({ request, baseURL }) => {
+  const response = await request.get("/robots.txt");
+
+  expect(response.status()).toBe(200);
+  const robots = await response.text();
+  expect(robots).toContain("User-Agent: *");
+  expect(robots).toContain("Allow: /");
+  expect(robots).toContain("Disallow: /api/");
+  expect(robots).toContain(`Sitemap: ${baseURL}/sitemap.xml`);
+});
+
+test("a post names its canonical URL and only the translations that exist", async ({ page, baseURL }) => {
+  await page.goto("/en/blog/welcome");
+
+  const head = page.locator("head");
+  await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/en/blog/welcome`);
+  await expect(head.locator('link[rel="alternate"][hreflang="zh"]')).toHaveAttribute("href", `${baseURL}/zh/blog/welcome`);
+  await expect(head.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
+
+  await page.goto("/en/blog/writing-a-post");
+  await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/en/blog/writing-a-post`);
+  await expect(head.locator('link[rel="alternate"][hreflang="zh"]')).toHaveCount(0);
+});
+
+test("a post describes itself to search engines as a BlogPosting", async ({ page, baseURL }) => {
+  await page.goto("/en/blog/welcome");
+
+  const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
+  expect(data).toMatchObject({
+    "@type": "BlogPosting",
+    headline: "Welcome to the blog",
+    datePublished: "2026-10-01",
+    keywords: ["announcements"],
+    inLanguage: "en",
+    url: `${baseURL}/en/blog/welcome`,
+  });
+  // Only what the page shows: the same title and description.
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(data.headline);
+  await expect(page.getByText(data.description)).toBeVisible();
+});
+
+test("the home page names the site and its publisher", async ({ page, baseURL }) => {
+  await page.goto("/zh");
+
+  const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
+  expect(data["@graph"]).toEqual([
+    expect.objectContaining({ "@type": "Organization", name: "starter", url: `${baseURL}/` }),
+    expect.objectContaining({
+      "@type": "WebSite",
+      name: "starter",
+      inLanguage: "zh",
+      url: `${baseURL}/zh`,
+      description: await page.locator('head meta[name="description"]').getAttribute("content"),
+    }),
+  ]);
+});
+
+test("the blog index names its canonical URL and every locale", async ({ page, baseURL }) => {
+  await page.goto("/zh/blog");
+
+  const head = page.locator("head");
+  await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/zh/blog`);
+  await expect(head.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute("href", `${baseURL}/en/blog`);
+  await expect(head.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute("href", `${baseURL}/en/blog`);
+});
+
+test("the home and legal pages name their canonical URL and every locale", async ({ page, baseURL }) => {
+  for (const path of ["", "/privacy", "/terms", "/refund"]) {
+    await page.goto(`/zh${path}`);
+
+    const head = page.locator("head");
+    await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/zh${path}`);
+    await expect(head.locator('link[rel="alternate"][hreflang="en"]')).toHaveAttribute("href", `${baseURL}/en${path}`);
+    await expect(head.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute(
+      "href",
+      `${baseURL}/en${path}`,
+    );
+  }
+});
+
+// The page's own hreflang links are the only ones. A Link header would also
+// name translations that don't exist, such as a Chinese writing-a-post.
+test("responses carry no hreflang Link header", async ({ request }) => {
+  for (const path of ["/en", "/en/pricing", "/en/blog/writing-a-post"]) {
+    const response = await request.get(path);
+
+    expect(response.headers().link ?? "", path).not.toContain("hreflang");
+  }
+});
+
+// Each page's own summary, not the site's: search results show it under the title.
+test("the legal, sign-in and tag pages describe themselves", async ({ page }) => {
+  const descriptions = {
+    "/en/privacy": "How starter collects, uses, shares and protects your personal information.",
+    "/zh/terms": "使用 starter 的条款：你的账户、可接受的使用、你的内容和付款。",
+    "/en/refund": "When starter refunds a purchase, and how to ask for a refund.",
+    "/en/sign-in": "No password to remember. We email you a link, or you continue with Google.",
+    "/en/blog/tags/guides": "Every post tagged “guides”, newest first.",
+  };
+  for (const [path, description] of Object.entries(descriptions)) {
+    await page.goto(path);
+
+    await expect(page.locator('head meta[name="description"]'), path).toHaveAttribute("content", description);
+  }
+});
+
+test("the sign-in page stays out of search results", async ({ page }) => {
+  await page.goto("/en/sign-in?next=%2Fen%2Fdashboard");
+
+  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute("content", "noindex");
+});
+
+// A crawler's first request decides the status. Next.js caches the 404
+// afterwards, so each run asks for paths no earlier request has seen.
+test("an unknown post, tag or translation answers 404 on the first request", async ({ request }) => {
+  const unseen = `unseen-${Date.now()}`;
+  for (const path of [`/en/blog/${unseen}`, `/en/blog/tags/${unseen}`, `/zh/blog/writing-a-post`]) {
+    const response = await request.get(path);
+
+    expect(response.status(), path).toBe(404);
+  }
+});
+
+test("llms.txt describes the product and links the public pages", async ({ request, baseURL }) => {
+  const response = await request.get("/llms.txt");
+
+  expect(response.status()).toBe(200);
+  expect(response.headers()["content-type"]).toBe("text/markdown; charset=utf-8");
+  const text = await response.text();
+  const lines = text.split("\n");
+  expect(lines[0]).toBe("# starter");
+  expect(lines[2]).toBe(
+    "> A Next.js SaaS starter with passwordless sign-in, credits, Stripe or Waffo payments, AI chat, images and video, an admin area, and English and Chinese.",
+  );
+  expect(text).toContain("- Sign in without passwords: Magic links by email");
+  expect(text).toContain("- AI chat, images and video: Chat with DeepSeek");
+  expect(text).toContain("- How do I contact support?: Email support@example.com.");
+  expect(text).toContain(`- [Privacy Policy](${baseURL}/en/privacy)`);
+  expect(text).toContain(`- [隐私政策](${baseURL}/zh/privacy)`);
+  expect(text).toContain(`- [Pricing](${baseURL}/en/pricing): Pay with credits`);
+  expect(text).toContain(`- [Blog](${baseURL}/en/blog): `);
+  expect(text).toContain(`](${baseURL}/en/blog/welcome): `);
+  expect(text).toContain(`](${baseURL}/zh/blog/welcome): `);
+  expect(text).not.toContain(`${baseURL}/zh/blog/writing-a-post`);
+  expect(text).toContain(`- [Sitemap](${baseURL}/sitemap.xml)`);
+  // No ICU or markup left over.
+  expect(text).not.toMatch(/[{}]|<\/?\w/);
+});
+
+// Links shared in chats and on social sites show a preview image.
+test("every public page shares a preview image", async ({ page, request }) => {
+  for (const path of ["/en", "/zh/pricing", "/en/blog"]) {
+    await page.goto(path);
+
+    const head = page.locator("head");
+    await expect(head.locator('meta[property="og:image:width"]')).toHaveAttribute("content", "1200");
+    await expect(head.locator('meta[property="og:image:height"]')).toHaveAttribute("content", "630");
+    const image = await head.locator('meta[property="og:image"]').getAttribute("content");
+    const response = await request.get(image!);
+    expect(response.status(), image!).toBe(200);
+    expect(response.headers()["content-type"]).toBe("image/png");
+  }
+});
+
+test("a post shares a preview image of its own", async ({ page, request, baseURL }) => {
+  for (const path of ["/en/blog/welcome", "/zh/blog/welcome"]) {
+    await page.goto(path);
+
+    const image = await page.locator('head meta[property="og:image"]').getAttribute("content");
+    expect(image).toContain(`${baseURL}${path}/opengraph-image`);
+    const response = await request.get(image!);
+    expect(response.status(), image!).toBe(200);
+    expect(response.headers()["content-type"]).toBe("image/png");
+  }
+});

@@ -1,0 +1,273 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-text: var(--primary-text);
+  --color-primary-soft: var(--primary-soft);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+
+/* Color tokens: docs/DESIGN.md, Color Tokens. Dark is the default theme;
+   light is the opt-in. The primary is the same pine in both. */
+:root {
+  --background: #f7f7f3;
+  --foreground: #181914;
+  --card: #ffffff;
+  --card-foreground: #181914;
+  --popover: #ffffff;
+  --popover-foreground: #181914;
+  --primary: oklch(0.45 0.08 165);
+  --primary-foreground: oklch(0.985 0.006 165);
+  --primary-hover: oklch(0.4 0.08 165);
+  --primary-text: oklch(0.45 0.08 165);
+  --primary-soft: oklch(0.93 0.03 165);
+  --secondary: #f2f3ed;
+  --secondary-foreground: #181914;
+  --muted: #f2f3ed;
+  --muted-foreground: #65675f;
+  --accent: #f2f3ed;
+  --accent-foreground: #181914;
+  --destructive: #df4949;
+  --border: #dde0d6;
+  --input: #dde0d6;
+  --ring: oklch(0.45 0.08 165);
+  --chart-1: oklch(0.45 0.08 165);
+  --chart-2: #19b3be;
+  --chart-3: #a72aef;
+  --chart-4: #ffa929;
+  --chart-5: #e9206d;
+  --radius: 0.75rem;
+  --sidebar: #f2f3ed;
+  --sidebar-foreground: #181914;
+  --sidebar-primary: oklch(0.45 0.08 165);
+  --sidebar-primary-foreground: oklch(0.985 0.006 165);
+  --sidebar-accent: #e3e5dc;
+  --sidebar-accent-foreground: #181914;
+  --sidebar-border: #dde0d6;
+  --sidebar-ring: oklch(0.45 0.08 165);
+}
+
+/* Pine is a fill on dark surfaces; it is too dark for text (2.9:1).
+   Text, icons and focus rings use --primary-text (8.7:1). */
+.dark {
+  --background: #0d0d0d;
+  --foreground: #f3f4eb;
+  --card: #171717;
+  --card-foreground: #f3f4eb;
+  --popover: #10110e;
+  --popover-foreground: #f3f4eb;
+  --primary: oklch(0.45 0.08 165);
+  --primary-foreground: oklch(0.985 0.006 165);
+  --primary-hover: oklch(0.55 0.09 165);
+  --primary-text: oklch(0.72 0.1 165);
+  --primary-soft: oklch(0.27 0.045 165);
+  --secondary: #212121;
+  --secondary-foreground: #f3f4eb;
+  --muted: #212121;
+  --muted-foreground: #a4a69b;
+  --accent: #2b2b2b;
+  --accent-foreground: #f3f4eb;
+  --destructive: #df4949;
+  --border: #2e2e2e;
+  --input: #2e2e2e;
+  --ring: oklch(0.72 0.1 165);
+  --chart-1: oklch(0.72 0.1 165);
+  --chart-2: #67e8f9;
+  --chart-3: #c4b5fd;
+  --chart-4: #fcd34d;
+  --chart-5: #f65a96;
+  --sidebar: #080908;
+  --sidebar-foreground: #f3f4eb;
+  --sidebar-primary: oklch(0.45 0.08 165);
+  --sidebar-primary-foreground: oklch(0.985 0.006 165);
+  --sidebar-accent: #1f1f1f;
+  --sidebar-accent-foreground: #f3f4eb;
+  --sidebar-border: rgb(255 255 255 / 0.08);
+  --sidebar-ring: oklch(0.72 0.1 165);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* Mono for titles, labels and numbers; sans for sentences. CJK falls back
+   to the system sans. */
+@theme {
+  --font-display: var(--font-martian), "PingFang SC", "Noto Sans SC", ui-monospace, monospace;
+  --color-surface: var(--card);
+}
+
+@layer base {
+  /* Lucide renders server- and client-side; set its stroke once here
+     instead of per icon (LucideProvider only reaches client components). */
+  svg.lucide {
+    stroke-width: 1.75;
+  }
+}
+
+/* Animatable angle for `.border-glow`. */
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@layer components {
+  /* Latin display text gets tighter tracking; CJK keeps normal spacing. */
+  .display-tight:lang(en) {
+    letter-spacing: -0.022em;
+  }
+
+  /* Small uppercase label above a title (docs/DESIGN.md, Eyebrow). */
+  .eyebrow {
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--primary-text);
+  }
+  .eyebrow:lang(zh) {
+    letter-spacing: 0.08em;
+  }
+
+  /* Long-form legal text: Latin reads at 1.75, CJK needs a little more. */
+  .legal-prose {
+    line-height: 1.75;
+  }
+  .legal-prose:lang(zh) {
+    line-height: 1.85;
+  }
+
+  /* Icon motion: the signature interaction. Transform and opacity only. */
+  .icon-nudge {
+    transition: translate 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (hover: hover) {
+    :is(a, button):hover .icon-nudge {
+      translate: 3px 0;
+    }
+  }
+  .icon-turn {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  details[open] .icon-turn {
+    transform: rotate(45deg);
+  }
+  .icon-swap {
+    transition:
+      opacity 120ms ease-out,
+      scale 120ms ease-out;
+  }
+
+  /* Two arcs of light, teal through green and lime to amber, run around
+     the border, with a soft glow outside.
+     Wrap the element: the ring and glow are the wrapper's pseudo-elements,
+     so `overflow-hidden` on the element doesn't clip them. */
+  .border-glow {
+    position: relative;
+    isolation: isolate;
+  }
+  .border-glow::before,
+  .border-glow::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--border-angle),
+      transparent 0%,
+      oklch(0.77 0.15 165) 6%,
+      oklch(0.87 0.2 128) 14%,
+      oklch(0.88 0.17 95) 20%,
+      transparent 30% 46%,
+      oklch(0.8 0.16 70) 52%,
+      oklch(0.88 0.17 95) 58%,
+      oklch(0.87 0.2 128) 66%,
+      oklch(0.78 0.13 185) 72%,
+      transparent 82%
+    );
+    animation: border-spin 8s linear infinite;
+  }
+  .border-glow::before {
+    z-index: 1;
+    padding: 1px;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+  }
+  .border-glow::after {
+    z-index: -1;
+    opacity: 0.45;
+    filter: blur(28px);
+  }
+  @keyframes border-spin {
+    to {
+      --border-angle: 360deg;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon-nudge,
+    .icon-turn,
+    .icon-swap {
+      transition: none;
+    }
+    .border-glow::before,
+    .border-glow::after {
+      animation: none;
+    }
+  }
+}

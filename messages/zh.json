@@ -1,0 +1,796 @@
+{
+  "Metadata": {
+    "title": "starter",
+    "homeTitle": "starter – 自带 AI、积分和支付的 Next.js SaaS 模板",
+    "description": "Next.js SaaS 模板：免密码登录、积分、Stripe 或 Waffo 支付、AI 对话、图片和视频生成、管理后台，支持中英双语。"
+  },
+  "Home": {
+    "hero": {
+      "eyebrow": "v0.1 · 开源模板",
+      "title": "第一个功能之前的事，都做好了。",
+      "body": "登录、积分、支付、AI 生成和双语都已接好。把这段文案换成你的产品做什么。",
+      "cta": "创建账号",
+      "secondary": "看看怎么用"
+    },
+    "mock": {
+      "label": "产品截图占位",
+      "overview": "概览",
+      "nav": {
+        "1": "概览",
+        "2": "成员",
+        "3": "账单",
+        "4": "设置"
+      },
+      "stats": {
+        "1": {
+          "label": "用户",
+          "value": "1,284"
+        },
+        "2": {
+          "label": "留存",
+          "value": "47.2%"
+        },
+        "3": {
+          "label": "可用率",
+          "value": "99.94%"
+        }
+      },
+      "activity": "最近登录",
+      "rows": {
+        "1": {
+          "email": "priya.mehta@meridian.dev",
+          "method": "邮箱链接",
+          "time": "09:42"
+        },
+        "2": {
+          "email": "lars.eriksson@hokkaido.co",
+          "method": "Google",
+          "time": "09:17"
+        },
+        "3": {
+          "email": "nia.okafor@vantage.bio",
+          "method": "邮箱链接",
+          "time": "08:55"
+        }
+      }
+    },
+    "features": {
+      "title": "已经做好的部分",
+      "items": {
+        "1": {
+          "title": "无需密码登录",
+          "body": "通过 Resend 发送邮件登录链接，或一键使用 Google。新用户首次登录时自动创建账号。"
+        },
+        "2": {
+          "title": "积分与支付",
+          "body": "通过 Stripe 或 Waffo 出售积分包和月付、年付订阅。每一笔积分变动都记在用户能查看的账本里。"
+        },
+        "3": {
+          "title": "AI 对话、图片和视频",
+          "body": "用 DeepSeek 对话，用提示词生成图片，再把图片生成视频。生成失败会退还积分。"
+        },
+        "4": {
+          "title": "通知与管理后台",
+          "body": "任务完成或付款到账时通知用户。管理员可以管理用户和订单，群发通知，查看运营指标。"
+        },
+        "5": {
+          "title": "English 和中文",
+          "body": "每个页面、标题和错误提示都有两种语言，还带博客、sitemap 和 llms.txt。"
+        },
+        "6": {
+          "title": "账号与法律页面",
+          "body": "用户可以自己注销账号。隐私政策、服务条款和退款政策模板，每个页脚都有链接。"
+        }
+      },
+      "eyebrow": "已包含"
+    },
+    "steps": {
+      "title": "怎么用",
+      "items": {
+        "1": {
+          "title": "登录",
+          "body": "输入邮箱或使用 Google 登录，不需要设置密码。"
+        },
+        "2": {
+          "title": "领取免费积分",
+          "body": "每个新账号都有免费积分，可以试用 AI 对话和图片生成。"
+        },
+        "3": {
+          "title": "开始创作",
+          "body": "对话、生成图片，再把图片做成视频。积分不够时再购买。"
+        }
+      },
+      "eyebrow": "三步上手",
+      "step": "第 {n} 步"
+    },
+    "faq": {
+      "title": "常见问题",
+      "items": {
+        "1": {
+          "title": "需要密码吗？",
+          "body": "不需要。我们会把登录链接发到你的邮箱，你也可以用 Google 账号登录。"
+        },
+        "2": {
+          "title": "积分怎么用？",
+          "body": "AI 对话的每条消息、每张图片和每秒视频都消耗积分。新账号自带免费积分。在“积分与账单”页面购买积分包或订阅。积分不会过期，生成失败会退还积分。"
+        },
+        "3": {
+          "title": "可以注销账号吗？",
+          "body": "可以。打开个人资料，选择“注销账号”。注销是永久的，并会在所有设备上退出登录。"
+        },
+        "4": {
+          "title": "支持哪些语言？",
+          "body": "英文和中文。在任意页面顶部切换，我们会记住你的选择。"
+        },
+        "5": {
+          "title": "怎么联系客服？",
+          "body": "发邮件到 <email></email>。我们会在 3 个工作日内回复。"
+        }
+      },
+      "eyebrow": "常见问题"
+    },
+    "cta": {
+      "title": "准备好了就开始。",
+      "body": "只需要一个邮箱。",
+      "button": "创建账号",
+      "eyebrow": "免费开始",
+      "points": {
+        "1": "邮件链接登录",
+        "2": "积分与支付",
+        "3": "中英双语"
+      }
+    }
+  },
+  "LocaleSwitcher": {
+    "label": "语言",
+    "current": "语言：{name}"
+  },
+  "Theme": {
+    "label": "主题",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "跟随系统"
+  },
+  "NotFound": {
+    "title": "页面不存在",
+    "home": "返回首页"
+  },
+  "SignIn": {
+    "title": "登录",
+    "subtitle": "不需要记密码。我们把登录链接发到你的邮箱，你也可以用 Google 登录。"
+  },
+  "LoginForm": {
+    "google": "使用 Google 登录",
+    "googleError": "Google 登录暂不可用，请使用邮箱链接登录。",
+    "or": "或",
+    "email": "邮箱",
+    "send": "发送登录链接",
+    "sent": "登录链接已发送，请查收邮件。",
+    "sendError": "链接发送失败，请重试。"
+  },
+  "Profile": {
+    "title": "个人资料",
+    "name": "姓名",
+    "email": "邮箱",
+    "emailVerified": "邮箱已验证",
+    "yes": "是",
+    "no": "否",
+    "memberSince": "注册时间",
+    "deleteTitle": "注销账号",
+    "deleteDescription": "永久删除你的账号，并在所有设备上退出登录。",
+    "delete": "注销账号",
+    "confirmDelete": "确认永久删除",
+    "cancel": "取消",
+    "staleSession": "为了账号安全，请重新登录后再注销账号。",
+    "deleteError": "账号注销失败，请重试。",
+    "confirmTitle": "确认注销账号？",
+    "confirmDescription": "这会永久删除 <email></email>，并在所有设备上退出登录。此操作无法撤销。",
+    "activeSubscription": "删除账号前，请先在<link>积分与账单</link>页面取消订阅。",
+    "description": "你的账户信息。"
+  },
+  "Legal": {
+    "privacy": "隐私政策",
+    "terms": "服务条款",
+    "refund": "退款政策",
+    "descriptions": {
+      "privacy": "{name} 如何收集、使用、共享和保护你的个人信息。",
+      "terms": "使用 {name} 的条款：你的账户、可接受的使用、你的内容和付款。",
+      "refund": "{name} 在什么情况下退款，以及如何申请退款。"
+    },
+    "templateNotice": "本页为模板，发布前请由律师审核。",
+    "contact": "联系我们",
+    "eyebrow": "法律",
+    "nav": "法律文件"
+  },
+  "Blog": {
+    "title": "博客",
+    "eyebrow": "博客",
+    "description": "关于我们在做什么、以及如何使用它的文章。",
+    "empty": "还没有文章。",
+    "back": "全部文章",
+    "tagged": "标签为“{tag}”的文章",
+    "taggedDescription": "所有标签为“{tag}”的文章，最新的在前。"
+  },
+  "Pricing": {
+    "title": "价格",
+    "eyebrow": "价格",
+    "description": "用积分按用量付费。订阅每月获得积分，或一次性购买积分包。",
+    "price": "每月 <amount>{price}</amount>",
+    "pricePerYear": "每年 <amount>{price}</amount>",
+    "plansTitle": "订阅",
+    "packsTitle": "积分包",
+    "packsNote": "一次性购买。积分永不过期。",
+    "costsTitle": "积分能买什么",
+    "costs": {
+      "image": "每张图片 {count} 积分",
+      "chat": "每条 chat 消息 {count} 积分",
+      "video": "视频每秒 {count} 积分起",
+      "signup": "每个新账号赠送 {count} 免费积分"
+    }
+  },
+  "Footer": {
+    "blurb": "极简 SaaS 模板。登录、积分、支付和 AI 都已接好。",
+    "product": "产品",
+    "support": "支持",
+    "legal": "法律",
+    "rights": "© {name}，保留所有权利。"
+  },
+  "Layout": {
+    "skip": "跳到主要内容"
+  },
+  "Dashboard": {
+    "title": "控制台",
+    "loading": "加载中…",
+    "nav": "控制台导航",
+    "groups": {
+      "create": "创作",
+      "account": "账户"
+    },
+    "openMenu": "打开菜单",
+    "signOut": "退出登录",
+    "signedInAs": "当前登录：{email}",
+    "emptyTitle": "这里放你的产品",
+    "emptyBody": "这是应用的主视图。把这个页面换成用户来这里要做的事。",
+    "emptyAction": "打开个人资料",
+    "billing": "积分与账单",
+    "admin": "管理",
+    "adminUsers": "用户",
+    "chat": "AI 对话",
+    "images": "图片生成",
+    "videos": "视频生成",
+    "collapse": "收起侧边栏",
+    "expand": "展开侧边栏",
+    "account": "账户菜单",
+    "plan": "{name} 套餐",
+    "planFree": "免费版",
+    "plans": {
+      "pro": "Pro"
+    },
+    "creditsLeft": "剩余积分",
+    "upgrade": "升级",
+    "manageSubscription": "管理订阅",
+    "profile": "个人资料",
+    "language": "语言",
+    "stats": {
+      "label": "概览",
+      "credits": {
+        "label": "积分",
+        "note": "可用余额"
+      },
+      "chats": {
+        "label": "对话",
+        "note": "已保存的对话"
+      },
+      "images": {
+        "label": "图片",
+        "note": "累计生成"
+      },
+      "videos": {
+        "label": "视频",
+        "note": "累计生成"
+      },
+      "loading": "正在加载数据…"
+    },
+    "imageLibrary": "全部图片",
+    "pages": "分页",
+    "pageOf": "第 {page} 页，共 {pages} 页",
+    "previous": "上一页",
+    "next": "下一页",
+    "videoRap": "双人说唱",
+    "videoLibrary": "全部视频",
+    "adminOrders": "订单",
+    "adminBroadcasts": "群发通知",
+    "examples": "示例",
+    "adminMetrics": "运营指标",
+    "apiKeys": "API 密钥",
+    "feedback": "意见反馈",
+    "adminFeedback": "用户反馈"
+  },
+  "Billing": {
+    "title": "积分与账单",
+    "balance": "积分余额",
+    "credits": "{count} 积分",
+    "selected": "已选",
+    "buyTitle": "购买积分",
+    "buy": "购买",
+    "buyLabel": "以 {price} 购买 {credits}",
+    "disabled": "尚未配置支付。",
+    "checkoutError": "无法发起支付，请重试。",
+    "success": "已收到付款。积分会在一分钟内到账，刷新页面即可查看。",
+    "canceled": "已取消支付，未扣款。",
+    "ordersTitle": "订单",
+    "noOrders": "暂无订单。",
+    "date": "日期",
+    "pack": "积分包",
+    "amount": "金额",
+    "status": "状态",
+    "statuses": {
+      "pending": "待支付",
+      "paid": "已支付",
+      "expired": "已过期",
+      "failed": "支付失败"
+    },
+    "subscription": {
+      "title": "订阅",
+      "interval": "计费周期",
+      "monthly": "月付",
+      "yearly": "年付",
+      "perMonth": "每月 {credits}",
+      "price": "每月 {price}",
+      "pricePerYear": "每年 {price}",
+      "subscribe": "订阅",
+      "subscribeLabel": "以每月 {price} 订阅",
+      "subscribeLabelYearly": "以每年 {price} 订阅",
+      "note": "未用完的积分会累积。可随时取消。",
+      "active": "生效中。",
+      "renewsOn": "将于 {date} 续费。",
+      "endsOn": "将于 {date} 结束，已有积分保留。",
+      "pastDue": "上次扣款失败。请更新银行卡以保留订阅。",
+      "manage": "管理订阅",
+      "portalError": "无法打开订阅管理，请重试。",
+      "checkoutPending": "你已发起一次订阅结账。请完成支付，或半小时后重试。"
+    },
+    "loading": "加载中…",
+    "description": "你的余额、订阅、积分包和积分记录。"
+  },
+  "Admin": {
+    "title": "管理",
+    "usersTitle": "用户",
+    "email": "邮箱",
+    "name": "名称",
+    "noName": "未设置",
+    "joined": "加入时间",
+    "count": "共 {total} 个用户。",
+    "searchLabel": "搜索用户",
+    "searchPlaceholder": "邮箱或姓名",
+    "search": "搜索",
+    "matches": "找到 {total} 个匹配“{query}”的用户。",
+    "noMatch": "没有匹配“{query}”的用户。",
+    "pages": "分页",
+    "pageOf": "第 {page} 页，共 {pages} 页",
+    "previous": "上一页",
+    "next": "下一页",
+    "empty": "还没有用户。",
+    "loading": "加载中…",
+    "credits": "积分",
+    "actions": "操作",
+    "addCredits": "给 {email} 添加积分",
+    "addTitle": "添加积分",
+    "addDescription": "给 <email></email> 添加积分。用户会在积分明细中看到一条“管理员添加”的记录。",
+    "amountLabel": "添加的积分数",
+    "cancel": "取消",
+    "add": "添加",
+    "addError": "添加积分失败，请重试。",
+    "allUsers": "全部用户",
+    "profile": "资料",
+    "verification": "邮箱验证",
+    "verified": "已验证",
+    "unverified": "未验证",
+    "subscription": "订阅",
+    "noSubscription": "没有订阅。",
+    "perMonth": "每月 {credits, number} 积分",
+    "active": "生效中。",
+    "renewsOn": "生效中，{date} 续费。",
+    "endsOn": "已取消，{date} 结束。",
+    "pastDue": "上次扣款失败。",
+    "orders": {
+      "title": "订单",
+      "count": "共 {total, number} 个订单。",
+      "matches": "{total, number} 个订单符合筛选条件。",
+      "searchLabel": "搜索订单",
+      "searchPlaceholder": "邮箱、订单号或会话 ID",
+      "status": "状态",
+      "provider": "支付渠道",
+      "allStatuses": "全部状态",
+      "allProviders": "全部渠道",
+      "filter": "筛选",
+      "clear": "清除筛选",
+      "buyer": "买家",
+      "pack": "积分包",
+      "amount": "金额",
+      "date": "日期",
+      "id": "订单号",
+      "credits": "{count, number} 积分",
+      "empty": "暂无订单。",
+      "noMatch": "没有符合筛选条件的订单。",
+      "statuses": {
+        "pending": "待支付",
+        "paid": "已支付",
+        "expired": "已过期",
+        "failed": "支付失败"
+      },
+      "providers": {
+        "stripe": "Stripe",
+        "waffo": "Waffo Pancake"
+      }
+    },
+    "broadcasts": {
+      "title": "群发通知",
+      "description": "给所有用户或某一个用户发通知。通知出现在用户的铃铛里。",
+      "formTitle": "新通知",
+      "audience": "发送给",
+      "everyone": "所有用户",
+      "oneUser": "一个用户",
+      "email": "用户邮箱",
+      "titleLabel": "标题",
+      "bodyLabel": "内容",
+      "send": "发送",
+      "confirmTitle": "发送这条通知？",
+      "confirmEveryone": "现有的每个用户都会收到。发送后不能撤回。",
+      "confirmOne": "{email} 会收到。发送后不能撤回。",
+      "confirm": "发送",
+      "cancel": "取消",
+      "sent": "已发送给 {count} 个用户。",
+      "error": "通知发送失败，请重试。",
+      "unknownUser": "没有用户使用这个邮箱。",
+      "historyTitle": "已发送的通知",
+      "recipients": "收件人数",
+      "sentBy": "发送人",
+      "date": "时间",
+      "empty": "还没有发送过通知。"
+    },
+    "metrics": {
+      "title": "运营指标",
+      "description": "所选时间段内的运营数据。",
+      "range": "时间段",
+      "days": "{count, plural, =1 {24 小时} other {# 天}}",
+      "cards": {
+        "newUsers": "新用户",
+        "spent": "消耗积分",
+        "bought": "购买积分",
+        "paidOrders": "已支付订单"
+      },
+      "usersTotal": "共 {count, number} 个用户",
+      "refunded": "已退回 {count, number}",
+      "boughtNote": "积分包和订阅，减去已退款的付款",
+      "noRevenue": "无收入",
+      "generations": "生成任务",
+      "kind": "类型",
+      "columns": {
+        "jobs": "任务",
+        "succeeded": "成功",
+        "failed": "失败",
+        "pending": "进行中",
+        "successRate": "成功率",
+        "median": "耗时中位数",
+        "p95": "p95 耗时"
+      },
+      "kinds": {
+        "image": "图片",
+        "video": "视频"
+      },
+      "timingNote": "耗时从提交请求算到文件存储完成，只统计成功的任务。成功率不计进行中的任务。",
+      "failures": {
+        "image": "图片失败原因",
+        "video": "视频失败原因"
+      },
+      "noFailures": {
+        "image": "没有失败的图片。",
+        "video": "没有失败的视频。"
+      }
+    },
+    "feedback": {
+      "title": "用户反馈",
+      "description": "共 {total} 条反馈，按时间倒序显示。",
+      "empty": "暂无用户反馈。",
+      "openImage": "打开图片 {number}",
+      "image": "反馈图片 {number}"
+    }
+  },
+  "Chat": {
+    "title": "AI 对话",
+    "loading": "加载中…",
+    "cost": "每条消息消耗 1 积分。对话会保存到你的账号。",
+    "disabled": "对话功能尚未配置。",
+    "log": "对话内容",
+    "empty": "输入任何问题，开始对话。",
+    "thinking": "思考中…",
+    "noCredits": "你的积分已用完。",
+    "buy": "购买积分",
+    "failed": "出错了，请重试。",
+    "label": "消息",
+    "placeholder": "输入你的问题…",
+    "send": "发送",
+    "list": "对话列表",
+    "newChat": "新对话",
+    "noChats": "还没有保存的对话。",
+    "deleteLabel": "删除“{title}”",
+    "confirmTitle": "删除这个对话？",
+    "confirmDescription": "<title></title>及其全部消息都会被删除，且无法恢复。",
+    "delete": "删除",
+    "cancel": "取消",
+    "deleteError": "删除对话失败，请重试。",
+    "description": "提问，对话会保存到你的账户。"
+  },
+  "Credits": {
+    "balance": "积分余额",
+    "credits": "{count} 积分",
+    "historyTitle": "积分记录",
+    "date": "日期",
+    "reason": "原因",
+    "amount": "积分",
+    "reasons": {
+      "signup": "注册赠送",
+      "purchase": "积分包",
+      "subscription": "订阅",
+      "chat": "AI 对话",
+      "chat refund": "AI 对话退款",
+      "image": "图片生成",
+      "image refund": "图片生成退款",
+      "admin": "管理员添加",
+      "video": "视频生成",
+      "video refund": "视频生成退款",
+      "refunded payment": "付款退款"
+    },
+    "empty": "还没有积分记录。",
+    "limited": "显示最近 {count} 条记录。"
+  },
+  "Images": {
+    "title": "图片生成",
+    "prompt": "提示词",
+    "placeholder": "描述你要的图片，例如：一家有木窗的花店，清晨的光线",
+    "aspect": "宽高比",
+    "generate": "生成（{count} 积分）",
+    "generating": "提交中…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "尚未配置图片生成。",
+    "historyTitle": "我的图片",
+    "empty": "还没有图片。",
+    "pending": "生成中…需要 10 到 30 秒。",
+    "failed": "生成失败，积分已退回。",
+    "download": "下载",
+    "loading": "正在加载图片…",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "blocked": "提示词或图片未通过内容审核。请换一个提示词。",
+      "failed": "生成失败，积分已退回。请重试。"
+    },
+    "description": "用一句描述生成图片。",
+    "libraryTitle": "全部图片",
+    "libraryDescription": "你生成的所有图片，最新的在前。",
+    "generateLink": "生成图片",
+    "detailTitle": "图片详情",
+    "status": "状态",
+    "created": "创建时间",
+    "statuses": {
+      "pending": "生成中",
+      "succeeded": "已完成",
+      "failed": "失败"
+    },
+    "viewAll": "查看全部",
+    "viewFullScreen": "全屏查看",
+    "close": "关闭",
+    "examples": {
+      "flowerShop": {
+        "label": "花店",
+        "prompt": "安静街道上一家有木窗的小花店，清晨柔和的光线，水彩风格"
+      },
+      "product": {
+        "label": "产品图",
+        "prompt": "大理石桌面上的白色陶瓷咖啡杯，影棚灯光，干净背景，产品摄影"
+      },
+      "portrait": {
+        "label": "人像",
+        "prompt": "一位老渔夫的肖像，脸上有风霜的痕迹，黄金时刻的光线，浅景深，85mm 摄影"
+      },
+      "cityNight": {
+        "label": "城市夜景",
+        "prompt": "雨夜的城市街道，霓虹灯倒映在水洼里，电影感，广角镜头"
+      },
+      "poster": {
+        "label": "海报",
+        "prompt": "雪山和湖泊的极简旅行海报，扁平插画，有限的配色"
+      }
+    }
+  },
+  "Videos": {
+    "title": "视频生成",
+    "startImage": "起始图片",
+    "imageHint": "JPEG、PNG 或 WebP，不超过 {size} MB。视频从这张图片开始。",
+    "preview": "起始图片预览",
+    "prompt": "提示词",
+    "placeholder": "描述画面的动作，例如：狐狸转头，跑进森林",
+    "duration": "时长",
+    "seconds": "{count} 秒",
+    "resolution": "分辨率",
+    "generate": "生成（{count} 积分）",
+    "generating": "上传中…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "尚未配置视频生成。",
+    "historyTitle": "我的视频",
+    "empty": "还没有视频。",
+    "pending": "生成中…需要 1 到 5 分钟。",
+    "failed": "生成失败，积分已退回。",
+    "download": "下载",
+    "loading": "正在加载视频…",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "image": "请使用不超过 {size} MB 的 JPEG、PNG 或 WebP 图片。",
+      "imageSize": "请使用每边 {min, number} 到 {max, number} 像素的图片，长边不超过短边的 {ratio} 倍。",
+      "failed": "生成失败，积分已退回。请重试。",
+      "blocked": "提示词或起始图片未通过内容审核。请更换后重试。",
+      "moderation": "暂时无法检查起始图片，没有扣积分。请一分钟后重试。"
+    },
+    "description": "把一张图片变成短视频。",
+    "libraryTitle": "全部视频",
+    "libraryDescription": "你生成的所有视频，最新的在前。",
+    "generateLink": "生成视频",
+    "viewAll": "查看全部",
+    "detailTitle": "视频详情",
+    "spent": "消耗积分",
+    "credits": "{count} 积分",
+    "status": "状态",
+    "created": "创建时间",
+    "statuses": {
+      "pending": "生成中",
+      "succeeded": "已完成",
+      "failed": "失败"
+    },
+    "examples": {
+      "pushIn": {
+        "label": "推近",
+        "prompt": "镜头缓慢推近主体，运动平稳"
+      },
+      "wind": {
+        "label": "微风",
+        "prompt": "微风吹动头发、衣服和树叶，主体保持不动"
+      },
+      "turn": {
+        "label": "转头微笑",
+        "prompt": "人物转向镜头并微笑"
+      },
+      "timeLapse": {
+        "label": "延时",
+        "prompt": "云在天空中飘过，延时摄影，画面光线逐渐变化"
+      },
+      "orbit": {
+        "label": "环绕",
+        "prompt": "镜头围绕主体缓慢旋转，电影感"
+      }
+    }
+  },
+  "RapVideos": {
+    "title": "双人说唱",
+    "description": "上传两张照片、填两个名字，生成一段 15 秒的说唱视频。每人唱一句为他们写的词。",
+    "left": {
+      "photo": "左侧照片",
+      "preview": "左侧照片预览",
+      "name": "左侧名字"
+    },
+    "right": {
+      "photo": "右侧照片",
+      "preview": "右侧照片预览",
+      "name": "右侧名字"
+    },
+    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。",
+    "generate": "生成（{count} 积分）",
+    "generating": "正在写词…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "双人说唱尚未配置。",
+    "historyTitle": "你的视频",
+    "empty": "还没有视频。",
+    "viewAll": "查看全部",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片，名字不超过 {max} 个字符。",
+      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
+      "failed": "生成失败，积分已退回。请重试。",
+      "blocked": "名字或照片未通过内容审核。请换一个。",
+      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    }
+  },
+  "Notifications": {
+    "title": "通知",
+    "description": "图片、视频、付款和积分的进展，最新的在前。",
+    "bellUnread": "通知，{count} 条未读",
+    "markAllRead": "全部标为已读",
+    "viewAll": "查看全部",
+    "loading": "正在加载通知…",
+    "empty": "还没有通知。",
+    "unread": "未读",
+    "refunded": "已退还 {count} 积分。",
+    "types": {
+      "image_succeeded": "图片已生成",
+      "image_failed": "图片生成失败",
+      "video_succeeded": "视频已生成",
+      "video_failed": "视频生成失败",
+      "order_paid": "付款成功",
+      "subscription_paid": "订阅扣款成功",
+      "subscription_past_due": "订阅扣款失败",
+      "subscription_ended": "订阅已结束",
+      "credits_added": "积分已到账"
+    },
+    "added": "已增加 {count} 积分。",
+    "planCredits": "{plan} 套餐：已增加 {count} 积分。",
+    "pastDue": "请更新付款方式，以保留 {plan} 套餐。",
+    "ended": "{plan} 套餐已结束，你的积分会保留。"
+  },
+  "ApiKeys": {
+    "title": "API 密钥",
+    "description": "在你自己的脚本里调用图片和视频 API。每次调用和在应用里一样扣你的积分。",
+    "createTitle": "新建密钥",
+    "name": "名称",
+    "namePlaceholder": "例如：夜间批量任务",
+    "expiry": "有效期",
+    "expiries": {
+      "30": "30 天",
+      "90": "90 天",
+      "365": "1 年",
+      "never": "永不过期"
+    },
+    "create": "创建密钥",
+    "creating": "创建中…",
+    "createdTitle": "现在复制你的密钥",
+    "createdBody": "之后不会再显示。请像密码一样保管。",
+    "copy": "复制",
+    "copied": "已复制",
+    "done": "完成",
+    "listTitle": "我的密钥",
+    "count": "{count} / {max} 个密钥",
+    "empty": "还没有密钥。",
+    "columns": {
+      "name": "名称",
+      "key": "密钥",
+      "created": "创建时间",
+      "lastUsed": "最后使用",
+      "expires": "过期时间",
+      "actions": "操作"
+    },
+    "never": "永不过期",
+    "notUsed": "尚未使用",
+    "expired": "已过期",
+    "revoke": "撤销",
+    "revokeLabel": "撤销 {name}",
+    "revokeTitle": "撤销这个密钥？",
+    "revokeBody": "使用“{name}”的脚本会立即失效。撤销后无法恢复。",
+    "cancel": "取消",
+    "errors": {
+      "tooMany": "你已有 {max} 个密钥，达到上限。请先撤销一个再创建。",
+      "failed": "创建密钥失败。请重试。",
+      "revokeFailed": "撤销密钥失败。请重试。"
+    },
+    "docsTitle": "使用密钥",
+    "docsBody": "把密钥放在 x-api-key 请求头里发送。只有图片和视频接口接受密钥。先提交任务，再查询状态，直到不再是 pending，然后下载结果。"
+  },
+  "Feedback": {
+    "title": "意见反馈",
+    "description": "报告问题或提出改进建议。",
+    "message": "反馈内容",
+    "hint": "最多 {max} 个字符。管理员可以查看反馈内容和你的账户邮箱。",
+    "submit": "提交反馈",
+    "sending": "正在提交…",
+    "sent": "反馈已提交，谢谢。",
+    "error": "反馈提交失败。文本和图片已保留，请重试。",
+    "rateLimited": "提交过于频繁。请等待一分钟后重试。",
+    "unauthorized": "登录已过期。请重新登录后提交反馈。",
+    "images": "图片",
+    "imagesHint": "选择文件，或在反馈框中粘贴图片。支持 JPEG、PNG、WebP，最多 {count} 张，总大小不超过 {mb} MB。",
+    "invalidImages": "文件超过数量或大小限制，或图片格式不受支持。",
+    "removeImage": "移除 {name}",
+    "remove": "移除",
+    "storageDisabled": "图片上传暂不可用。请稍后重试，或仅提交文本。"
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "feedback" ADD COLUMN "images" jsonb DEFAULT '[]'::jsonb NOT NULL;

@@ -1,0 +1,51 @@
+export const metadata = {
+  title: "How to Make an AI Rap Video of Two People from Photos",
+  description: "Turn two photos and two names into a 15-second AI rap video with original lyrics and sound. Steps, photo tips and real results from a test run.",
+  date: "2026-10-14",
+  tags: ["guides", "video"],
+};
+
+You need two photos, one person in each, and the two names. The [Rap duo](/en/videos/rap) page turns them into a 15-second video: both people stand in an orange studio, the left person raps the first line, then the right person takes the mic for the second. The lines are written for their names, and the video has its own beat and vocals. In our test, the video was ready in about five minutes.
+
+## How it works
+
+1. Open **Video generator → Rap duo** in the dashboard.
+2. Upload the **left photo** and the **right photo**. Each is a JPEG, PNG or WebP up to 2 MB.
+3. Type the **left name** and the **right name**, up to 30 characters each.
+4. Select **Generate (75 credits)**. The page writes the two lines, then starts the video.
+5. Wait on the page. The video appears in **Your videos** when it is ready, and you can play or download it there. If generation fails, the credits come back.
+
+Behind the page, Alibaba's **Wan 3.0** reference-to-video model gets both photos in one request. It keeps each face and outfit, places the first photo on the left and the second on the right, and creates the beat, the voices and the lip movement from the prompt. **DeepSeek** writes the two rhyming lines in the page's language, one per name.
+
+## What a real result looks like
+
+We gave the page a head-and-shoulders portrait for the left side and a half-body photo with sunglasses for the right. These four frames are taken at 1, 6.5, 9 and 14.5 seconds of the 720p result:
+
+![Four frames from a 15-second AI rap video: two people in an orange studio with a hanging microphone. The woman on the left raps first, then the man on the right.](/blog/ai-rap-video-two-people/frames.jpg)
+
+- **Faces and outfits stayed the same** for the whole clip, including the earrings, the striped shirt and the sunglasses.
+- **The sides never swapped.** The left photo stayed on the left.
+- **The model filled in what the photos didn't show.** The left photo ended at the shoulders, so the model added matching trousers and sandals.
+- **The camera stayed still.** An earlier test zoomed in and out. Putting "static tripod camera" first in the prompt fixed it.
+- **The microphone was not centered.** The prompt asks for it between the two people, and the model put it closer to the left.
+
+## Choose photos that work
+
+- **One person per photo.** Two faces in one photo can end up mixed.
+- **Face the camera, in good light.** The model copies the face it can see. Sunglasses stay on.
+- **Show more of the body if you can.** A full-body photo keeps the real outfit. A portrait leaves the rest to the model.
+- **Use photos you may use.** Only animate people who agreed to it.
+
+## Why the lyrics are original
+
+Viral rap clips, such as the orange-studio "Hotel Lobby" trend, copy a real song. Real lyrics and beats are copyrighted, so a clip that uses them can be muted or taken down. The Rap duo writes new lines from the names and creates its own beat, so the clip carries no one else's song. If the writer can't produce two clean lines, the page uses fixed lines that still name both people.
+
+## Questions
+
+**How long does it take?** Writing the lines takes a few seconds. The video took 5 minutes 10 seconds in our test. You can leave the page; the video waits in **All videos**.
+
+**What does it cost?** 75 credits for one 15-second 720p video with sound. A failed video is refunded.
+
+**Can I choose the song or the lines?** Not yet. The page writes the lines and the model creates the beat.
+
+**What format is the video?** A 16:9 MP4, 1280×720, 15 seconds, with sound. For TikTok or Reels, crop it to 9:16.

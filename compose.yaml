@@ -1,0 +1,42 @@
+name: starter
+
+services:
+  db:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: starter
+      POSTGRES_PASSWORD: starter
+      POSTGRES_DB: starter
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - db-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U starter -d starter"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  # S3-compatible storage for generated images. Console: http://localhost:9001
+  # MinIO serves each top-level directory as a private bucket, so mkdir
+  # creates the "starter" bucket.
+  storage:
+    image: minio/minio:latest
+    entrypoint: ["sh", "-c", "mkdir -p /data/starter && exec minio server /data --console-address :9001"]
+    environment:
+      MINIO_ROOT_USER: starter
+      MINIO_ROOT_PASSWORD: starter-secret
+    ports:
+      - "${STORAGE_PORT:-9000}:9000"
+      - "${STORAGE_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - storage-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+volumes:
+  db-data:
+  storage-data:

@@ -1,0 +1,1 @@
+CREATE INDEX "video_upload_createdAt_idx" ON "video" USING btree ("created_at") WHERE "video"."image_key" is not null;
