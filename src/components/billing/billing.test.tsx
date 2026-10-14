@@ -122,6 +122,24 @@ test("refreshes after a checkout until the credits arrive", () => {
   expect(refresh).toHaveBeenCalledTimes(1);
 });
 
+test("drops the checkout from the URL once the credits arrive", () => {
+  vi.stubGlobal("location", { ...window.location, href: "http://localhost/en/billing?checkout=success&pack=large" });
+  const replaceState = vi.spyOn(window.history, "replaceState").mockImplementation(() => {});
+  const { rerender } = renderWithIntl(<Billing {...props} checkout="success" />);
+  expect(replaceState).not.toHaveBeenCalled();
+
+  rerender(
+    <NextIntlClientProvider locale="en" messages={en} timeZone="UTC">
+      <Billing {...props} balance={1300} checkout="success" />
+    </NextIntlClientProvider>,
+  );
+
+  expect(String(replaceState.mock.calls[0]?.[2])).toBe("http://localhost/en/billing?pack=large");
+  // The banner stays until the next visit.
+  expect(screen.getByRole("status").textContent).toBe("Payment received. Your credits are here.");
+  replaceState.mockRestore();
+});
+
 test("stops refreshing after a minute", () => {
   vi.useFakeTimers();
   renderWithIntl(<Billing {...props} checkout="success" />);
