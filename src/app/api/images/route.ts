@@ -8,6 +8,7 @@ import {
   InvalidImageRequestError,
 } from "@/server/images";
 import { log } from "@/server/log";
+import { ModerationUnavailableError } from "@/server/moderation";
 
 // Queues one image. Body: { prompt, aspect }. Returns { image }, pending
 // until GET /api/images/<id> collects it.
@@ -29,6 +30,12 @@ export const POST = withSession(async (request, { session }) => {
     if (error instanceof ContentBlockedError) {
       log.info("image.blocked", { userId: session.user.id, reason: error.message });
       return apiError("CONTENT_BLOCKED", 422);
+    }
+    if (error instanceof ModerationUnavailableError) {
+      log.warn("image.moderation_unavailable", { userId: session.user.id });
+      const response = apiError("MODERATION_UNAVAILABLE", 503);
+      response.headers.set("Retry-After", String(error.retryAfter));
+      return response;
     }
     if (error instanceof ImagesDisabledError) {
       return apiError("IMAGES_DISABLED", 503);

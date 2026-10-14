@@ -1,4 +1,4 @@
-import { ContentBlockedError } from "./index";
+import { ContentBlockedError, ModerationUnavailableError } from "./index";
 
 // SeeAPI's NSFW filter: an async task that downloads the image from a URL,
 // so the image must be in a bucket reachable from the internet.
@@ -6,7 +6,7 @@ import { ContentBlockedError } from "./index";
 const BASE_URL = "https://api.seeapi.com/v1";
 
 // The check couldn't give a verdict. Uploads are refused until it can.
-export class ModerationUnavailableError extends Error {}
+export { ModerationUnavailableError } from "./index";
 
 type Inference = {
   id?: string;

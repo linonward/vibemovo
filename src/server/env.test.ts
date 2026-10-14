@@ -371,3 +371,13 @@ test("requireEnv returns a set variable and names a missing one", () => {
   expect(() => requireEnv("STRIPE_SECRET_KEY")).toThrow("STRIPE_SECRET_KEY is not set");
   vi.unstubAllEnvs();
 });
+
+
+test("Waffo prompt screening requires both signing credentials", () => {
+  expect(validateEnv({ ...base, PROMPT_MODERATION: "waffo" })).toEqual([
+    "WAFFO_MERCHANT_ID: required when PROMPT_MODERATION is waffo",
+    "WAFFO_PRIVATE_KEY: required when PROMPT_MODERATION is waffo",
+  ]);
+  expect(validateEnv({ ...base, ...waffo, PROMPT_MODERATION: "waffo" })).toEqual([]);
+  expect(validateEnv({ ...base, PROMPT_MODERATION: "invalid" })).toContain("PROMPT_MODERATION: must be waffo, or empty");
+});

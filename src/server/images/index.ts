@@ -3,7 +3,8 @@ import { eq } from "drizzle-orm";
 import { dashscopeConfigured, ImageGenerationError, imageResult, submitImage } from "@/server/ai/dashscope";
 import { getDb } from "@/server/db";
 import { lifecycle } from "@/server/generations";
-import { checkPrompt, ContentBlockedError } from "@/server/moderation";
+import { ContentBlockedError } from "@/server/moderation";
+import { screenPrompt } from "@/server/moderation/prompt";
 import { signedUrl, storageConfigured } from "@/server/storage";
 import {
   IMAGE_ASPECTS,
@@ -76,7 +77,7 @@ export async function createImage(input: {
   }
   if (!isAspect(input.aspect)) throw new InvalidImageRequestError(`Unknown aspect: ${input.aspect}`);
   if (!imagesEnabled()) throw new ImagesDisabledError();
-  checkPrompt(prompt);
+  await screenPrompt(prompt);
 
   const { userId, aspect } = input;
   const id = randomUUID();

@@ -3,6 +3,13 @@ import { BLOCKED_TERMS } from "./blocklist";
 // A prompt matched the blocklist, or the provider's own moderation refused it.
 export class ContentBlockedError extends Error {}
 
+// No safe verdict is available. Generation must stop before spending credits.
+export class ModerationUnavailableError extends Error {
+  constructor(message: string, options?: ErrorOptions, readonly retryAfter = 60) {
+    super(message, options);
+  }
+}
+
 const ZERO_WIDTH = /[​-‍⁠﻿]/g;
 
 // Folds the tricks that hide a term: full-width letters (NFKC), case,

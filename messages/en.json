@@ -659,7 +659,8 @@
     "errors": {
       "credits": "Not enough credits. Buy more on the Credits & billing page.",
       "blocked": "The prompt or image was blocked by content moderation. Try a different prompt.",
-      "failed": "Generation failed. The credit was refunded. Try again."
+      "failed": "Generation failed. The credit was refunded. Try again.",
+      "moderation": "The prompt couldn't be approved right now. No credits were spent. Try again later."
     },
     "description": "Turn a prompt into an image.",
     "libraryTitle": "All images",
@@ -726,7 +727,7 @@
       "imageSize": "Use an image {min, number} to {max, number} pixels on each side, with the long side at most {ratio} times the short side.",
       "failed": "Generation failed. The credits were refunded. Try again.",
       "blocked": "The prompt or start image was blocked by content moderation. Try a different one.",
-      "moderation": "The start image couldn't be checked right now. No credits were spent. Try again in a minute."
+      "moderation": "The prompt or start image couldn't be approved right now. No credits were spent. Try again later."
     },
     "description": "Turn an image into a short video.",
     "libraryTitle": "All videos",

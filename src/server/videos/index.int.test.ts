@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { generateKeyPairSync, randomUUID } from "node:crypto";
 import { asc, eq, like } from "drizzle-orm";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import type { ReferenceVideoJob, VideoJob, VideoProviderId, VideoResult } from "@/server/ai/video";
@@ -817,4 +817,33 @@ test("an upload that can't be deleted keeps its key, so a later run retries", as
   storage.deleteObject.mockImplementation(async () => {});
   await expireAll();
   expect(await imageKeyOf(id)).toBeNull();
+});
+
+
+test.each(["block", "review", "allow"])("Waffo prompt verdict %s gates generation before spending", async (action) => {
+  const { privateKey } = generateKeyPairSync("rsa", {
+    modulusLength: 2048,
+    privateKeyEncoding: { type: "pkcs8", format: "pem" },
+    publicKeyEncoding: { type: "spki", format: "pem" },
+  });
+  vi.stubEnv("PROMPT_MODERATION", "waffo");
+  vi.stubEnv("WAFFO_MERCHANT_ID", "MER_2aUyqjCzEIiEcYMKj7TZtw");
+  vi.stubEnv("WAFFO_PRIVATE_KEY", privateKey);
+  const before = await getBalance(userId);
+  vi.stubGlobal("fetch", vi.fn(async () => {
+    expect(await getBalance(userId)).toBe(before);
+    expect(await rows()).toEqual([]);
+    return new Response(JSON.stringify({ data: { action } }));
+  }));
+  const pending = create();
+  if (action === "allow") {
+    await expect(pending).resolves.toMatchObject({ status: "pending" });
+    expect(await getBalance(userId)).toBeLessThan(before);
+  } else {
+    await expect(pending).rejects.toThrow();
+    expect(await getBalance(userId)).toBe(before);
+    expect(await rows()).toEqual([]);
+    expect(storage.putObject).not.toHaveBeenCalled();
+    expect(seeapi.submit).not.toHaveBeenCalled();
+  }
 });
