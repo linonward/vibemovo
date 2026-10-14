@@ -12,6 +12,7 @@ export function Footer() {
   const legal = useTranslations("Legal");
   const pricing = useTranslations("Pricing");
   const blog = useTranslations("Blog");
+  const rap = useTranslations("RapLanding");
 
   return (
     <footer className="border-t">
@@ -28,6 +29,11 @@ export function Footer() {
             <li>
               <Link href="/pricing" className={LINK}>
                 {pricing("title")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/ai-rap-video-generator" className={LINK}>
+                {rap("nav")}
               </Link>
             </li>
             <li>

@@ -32,10 +32,12 @@ export async function GET() {
     const legal = await getTranslations({ locale, namespace: "Legal" });
     const pricing = await getTranslations({ locale, namespace: "Pricing" });
     const blog = await getTranslations({ locale, namespace: "Blog" });
+    const rap = await getTranslations({ locale, namespace: "RapLanding" });
     return [
       `- [${projectConfig.name}](${url(`/${locale}`)}): ${home("hero.title")}`,
       ...LEGAL_DOCS.map((doc) => `- [${legal(doc)}](${url(`/${locale}/${doc}`)})`),
       `- [${pricing("title")}](${url(`/${locale}/pricing`)}): ${pricing("description")}`,
+      `- [${rap("title")}](${url(`/${locale}/ai-rap-video-generator`)}): ${rap("description")}`,
       `- [${blog("title")}](${url(`/${locale}/blog`)}): ${blog("description")}`,
       ...(await listPosts(locale)).map(
         (post) => `- [${post.title}](${url(`/${locale}/blog/${post.slug}`)}): ${post.description}`,

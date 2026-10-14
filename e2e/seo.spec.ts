@@ -9,7 +9,7 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
   expect(response.status()).toBe(200);
   const xml = await response.text();
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/blog", "/blog/welcome"];
+  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/blog", "/blog/welcome"];
   expect(locs.sort()).toEqual(
     [
       ...pages.flatMap((page) => [`${baseURL}/en${page}`, `${baseURL}/zh${page}`]),
@@ -88,8 +88,8 @@ test("the blog index names its canonical URL and every locale", async ({ page, b
   await expect(head.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute("href", `${baseURL}/en/blog`);
 });
 
-test("the home and legal pages name their canonical URL and every locale", async ({ page, baseURL }) => {
-  for (const path of ["", "/privacy", "/terms", "/refund"]) {
+test("the home, legal and rap video pages name their canonical URL and every locale", async ({ page, baseURL }) => {
+  for (const path of ["", "/privacy", "/terms", "/refund", "/ai-rap-video-generator"]) {
     await page.goto(`/zh${path}`);
 
     const head = page.locator("head");
@@ -113,13 +113,15 @@ test("responses carry no hreflang Link header", async ({ request }) => {
 });
 
 // Each page's own summary, not the site's: search results show it under the title.
-test("the legal, sign-in and tag pages describe themselves", async ({ page }) => {
+test("the legal, sign-in, tag and rap video pages describe themselves", async ({ page }) => {
   const descriptions = {
     "/en/privacy": "How vibemovo collects, uses, shares and protects your personal information.",
     "/zh/terms": "使用 vibemovo 的条款：你的账户、可接受的使用、你的内容和付款。",
     "/en/refund": "When vibemovo refunds a purchase, and how to ask for a refund.",
     "/en/sign-in": "No password to remember. We email you a link, or you continue with Google.",
     "/en/blog/tags/guides": "Every post tagged “guides”, newest first.",
+    "/en/ai-rap-video-generator":
+      "Turn two photos and two names into a 15-second rap video. vibemovo writes the lyrics and makes the beat, the vocals and the lip sync.",
   };
   for (const [path, description] of Object.entries(descriptions)) {
     await page.goto(path);
@@ -174,6 +176,7 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   expect(text).toContain(`- [Privacy Policy](${baseURL}/en/privacy)`);
   expect(text).toContain(`- [隐私政策](${baseURL}/zh/privacy)`);
   expect(text).toContain(`- [Pricing](${baseURL}/en/pricing): Pay with credits`);
+  expect(text).toContain(`- [AI Rap Video Generator from Photos](${baseURL}/en/ai-rap-video-generator): Turn two photos`);
   expect(text).toContain(`- [Blog](${baseURL}/en/blog): `);
   expect(text).toContain(`](${baseURL}/en/blog/welcome): `);
   expect(text).toContain(`](${baseURL}/zh/blog/welcome): `);
