@@ -15,6 +15,7 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
       ...pages.flatMap((page) => [`${baseURL}/en${page}`, `${baseURL}/zh${page}`]),
       // English only, so no Chinese entry.
       `${baseURL}/en/blog/ai-rap-video-two-people`,
+      `${baseURL}/en/blog/migos-ai-song-video-generator`,
       `${baseURL}/en/blog/photo-to-video-ai`,
     ].sort(),
   );
