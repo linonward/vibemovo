@@ -12,7 +12,7 @@ test("renders Chinese under /zh", async ({ page }) => {
 
   await expect(page.locator("html")).toHaveAttribute("lang", "zh");
   await expect(page.getByRole("heading", { name: "登录" })).toBeVisible();
-  await expect(page).toHaveTitle("登录 · starter");
+  await expect(page).toHaveTitle("登录 · vibemovo");
 });
 
 test("switches language and keeps the page", async ({ page }) => {

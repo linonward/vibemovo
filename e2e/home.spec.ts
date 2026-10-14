@@ -4,10 +4,10 @@ import { signIn } from "./support/auth";
 test("hero states the value and leads to sign-in", async ({ page }) => {
   await page.goto("/en");
 
-  await expect(page).toHaveTitle("starter – Next.js SaaS starter with AI, credits and payments");
+  await expect(page).toHaveTitle("vibemovo – AI image and video generator");
   await expect(page.locator('head meta[name="description"]')).toHaveAttribute(
     "content",
-    "A Next.js SaaS starter with passwordless sign-in, credits, Stripe or Waffo payments, AI chat, images and video, an admin area, and English and Chinese.",
+    "Turn a prompt into an image and an image into a video. vibemovo makes AI images, image-to-video clips and rap duo videos. New accounts start with free credits.",
   );
   await expect(
     page.getByRole("heading", {

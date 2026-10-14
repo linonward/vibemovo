@@ -1,8 +1,8 @@
 {
   "Metadata": {
-    "title": "starter",
-    "homeTitle": "starter – 自带 AI、积分和支付的 Next.js SaaS 模板",
-    "description": "Next.js SaaS 模板：免密码登录、积分、Stripe 或 Waffo 支付、AI 对话、图片和视频生成、管理后台，支持中英双语。"
+    "title": "vibemovo",
+    "homeTitle": "vibemovo – AI 图像与视频生成",
+    "description": "输入提示词生成图片，再把图片变成视频。vibemovo 支持 AI 生图、图生视频和说唱双人视频，新账号自带免费积分。"
   },
   "Home": {
     "hero": {
@@ -229,7 +229,7 @@
     }
   },
   "Footer": {
-    "blurb": "极简 SaaS 模板。登录、积分、支付和 AI 都已接好。",
+    "blurb": "提示词出图，图片成片。新账号自带免费积分。",
     "product": "产品",
     "support": "支持",
     "legal": "法律",

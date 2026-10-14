@@ -15,8 +15,8 @@ Never commit to `main`. Create a worktree per slice:
 
 ```sh
 git switch main && git pull --ff-only
-git worktree add ../starter-<topic> -b <type>/<topic>   # e.g. feat/login-form
-cd ../starter-<topic>
+git worktree add ../vibemovo-<topic> -b <type>/<topic>   # e.g. feat/login-form
+cd ../vibemovo-<topic>
 ```
 
 ## 3. TDD
@@ -51,11 +51,11 @@ CI ([`.github/workflows/ci.yml`](../.github/workflows/ci.yml)) runs lint, typech
 
 ## 6. Merge and clean up
 
-Run from the main checkout (`starter/`), after the PR is approved and checks pass:
+Run from the main checkout (`vibemovo/`), after the PR is approved and checks pass:
 
 ```sh
 gh pr merge <PR> --squash
-git worktree remove ../starter-<topic>
+git worktree remove ../vibemovo-<topic>
 git branch -D <type>/<topic>              # squash merges need -D
 git push origin --delete <type>/<topic>   # skip if already deleted
 git switch main && git pull --ff-only

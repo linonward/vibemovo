@@ -28,9 +28,9 @@ test("groups support and legal links under headings", () => {
 test("shows the brand, a blurb, the copyright and the theme switch", () => {
   renderWithIntl(<Footer />);
 
-  expect(screen.getByRole("link", { name: "starter" }).getAttribute("href")).toBe("/en");
-  expect(screen.getByText(/Sign-in, credits, payments and AI/)).toBeDefined();
-  expect(screen.getByText("© starter. All rights reserved.")).toBeDefined();
+  expect(screen.getByRole("link", { name: "vibemovo" }).getAttribute("href")).toBe("/en");
+  expect(screen.getByText(/Prompt to image, image to video/)).toBeDefined();
+  expect(screen.getByText("© vibemovo. All rights reserved.")).toBeDefined();
   expect(screen.getByRole("group", { name: "Theme" })).toBeDefined();
 });
 
@@ -38,5 +38,5 @@ test("is translated", () => {
   renderWithIntl(<Footer />, "zh");
 
   expect(screen.getByRole("navigation", { name: "支持" })).toBeDefined();
-  expect(screen.getByText("© starter，保留所有权利。")).toBeDefined();
+  expect(screen.getByText("© vibemovo，保留所有权利。")).toBeDefined();
 });
