@@ -10,7 +10,7 @@ const pages = [
 ];
 
 for (const { path, heading } of pages) {
-  test(`${path} renders the ${heading} template`, async ({ page }) => {
+  test(`${path} renders the ${heading}`, async ({ page }) => {
     await page.goto(path);
 
     await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
@@ -18,6 +18,7 @@ for (const { path, heading } of pages) {
     await expect(
       page.getByRole("main").getByRole("link", { name: "support@vibemovo.com" }),
     ).toHaveAttribute("href", "mailto:support@vibemovo.com");
+    await expect(page.getByRole("note")).toHaveCount(0);
   });
 }
 
@@ -38,7 +39,6 @@ test("legal pages share the visual system", async ({ page }) => {
     "font-family",
     /Martian Mono/,
   );
-  await expect(page.getByRole("note").locator("svg.lucide")).toBeVisible();
 });
 
 test("document nav marks the current page and switches documents", async ({
