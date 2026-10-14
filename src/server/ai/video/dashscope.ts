@@ -8,9 +8,9 @@ import {
 } from "./types";
 
 // Alibaba Cloud Model Studio (Bailian / DashScope) image-to-video with Wan
-// 2.7, as an async task. The start image goes as a data URI, so Bailian never
-// needs to reach the bucket. Wan 2.7 adds its own audio and has no silent
-// option. Bailian keeps the result for 24 hours, so callers copy it.
+// 2.7, as an async task. The start image goes as a signed URL, so submission
+// stays small even for multi-megabyte photos. Wan 2.7 adds its own audio
+// and has no silent option. Bailian keeps results for 24 hours, so callers copy them.
 // https://help.aliyun.com/zh/model-studio/image-to-video-general-api-reference
 // Reference-to-video uses Wan 3.0, polled the same way.
 // https://help.aliyun.com/zh/model-studio/wan3-video-generation-api-reference
@@ -49,7 +49,7 @@ async function call(path: string, init: RequestInit & { headers?: Record<string,
 async function submit(job: VideoJob): Promise<string> {
   return createTask({
     model: process.env.DASHSCOPE_VIDEO_MODEL || DEFAULT_MODEL,
-    input: { prompt: job.prompt, media: [{ type: "first_frame", url: dataUri(job.image) }] },
+    input: { prompt: job.prompt, media: [{ type: "first_frame", url: job.image.url }] },
     // Bailian spells resolutions "720P".
     parameters: {
       resolution: job.resolution.toUpperCase(),
@@ -67,7 +67,7 @@ export function submitReferenceVideo(job: ReferenceVideoJob): Promise<string> {
     model: REFERENCE_MODEL,
     input: {
       prompt: job.prompt,
-      media: job.images.map((image) => ({ type: "reference_image", url: dataUri(image) })),
+      media: job.images.map((image) => ({ type: "reference_image", url: image.url })),
     },
     parameters: {
       resolution: job.resolution.toUpperCase(),
@@ -78,10 +78,6 @@ export function submitReferenceVideo(job: ReferenceVideoJob): Promise<string> {
       watermark: false,
     },
   });
-}
-
-function dataUri(image: { bytes: Uint8Array; mime: string }) {
-  return `data:${image.mime};base64,${Buffer.from(image.bytes).toString("base64")}`;
 }
 
 async function createTask(body: object): Promise<string> {

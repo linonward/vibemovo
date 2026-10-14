@@ -28,7 +28,7 @@ const job: VideoJob = {
 
 const task = (output: object) => json({ request_id: "req-1", output: { task_id: "task-1", ...output } });
 
-test("creates an async wan2.7 first-frame task from a data URI", async () => {
+test("creates an async wan2.7 first-frame task from a signed URL", async () => {
   fetchMock.mockResolvedValueOnce(task({ task_status: "PENDING" }));
 
   expect(await dashscopeVideoProvider.submit(job)).toBe("task-1");
@@ -44,7 +44,7 @@ test("creates an async wan2.7 first-frame task from a data URI", async () => {
     model: "wan2.7-i2v-2026-04-25",
     input: {
       prompt: "The fox runs",
-      media: [{ type: "first_frame", url: "data:image/png;base64,AQID" }],
+      media: [{ type: "first_frame", url: job.image.url }],
     },
     parameters: { resolution: "720P", duration: 10, prompt_extend: true, watermark: false },
   });
@@ -123,8 +123,8 @@ test("throws when Bailian can't be reached, so the caller retries later", async 
 const reference: ReferenceVideoJob = {
   prompt: "图1 raps, then 图2 raps",
   images: [
-    { bytes: new Uint8Array([1, 2, 3]), mime: "image/jpeg" },
-    { bytes: new Uint8Array([4, 5, 6]), mime: "image/png" },
+    { bytes: new Uint8Array([1, 2, 3]), mime: "image/jpeg", url: "https://storage.test/left.jpg?signed" },
+    { bytes: new Uint8Array([4, 5, 6]), mime: "image/png", url: "https://storage.test/right.png?signed" },
   ],
   duration: 15,
   resolution: "720p",
@@ -146,8 +146,8 @@ test("creates a wan3.0 reference-to-video task with audio, the images in order",
     input: {
       prompt: "图1 raps, then 图2 raps",
       media: [
-        { type: "reference_image", url: "data:image/jpeg;base64,AQID" },
-        { type: "reference_image", url: "data:image/png;base64,BAUG" },
+        { type: "reference_image", url: reference.images[0].url },
+        { type: "reference_image", url: reference.images[1].url },
       ],
     },
     parameters: {

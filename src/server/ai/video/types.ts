@@ -29,7 +29,7 @@ export type VideoJob = {
 // 图1, 图2, ... in this order.
 export type ReferenceVideoJob = {
   prompt: string;
-  images: { bytes: Uint8Array; mime: string }[];
+  images: { bytes: Uint8Array; mime: string; url: string }[];
   // Seconds.
   duration: number;
   resolution: string;
