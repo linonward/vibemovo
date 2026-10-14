@@ -69,7 +69,7 @@ test("the home page names the site and its publisher", async ({ page, baseURL })
       "@type": "WebSite",
       name: "vibemovo",
       inLanguage: "zh",
-      url: `${baseURL}/zh`,
+      url: `${baseURL}/`,
       description: await page.locator('head meta[name="description"]').getAttribute("content"),
     }),
   ]);
@@ -221,5 +221,14 @@ test("a post shares a preview image of its own", async ({ page, request, baseURL
     const response = await request.get(image!);
     expect(response.status(), image!).toBe(200);
     expect(response.headers()["content-type"]).toBe("image/png");
+  }
+});
+
+test("home pages identify the same site in social metadata", async ({ page, baseURL }) => {
+  for (const locale of ["en", "zh"]) {
+    await page.goto(`/${locale}`);
+    await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute("content", "vibemovo");
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute("content", `${baseURL}/${locale}`);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute("content", await page.title());
   }
 });

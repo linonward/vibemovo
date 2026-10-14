@@ -1,4 +1,5 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
+import { projectConfig } from "project.config";
 import { useLocale, useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { Cta } from "@/components/home/cta";
@@ -12,11 +13,23 @@ import { jsonLd, languageAlternates, website } from "@/lib/seo";
 
 // The description comes from the locale layout. The title says what the site
 // is next to its name: the layout's template would only add the name again.
-export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: PageProps<"/[locale]">,
+  parent: ResolvingMetadata,
+): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("Metadata");
   return {
     title: { absolute: t("homeTitle") },
+    openGraph: {
+      // Keep the layout's generated preview image when extending Open Graph.
+      images: (await parent).openGraph?.images,
+      type: "website",
+      siteName: projectConfig.name,
+      title: t("homeTitle"),
+      description: t("description"),
+      url: `/${locale}`,
+    },
     alternates: { canonical: `/${locale}`, languages: languageAlternates("") },
   };
 }

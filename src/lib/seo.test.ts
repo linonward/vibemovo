@@ -54,7 +54,7 @@ test("names the site and its publisher for the home page", () => {
         name: "vibemovo",
         description: "What it does.",
         inLanguage: "zh",
-        url: "https://x.test/zh",
+        url: "https://x.test/",
         publisher: { "@id": "https://x.test/#organization" },
       },
     ],
