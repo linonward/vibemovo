@@ -7,7 +7,7 @@ test("signed-out visitors see the plan, the packs and what credits buy", async (
   expect(response?.status()).toBe(200);
   await expect(page).toHaveURL("/en/pricing");
   await expect(page.getByRole("heading", { level: 1, name: "Pricing" })).toBeVisible();
-  await expect(page).toHaveTitle("Pricing · starter");
+  await expect(page).toHaveTitle("Pricing · vibemovo");
   const main = page.getByRole("main");
   await expect(main).toContainText("$10.00 per month");
   await expect(main).toContainText("300 credits every month");

@@ -16,7 +16,7 @@ Instructions for AI coding agents working in this repository.
 
 ## Workflow
 
-Follow [`docs/workflow.md`](docs/workflow.md): slice → worktree `../starter-<topic>` → TDD → verify → rebase → PR from template → `gh pr merge --squash` → clean up and sync `main`.
+Follow [`docs/workflow.md`](docs/workflow.md): slice → worktree `../vibemovo-<topic>` → TDD → verify → rebase → PR from template → `gh pr merge --squash` → clean up and sync `main`.
 
 ## Commands
 

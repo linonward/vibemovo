@@ -2,7 +2,7 @@
 // Client components import this file, so everything here ships to the
 // browser. Admin emails live in ADMIN_EMAILS.
 export const projectConfig = {
-  name: "starter",
+  name: "vibemovo",
   supportEmail: "support@example.com",
 } as const satisfies {
   name: string;

@@ -67,10 +67,10 @@ test("the home page names the site and its publisher", async ({ page, baseURL })
 
   const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
   expect(data["@graph"]).toEqual([
-    expect.objectContaining({ "@type": "Organization", name: "starter", url: `${baseURL}/` }),
+    expect.objectContaining({ "@type": "Organization", name: "vibemovo", url: `${baseURL}/` }),
     expect.objectContaining({
       "@type": "WebSite",
-      name: "starter",
+      name: "vibemovo",
       inLanguage: "zh",
       url: `${baseURL}/zh`,
       description: await page.locator('head meta[name="description"]').getAttribute("content"),
@@ -114,9 +114,9 @@ test("responses carry no hreflang Link header", async ({ request }) => {
 // Each page's own summary, not the site's: search results show it under the title.
 test("the legal, sign-in and tag pages describe themselves", async ({ page }) => {
   const descriptions = {
-    "/en/privacy": "How starter collects, uses, shares and protects your personal information.",
-    "/zh/terms": "使用 starter 的条款：你的账户、可接受的使用、你的内容和付款。",
-    "/en/refund": "When starter refunds a purchase, and how to ask for a refund.",
+    "/en/privacy": "How vibemovo collects, uses, shares and protects your personal information.",
+    "/zh/terms": "使用 vibemovo 的条款：你的账户、可接受的使用、你的内容和付款。",
+    "/en/refund": "When vibemovo refunds a purchase, and how to ask for a refund.",
     "/en/sign-in": "No password to remember. We email you a link, or you continue with Google.",
     "/en/blog/tags/guides": "Every post tagged “guides”, newest first.",
   };
@@ -151,9 +151,9 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   expect(response.headers()["content-type"]).toBe("text/markdown; charset=utf-8");
   const text = await response.text();
   const lines = text.split("\n");
-  expect(lines[0]).toBe("# starter");
+  expect(lines[0]).toBe("# vibemovo");
   expect(lines[2]).toBe(
-    "> A Next.js SaaS starter with passwordless sign-in, credits, Stripe or Waffo payments, AI chat, images and video, an admin area, and English and Chinese.",
+    "> Turn a prompt into an image and an image into a video. vibemovo makes AI images, image-to-video clips and rap duo videos. New accounts start with free credits.",
   );
   expect(text).toContain("- Sign in without passwords: Magic links by email");
   expect(text).toContain("- AI chat, images and video: Chat with DeepSeek");
