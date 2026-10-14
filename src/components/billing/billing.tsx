@@ -3,6 +3,7 @@
 import { CreditCard } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { useCreditBalance } from "@/components/dashboard/credits";
 import { CreditTransactions, type Transaction } from "@/components/credits/credit-transactions";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -37,7 +38,7 @@ export type BillingProps = {
 };
 
 export function Billing({
-  balance,
+  balance: initialBalance,
   packs,
   orders,
   transactions,
@@ -46,6 +47,7 @@ export function Billing({
   selected,
   subscription,
 }: BillingProps) {
+  const { balance } = useCreditBalance(initialBalance);
   const t = useTranslations("Billing");
   const format = useFormatter();
   const locale = useLocale();

@@ -50,7 +50,7 @@ Every page sits under `src/app/[locale]/`. Locales are `en` (default) and `zh`; 
 3. Start the page with `<PageHeader title description />`.
 4. Read the request (`headers()`, the session, `searchParams`) in a child inside the page's own `<Suspense>`, with static content outside it. The layout stays mounted on client navigation, so without that boundary navigation blocks and `next dev` reports `uncached data during prerendering or a navigation`. Use `<PageSkeleton />` (`<PageSkeleton header />` if the header waits too) as the fallback, `ListSkeleton` on admin lists. See `dashboard/page.tsx` and `billing/page.tsx`.
 
-The layout reads the credit balance once for the sidebar's account menu. A page that spends or refunds credits calls `useCredits()?.adjust(delta)` (`src/components/dashboard/credits.tsx`) to keep it current; `router.refresh()` also re-reads it.
+The layout reads the credit balance once for the sidebar's account menu. Generation forms and billing read `useCreditBalance(initialBalance)` so prefetched or preserved page props cannot restore an old balance. A page that spends or refunds credits calls `useCredits()?.adjust(delta)` (`src/components/dashboard/credits.tsx`) to keep it current; `router.refresh()` also re-reads it.
 
 API routes answer errors with `apiError(code, status)` and type success bodies with `satisfies` against `src/lib/api.ts`. Components read them as `ApiBody<...>` and key messages by `ApiErrorCode`, so a renamed field or code fails `pnpm typecheck`. Add a new code to `ApiErrorCode` first.
 
