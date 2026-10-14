@@ -273,6 +273,15 @@ test("throws one error that lists every problem and no values", () => {
   expect(() => assertValidEnv(base)).not.toThrow();
 });
 
+test("checks INDEXNOW_KEY is 8-128 letters, digits or hyphens", () => {
+  expect(validateEnv({ ...base, INDEXNOW_KEY: "0123456789abcdef-XYZ" })).toEqual([]);
+  for (const key of ["short", "has spaces in it", "k".repeat(129)]) {
+    expect(validateEnv({ ...base, INDEXNOW_KEY: key })).toEqual([
+      "INDEXNOW_KEY: must be 8-128 letters, digits or hyphens",
+    ]);
+  }
+});
+
 test("checks CLIENT_IP_HEADER is a header name", () => {
   expect(validateEnv({ ...base, CLIENT_IP_HEADER: "cf-connecting-ip" })).toEqual([]);
   expect(validateEnv({ ...base, CLIENT_IP_HEADER: "cf-connecting-ip, x-forwarded-for" })).toEqual([

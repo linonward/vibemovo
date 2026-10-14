@@ -16,6 +16,7 @@ const schema = z.object({
   BETTER_AUTH_SECRET: z.string(required).min(32, "must be at least 32 characters"),
   BETTER_AUTH_URL: z.string(required).pipe(httpUrl),
   CRON_SECRET: optional(z.string().min(32, "must be at least 32 characters")),
+  INDEXNOW_KEY: optional(z.string().regex(/^[A-Za-z0-9-]{8,128}$/, "must be 8-128 letters, digits or hyphens")),
   CLIENT_IP_HEADER: optional(z.string().trim().regex(/^[A-Za-z0-9-]+$/, "must be one header name")),
   ADMIN_EMAILS: optional(
     z.string().refine(
