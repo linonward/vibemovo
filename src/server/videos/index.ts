@@ -14,6 +14,7 @@ import { videoFailedEmail, videoReadyEmail } from "@/server/email/templates/vide
 import { lifecycle } from "@/server/generations";
 import { log } from "@/server/log";
 import { checkPrompt, ContentBlockedError } from "@/server/moderation";
+import { screenPrompt } from "@/server/moderation/prompt";
 import { checkImage, imageModerationEnabled, ModerationUnavailableError } from "@/server/moderation/image";
 import { deleteObject, putObject, signedUrl, storageConfigured } from "@/server/storage";
 import {
@@ -146,10 +147,10 @@ export async function createVideo(input: {
   const provider = getActiveVideoProvider();
   if (!provider || !storageConfigured()) throw new VideosDisabledError();
   assertImageSize(input.image, VIDEO_IMAGE_LIMITS[provider.id]);
-  checkPrompt(prompt);
   const { userId, duration, resolution } = input;
   const credits = videoCost(provider.id, resolution, duration);
   if (credits === null) throw new InvalidVideoRequestError(`Unknown resolution: ${resolution}`);
+  await screenPrompt(prompt);
 
   const id = randomUUID();
   const imageKey = videos.fileKey(userId, id, type.ext);

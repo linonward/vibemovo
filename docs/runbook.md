@@ -79,6 +79,7 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `VIDEO_PROVIDER`     | No                | `fal`, `seeapi` or `dashscope`. Empty turns video generation off |
 | `FAL_KEY`            | With fal          | fal API key                                                   |
 | `SEEAPI_API_KEY`     | With SeeAPI       | SeeAPI API key                                                |
+| `PROMPT_MODERATION` | No | `waffo` screens image/video prompts before spending credits; empty uses only the local blocklist. Requires `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY` |
 | `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and rap duo photos with SeeAPI's NSFW filter. Empty turns the check off |
 | `STORAGE_ENDPOINT`   | No                | S3-compatible endpoint. Empty means AWS S3                    |
 | `STORAGE_REGION`     | No                | Region for request signing. Default `auto`                    |
@@ -96,6 +97,7 @@ The server checks these variables when it starts (`src/server/env.ts`, run from 
 - The three storage keys when `DASHSCOPE_API_KEY`, `VIDEO_PROVIDER` or any of them is set.
 - The key of the chosen `VIDEO_PROVIDER`.
 - `SEEAPI_API_KEY` with `IMAGE_MODERATION=seeapi`.
+- `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY` with `PROMPT_MODERATION=waffo`.
 
 In production it also requires:
 
@@ -304,6 +306,14 @@ Image and video prompts are checked against a blocklist before they spend credit
   - No verdict within 30 seconds, or an error from SeeAPI, returns 503 `MODERATION_UNAVAILABLE` and logs `video.moderation_failed`. The upload is refused (fail closed); nothing is spent.
   - Either way the stored image is deleted.
 - Without `IMAGE_MODERATION`, start images aren't checked. The providers' own moderation still blocks what they refuse at submission: Bailian for image prompts, fal and Bailian for videos (also 422 `CONTENT_BLOCKED`, with a refund). The app maps no SeeAPI refusal to `CONTENT_BLOCKED`, so turn `IMAGE_MODERATION` on with `VIDEO_PROVIDER=seeapi`.
+
+### Waffo prompt screening
+
+Set `PROMPT_MODERATION=waffo` and the existing `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY` signing credentials, then restart. This setting is independent of `PAYMENT_PROVIDER`. An empty value disables the remote check; the local blocklist still applies. Set it explicitly in production to enable this protection.
+
+Text-to-image and image-to-video prompts pass the local blocklist and then Waffo's [Scan Prompt API](https://docs.waffo.ai/api-reference/endpoints/content-safety/scan-prompt), with `semantic: enforce`, before uploads, job creation or credit spending. Only `allow` continues. `block` returns 422 `CONTENT_BLOCKED`. `review`, an invalid reply, a non-2xx response, missing credentials or a 15-second timeout returns 503 `MODERATION_UNAVAILABLE`, without spending credits. The form retains the input for a manual retry; there is no queued generation or background retry.
+
+A 429 response forwards Waffo's numeric `Retry-After` delay. Other failures use 60 seconds; a `review` verdict uses 3600 seconds. API callers must wait for that delay before resubmitting. Screening errors do not log the prompt or the provider response body. Rap duo names and AI chat keep their existing checks; this switch covers the two free-text generation forms only. No database migration is needed.
 
 ## Pending sweep
 

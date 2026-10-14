@@ -35,6 +35,7 @@ const schema = z.object({
   DEEPSEEK_API_KEY: optional(z.string().startsWith("sk-", "must start with sk-")),
   DASHSCOPE_BASE_URL: optional(z.string().pipe(httpUrl)),
   VIDEO_PROVIDER: z.enum(VIDEO_PROVIDER_IDS, `must be ${choices(VIDEO_PROVIDER_IDS)}, or empty`).optional(),
+  PROMPT_MODERATION: z.enum(["waffo"], "must be waffo, or empty").optional(),
   IMAGE_MODERATION: z.enum(["seeapi"], "must be seeapi, or empty").optional(),
   STORAGE_ENDPOINT: optional(z.string().pipe(httpUrl)),
   STORAGE_FORCE_PATH_STYLE: z.enum(["true", "false"], "must be true or false, or empty").optional(),
@@ -121,6 +122,11 @@ function crossChecks(env: Env): string[] {
   }
   if (env.VIDEO_PROVIDER === "dashscope" && !env.DASHSCOPE_API_KEY) {
     problems.push("DASHSCOPE_API_KEY: required when VIDEO_PROVIDER is dashscope");
+  }
+  if (env.PROMPT_MODERATION === "waffo") {
+    for (const name of ["WAFFO_MERCHANT_ID", "WAFFO_PRIVATE_KEY"]) {
+      if (!env[name]) problems.push(`${name}: required when PROMPT_MODERATION is waffo`);
+    }
   }
   if (env.IMAGE_MODERATION === "seeapi" && !env.SEEAPI_API_KEY) {
     problems.push("SEEAPI_API_KEY: required when IMAGE_MODERATION is seeapi");

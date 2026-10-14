@@ -142,6 +142,7 @@ function SidebarBalance() {
 test.each([
   [402, "INSUFFICIENT_CREDITS", "Not enough credits. Buy more on the Credits & billing page."],
   [422, "CONTENT_BLOCKED", "The prompt or image was blocked by content moderation. Try a different prompt."],
+  [503, "MODERATION_UNAVAILABLE", "The prompt couldn't be approved right now. No credits were spent. Try again later."],
   [502, "GENERATION_FAILED", "Generation failed. The credit was refunded. Try again."],
 ])("explains a %s %s reply", async (status, error, message) => {
   fetchMock.mockResolvedValueOnce(reply(status, { error }));

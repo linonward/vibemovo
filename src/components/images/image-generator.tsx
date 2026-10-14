@@ -32,6 +32,7 @@ const EXAMPLES = ["flowerShop", "product", "portrait", "cityNight", "poster"] as
 const ERRORS = {
   INSUFFICIENT_CREDITS: "errors.credits",
   CONTENT_BLOCKED: "errors.blocked",
+  MODERATION_UNAVAILABLE: "errors.moderation",
   IMAGES_DISABLED: "disabled",
 } as const satisfies Partial<Record<ApiErrorCode, string>>;
 

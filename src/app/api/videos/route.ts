@@ -47,7 +47,9 @@ export const POST = withSession(async (request, { session }) => {
     }
     if (error instanceof ModerationUnavailableError) {
       log.error("video.moderation_failed", { userId: session.user.id, error });
-      return apiError("MODERATION_UNAVAILABLE", 503);
+      const response = apiError("MODERATION_UNAVAILABLE", 503);
+      response.headers.set("Retry-After", String(error.retryAfter));
+      return response;
     }
     if (error instanceof VideosDisabledError) {
       return apiError("VIDEOS_DISABLED", 503);

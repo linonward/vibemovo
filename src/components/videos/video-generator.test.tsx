@@ -177,7 +177,7 @@ test.each([
   [402, "INSUFFICIENT_CREDITS", "Not enough credits. Buy more on the Credits & billing page."],
   [400, "INVALID_REQUEST", "Use a JPEG, PNG or WebP image up to 4 MB."],
   [422, "CONTENT_BLOCKED", "The prompt or start image was blocked by content moderation. Try a different one."],
-  [503, "MODERATION_UNAVAILABLE", "The start image couldn't be checked right now. No credits were spent. Try again in a minute."],
+  [503, "MODERATION_UNAVAILABLE", "The prompt or start image couldn't be approved right now. No credits were spent. Try again later."],
   [400, "INVALID_IMAGE_SIZE", "Use an image 301 to 5,999 pixels on each side, with the long side at most 2.5 times the short side."],
   [502, "GENERATION_FAILED", "Generation failed. The credits were refunded. Try again."],
 ])("explains a %s %s reply", async (status, error, message) => {
