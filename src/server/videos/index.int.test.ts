@@ -638,8 +638,8 @@ test("a rap video stores both photos, queues one Wan 3.0 job with the lines and 
   const job = ai.reference.submit.mock.calls[0][0];
   expect(job).toMatchObject({
     images: [
-      { bytes: jpeg, mime: "image/jpeg" },
-      { bytes: png, mime: "image/png" },
+      { bytes: jpeg, mime: "image/jpeg", url: `https://storage.test/${first}?signed` },
+      { bytes: png, mime: "image/png", url: `https://storage.test/${second}?signed` },
     ],
     duration: 15,
     resolution: "720p",

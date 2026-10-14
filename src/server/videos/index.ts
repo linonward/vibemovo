@@ -252,7 +252,13 @@ export async function createRapVideo(input: {
         if (!moderated) await storeFiles(files);
         const requestId = await provider.submit({
           prompt: rapPrompt(lines),
-          images: images.map(({ bytes, mime }) => ({ bytes, mime })),
+          images: await Promise.all(
+            images.map(async ({ bytes, mime }, index) => ({
+              bytes,
+              mime,
+              url: await signedUrl(files[index].key),
+            })),
+          ),
           duration: RAP_DURATION,
           resolution: RAP_RESOLUTION,
           ratio: RAP_RATIO,
