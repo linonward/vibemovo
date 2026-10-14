@@ -199,6 +199,24 @@ test("llms.txt describes the product and links the public pages", async ({ reque
 });
 
 // Links shared in chats and on social sites show a preview image.
+// It shows a real result, so a shared link previews what the page makes.
+test("the rap video page shares a preview image of its own", async ({ page, request, baseURL }) => {
+  for (const [path, alt] of [
+    ["/en/ai-rap-video-generator", "AI Rap Video Generator from Photos"],
+    ["/zh/ai-rap-video-generator", "AI 说唱视频生成器：用照片做说唱视频"],
+  ]) {
+    await page.goto(path);
+
+    const head = page.locator("head");
+    await expect(head.locator('meta[property="og:image:alt"]')).toHaveAttribute("content", alt);
+    const image = await head.locator('meta[property="og:image"]').getAttribute("content");
+    expect(image).toContain(`${baseURL}${path}/opengraph-image`);
+    const response = await request.get(image!);
+    expect(response.status(), image!).toBe(200);
+    expect(response.headers()["content-type"]).toBe("image/png");
+  }
+});
+
 test("every public page shares a preview image", async ({ page, request }) => {
   for (const path of ["/en", "/zh/pricing", "/en/blog"]) {
     await page.goto(path);

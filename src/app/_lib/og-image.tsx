@@ -33,9 +33,21 @@ function Perforations() {
 
 // The preview image a shared link shows: a frame of film with the logo,
 // the project name, a title and a line of text (docs/DESIGN.md, Logo).
+// `photo`, a data URL of a 16:9 result made with the product, goes beside
+// the title in place of the text.
 // The default font is Geist; next/og fetches Noto Sans from Google Fonts
 // for characters Geist lacks, such as Chinese.
-export function ogImage({ title, description, locale }: { title: string; description: string; locale: string }) {
+export function ogImage({
+  title,
+  description,
+  locale,
+  photo,
+}: {
+  title: string;
+  description: string;
+  locale: string;
+  photo?: string;
+}) {
   return new ImageResponse(
     (
       <div
@@ -54,8 +66,8 @@ export function ogImage({ title, description, locale }: { title: string; descrip
           style={{
             flex: 1,
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 48,
             padding: "56px 80px",
             backgroundImage: [
               "radial-gradient(ellipse 60% 80% at 100% 0%, rgba(240, 176, 74, 0.16), rgba(240, 176, 74, 0))",
@@ -63,20 +75,39 @@ export function ogImage({ title, description, locale }: { title: string; descrip
             ].join(", "),
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 34 }}>
-            <svg width={48} height={48} viewBox="0 0 32 32">
-              <path d={VIEWFINDER} fill="none" stroke={FILM} strokeWidth={3} strokeLinecap="round" />
-              <rect x={9} y={13.5} width={9} height={5} rx={2.5} fill={PINE} fillOpacity={0.35} />
-              <circle cx={18} cy={16} r={5} fill={PINE} />
-            </svg>
-            {projectConfig.name}
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-            <div style={{ display: "block", fontSize: 68, lineHeight: 1.1, letterSpacing: -1.5, lineClamp: 2 }}>
-              {title}
+          <div style={{ flex: 1, height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 18, fontSize: 34 }}>
+              <svg width={48} height={48} viewBox="0 0 32 32">
+                <path d={VIEWFINDER} fill="none" stroke={FILM} strokeWidth={3} strokeLinecap="round" />
+                <rect x={9} y={13.5} width={9} height={5} rx={2.5} fill={PINE} fillOpacity={0.35} />
+                <circle cx={18} cy={16} r={5} fill={PINE} />
+              </svg>
+              {projectConfig.name}
             </div>
-            <div style={{ display: "block", fontSize: 30, color: "#a4a69b", lineHeight: 1.4, lineClamp: 3 }}>{description}</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+              <div
+                style={{
+                  display: "block",
+                  fontSize: photo ? 56 : 68,
+                  lineHeight: 1.1,
+                  letterSpacing: -1.5,
+                  lineClamp: photo ? 4 : 2,
+                }}
+              >
+                {title}
+              </div>
+              {!photo && (
+                <div style={{ display: "block", fontSize: 30, color: "#a4a69b", lineHeight: 1.4, lineClamp: 3 }}>
+                  {description}
+                </div>
+              )}
+            </div>
           </div>
+          {photo && (
+            // 16:9, beside the title.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={photo} alt="" width={560} height={315} style={{ borderRadius: 16 }} />
+          )}
         </div>
         <Perforations />
       </div>
