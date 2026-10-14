@@ -10,6 +10,15 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
+test("the product links include the rap video page", () => {
+  renderWithIntl(<Footer />);
+
+  const product = screen.getByRole("navigation", { name: "Product" });
+  expect(within(product).getByRole("link", { name: "AI rap videos" }).getAttribute("href")).toBe(
+    "/en/ai-rap-video-generator",
+  );
+});
+
 test("groups support and legal links under headings", () => {
   renderWithIntl(<Footer />);
 
