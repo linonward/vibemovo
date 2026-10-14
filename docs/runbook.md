@@ -330,7 +330,7 @@ Without `CRON_SECRET`, the route answers 404 to everyone.
 ## Landing page and visual system
 
 - Copy lives under `Home` in `messages/en.json` and `messages/zh.json`. Replace it with what your product does; keep sentence case.
-- `src/components/home/product-mock.tsx` is a labeled HTML stand-in. Replace it with a real screenshot (`next/image`, explicit `width` and `height`).
+- `src/components/home/scene.tsx` draws the hero console's and the prompt ideas' images with CSS. Replace them with real work made with the product (`next/image`, explicit `width` and `height`).
 - Colors, radius and fonts are tokens in `src/app/globals.css` (`:root` for the light theme, `.dark` for the default dark theme, `--font-display` for headings). Change them there, not per component.
 - Dark is the default theme. Users pick light, dark or system (follows the OS, live) in the footer or the account menu; the choice is saved in `localStorage`. The logic is in `src/components/layout/theme.ts`.
 - Icons come from `lucide-react` only; ESLint blocks other icon libraries. Stroke width is set once in `globals.css` (`svg.lucide`). Icons are `aria-hidden` by default; give icon-only buttons an `aria-label`.

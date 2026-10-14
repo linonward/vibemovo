@@ -12,10 +12,10 @@ test("hero states the value and leads to sign-in", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Everything before your first feature, done.",
+      name: "Write a line. Watch it move.",
     }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "Create your account" }).first().click();
+  await page.getByRole("link", { name: "Start creating free" }).first().click();
   await expect(page).toHaveURL("/en/sign-in");
 });
 
@@ -35,20 +35,38 @@ test("the header offers sign-in to visitors and the dashboard once signed in", a
   await expect(page).toHaveURL("/en/dashboard");
 });
 
-test("landing has features, steps, FAQ and a closing call to action", async ({
+test("landing has prompt ideas, tools, steps, FAQ and a closing call to action", async ({
   page,
 }) => {
   await page.goto("/en");
 
+  await expect(page.getByRole("figure", { name: "Example generation" })).toBeVisible();
   for (const name of [
-    "What's already built",
-    "How it works",
+    "Start from a prompt like these",
+    "Three ways to create",
+    "From words to motion in three steps",
     "Questions",
-    "Ready when you are.",
+    "Your first scene is one prompt away.",
   ]) {
     await expect(page.getByRole("heading", { level: 2, name })).toBeVisible();
   }
-  await expect(page.getByText("Product screenshot placeholder")).toBeVisible();
+});
+
+test("the hero's second link scrolls to the prompt ideas", async ({ page }) => {
+  await page.goto("/en");
+
+  await page.getByRole("link", { name: "See prompt ideas" }).click();
+  await expect(page).toHaveURL("/en#ideas");
+  await expect(page.getByRole("heading", { level: 2, name: "Start from a prompt like these" })).toBeInViewport();
+});
+
+test("the console stops moving for reduced motion", async ({ browser }) => {
+  const page = await browser.newPage({ reducedMotion: "reduce" });
+  await page.goto("/en");
+
+  await expect(page.locator(".render-progress")).toHaveCSS("animation-name", "none");
+  await expect(page.locator(".scene-drift")).toHaveCSS("animation-name", "none");
+  await page.close();
 });
 
 test("FAQ answers open on click and include the support email", async ({
@@ -68,7 +86,7 @@ test("landing is translated", async ({ page }) => {
   await page.goto("/zh");
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "第一个功能之前的事，都做好了。" }),
+    page.getByRole("heading", { level: 1, name: "写一句话，看它动起来。" }),
   ).toBeVisible();
 });
 

@@ -96,9 +96,9 @@ Pairing rule: **mono for anything that is a title, label or number; sans for sen
 
 | Role | Classes | Where |
 |---|---|---|
-| Hero H1 | `font-display font-bold text-[2.25rem] leading-[1.15] sm:text-5xl sm:leading-[1.25] display-tight` | `home/hero.tsx` |
+| Hero H1 | `font-display font-bold text-[2.25rem] leading-[1.15] sm:text-5xl sm:leading-[1.2] display-tight break-keep` (Chinese breaks only after punctuation) | `home/hero.tsx` |
 | Section H2 | `font-display font-bold text-3xl sm:text-4xl leading-tight display-tight` | `home/section-heading.tsx` |
-| Card title | `font-display text-lg font-semibold` | Home features and steps |
+| Card title | `font-display text-lg font-semibold` | Home tools and steps |
 | FAQ question | `font-display font-bold text-base sm:text-lg` | `home/faq.tsx` |
 | Lead | `text-lg sm:text-xl leading-8 text-muted-foreground` | Hero |
 | Body | 16px Geist; `text-muted-foreground` for secondary text | Everywhere |
@@ -122,7 +122,7 @@ Pairing rule: **mono for anything that is a title, label or number; sans for sen
 |---|---|
 | Buttons, inputs, sidebar sub-items | `rounded-lg` 12px. Small buttons 10px |
 | Cards, panels, sidebar items, icon tiles | `rounded-xl` 16px |
-| Large panels (steps strip, final CTA, user menu) | `rounded-2xl` 20px |
+| Large panels (generation console, final CTA, user menu) | `rounded-2xl` 20px |
 | Pills, badges, avatars, theme switcher | `rounded-full` |
 | Skeleton blocks | `rounded-md` 10px |
 
@@ -135,8 +135,8 @@ Nest at least one step smaller than the container.
 | Sticky nav | `border-b bg-background/65 backdrop-blur-xl backdrop-saturate-150` |
 | Hero badge | `rounded-full border border-primary-text/60 bg-background/55 backdrop-blur-md`, with a `--primary-text` dot |
 | Glow | `Glow` in `home/section-heading.tsx`: `radial-gradient(closest-side, var(--primary-text), transparent)`, `opacity-15 blur-2xl`. Behind the hero and the final CTA |
-| Border glow | `.border-glow` wrapper on the hero `ProductMock`: two arcs, teal through green and lime to amber, run around the 1px border every 8s, with a `blur(28px)` copy at 45% behind. Static with reduced motion |
-| Feature card | `bg-gradient-to-br from-muted/70 to-transparent`, border, hover border mix |
+| Border glow | `.border-glow` wrapper on the hero `GenerationConsole`: two arcs, teal through green and lime to amber, run around the 1px border every 8s, with a `blur(28px)` copy at 45% behind. Static with reduced motion |
+| Tool card | `bg-gradient-to-br from-muted/70 to-transparent`, border, hover border mix |
 
 ## 6. Components
 
@@ -174,13 +174,14 @@ A `rounded-full bg-muted p-1` group of three icon buttons: Sun (light), Moon (da
 
 ### Home (`home/`)
 
-1. **Hero:** glow, badge, H1, lead, `PrimaryLink` and the secondary pill.
-2. **Features:** icon-tile cards, two rows of three on large screens.
-3. **Step strip** (How it works): three steps in one `rounded-2xl` panel with dividers.
-4. **FAQ accordion:** `<details>` rows. When a row is open, its number circle and plus button fill with `--foreground`, and the plus turns 45° (`.icon-turn`).
-5. **Final CTA:** a `rounded-2xl` card with a glow, a badge, a title, `PrimaryLink` and three `--primary-text` check items.
+1. **Hero:** two columns on large screens. Left: badge, H1, lead, `PrimaryLink`, the secondary pill (to the prompt ideas) and two check items. Right: the generation console. Stacked on phones.
+2. **Prompt ideas** (`ideas.tsx`): six sample prompts as tiles over scenes, in a dense 4 × 3 grid of uneven sizes on large screens and two columns on phones. Each tile has a kind chip (`bg-black/45`) and the prompt over a `from-black/75` scrim, white in both themes. The scene scales to 1.03 on hover.
+3. **Tools** (`features.tsx`): text to image leads with a large panel holding a scene; image to video and rap duo stack beside it. Each card has an icon tile, a mono meta label and a pine link to the tool.
+4. **Steps** (`how-it-works.tsx`): three columns under a 2px top rule, with a large mono number. The first step's rule and number are `--primary-text`.
+5. **FAQ accordion:** `<details>` rows. When a row is open, its number circle and plus button fill with `--foreground`, and the plus turns 45° (`.icon-turn`).
+6. **Final CTA:** a `rounded-2xl` card with a glow, a badge, a title, `PrimaryLink` and three `--primary-text` check items.
 
-`home/product-mock.tsx` is a labeled HTML stand-in for a product screenshot.
+`home/generation-console.tsx` is an HTML stand-in for the product: a prompt, a finished image and a video still rendering. `home/scene.tsx` draws the images with CSS gradients and clipped shapes; replace them with real work made with the product.
 
 ### Blog (`blog/`)
 
@@ -206,6 +207,8 @@ Transform and opacity only, 120-200ms. Every class below turns off under `prefer
 | `.icon-nudge` | Arrow moves 3px right when its link or button is hovered |
 | `.icon-turn` | Plus turns 45° inside an open `<details>` |
 | `.icon-swap` | Cross-fade and scale between two icons |
+
+The generation console has ambient loops instead: `.render-progress` fills the progress bar every 6s, `.render-scan` sweeps a band of light across the video every 3s, `.scene-drift` slowly zooms the video frame over 12s and `.render-caret` blinks the prompt caret. With reduced motion they stop, and the bar holds at 62%.
 
 Cards change only their border color on hover. Hover styles apply only on devices that hover (`@media (hover: hover)`).
 

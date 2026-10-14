@@ -17,7 +17,7 @@ export function SectionHeading({
       <p className="eyebrow">{eyebrow}</p>
       <h2
         id={id}
-        className="display-tight font-display text-3xl leading-tight font-bold text-balance sm:text-4xl"
+        className="display-tight scroll-mt-24 font-display text-3xl leading-tight font-bold text-balance sm:text-4xl"
       >
         {children}
       </h2>

@@ -155,8 +155,8 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   expect(lines[2]).toBe(
     "> Turn a prompt into an image and an image into a video. vibemovo makes AI images, image-to-video clips and rap duo videos. New accounts start with free credits.",
   );
-  expect(text).toContain("- Sign in without passwords: Magic links by email");
-  expect(text).toContain("- AI chat, images and video: Chat with DeepSeek");
+  expect(text).toContain("- Text to image: Write what you want to see.");
+  expect(text).toContain("- Image to video: Upload a photo or use one you made.");
   expect(text).toContain("- How do I contact support?: Email support@example.com.");
   expect(text).toContain(`- [Privacy Policy](${baseURL}/en/privacy)`);
   expect(text).toContain(`- [隐私政策](${baseURL}/zh/privacy)`);

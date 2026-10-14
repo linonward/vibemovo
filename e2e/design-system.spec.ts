@@ -108,7 +108,7 @@ test("the account menu switches the theme", async ({ page }) => {
 test("landing uses Lucide icons and a pine primary action", async ({ page }) => {
   await page.goto("/en");
 
-  const cta = page.getByRole("link", { name: "Create your account" }).first();
+  const cta = page.getByRole("link", { name: "Start creating free" }).first();
   await expect(cta).toHaveCSS("background-color", await primaryColor(page));
   await expect(cta.locator("svg.lucide-arrow-right")).toBeVisible();
 });
