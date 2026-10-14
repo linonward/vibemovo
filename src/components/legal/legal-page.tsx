@@ -1,4 +1,3 @@
-import { Info } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { type LegalDoc, loadLegalDoc } from "@/lib/content";
 import { LegalNav } from "./legal-nav";
@@ -21,13 +20,6 @@ export async function LegalPage({ doc }: { doc: LegalDoc }) {
             {t(doc)}
           </h1>
         </header>
-        <p
-          role="note"
-          className="flex items-start gap-3 rounded-xl bg-accent px-4 py-3 text-sm text-accent-foreground"
-        >
-          <Info className="mt-0.5 size-4 shrink-0" />
-          {t("templateNotice")}
-        </p>
         <div className="legal-prose rounded-xl border bg-card p-6 sm:p-10">
           <Content />
         </div>
