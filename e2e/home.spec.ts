@@ -78,7 +78,7 @@ test("FAQ answers open on click and include the support email", async ({
   await question.click();
 
   await expect(
-    page.getByRole("main").getByRole("link", { name: "support@example.com" }),
+    page.getByRole("main").getByRole("link", { name: "support@vibemovo.com" }),
   ).toBeVisible();
 });
 

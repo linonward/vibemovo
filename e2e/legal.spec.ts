@@ -16,8 +16,8 @@ for (const { path, heading } of pages) {
     await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
     await expect(page).toHaveTitle(`${heading} · vibemovo`);
     await expect(
-      page.getByRole("main").getByRole("link", { name: "support@example.com" }),
-    ).toHaveAttribute("href", "mailto:support@example.com");
+      page.getByRole("main").getByRole("link", { name: "support@vibemovo.com" }),
+    ).toHaveAttribute("href", "mailto:support@vibemovo.com");
   });
 }
 
@@ -28,7 +28,7 @@ test("footer links to the legal pages in the current locale", async ({ page }) =
   await footer.getByRole("link", { name: "退款政策" }).click();
 
   await expect(page).toHaveURL("/zh/refund");
-  await expect(footer.getByRole("link", { name: "support@example.com" })).toBeVisible();
+  await expect(footer.getByRole("link", { name: "support@vibemovo.com" })).toBeVisible();
 });
 
 test("legal pages share the visual system", async ({ page }) => {

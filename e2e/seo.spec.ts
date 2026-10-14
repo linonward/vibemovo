@@ -157,7 +157,7 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   );
   expect(text).toContain("- Text to image: Write what you want to see.");
   expect(text).toContain("- Image to video: Upload a photo or use one you made.");
-  expect(text).toContain("- How do I contact support?: Email support@example.com.");
+  expect(text).toContain("- How do I contact support?: Email support@vibemovo.com.");
   expect(text).toContain(`- [Privacy Policy](${baseURL}/en/privacy)`);
   expect(text).toContain(`- [隐私政策](${baseURL}/zh/privacy)`);
   expect(text).toContain(`- [Pricing](${baseURL}/en/pricing): Pay with credits`);
