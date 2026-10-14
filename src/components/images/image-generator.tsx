@@ -3,7 +3,7 @@
 import { Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { useCredits } from "@/components/dashboard/credits";
+import { useCreditBalance } from "@/components/dashboard/credits";
 import { PromptExamples } from "@/components/dashboard/prompt-examples";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -41,8 +41,7 @@ export function ImageGenerator(props: ImageGeneratorProps) {
   const t = useTranslations("Images");
   const [prompt, setPrompt] = useState("");
   const [aspect, setAspect] = useState(props.aspects[0]);
-  const [balance, setBalance] = useState(props.balance);
-  const adjustCredits = useCredits()?.adjust;
+  const { balance, adjust: adjustCredits } = useCreditBalance(props.balance);
   const [images, setImages] = useState(props.images);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,8 +66,7 @@ export function ImageGenerator(props: ImageGeneratorProps) {
       const updated = parse(image);
       setImages((current) => current.map((item) => (item.id === id ? updated : item)));
       if (updated.status === "failed") {
-        setBalance((current) => current + cost);
-        adjustCredits?.(cost);
+        adjustCredits(cost, `image-refund:${id}`);
       }
     },
   });
@@ -88,8 +86,7 @@ export function ImageGenerator(props: ImageGeneratorProps) {
     const { image } = body;
     if (response?.ok && image) {
       setImages((current) => [parse(image), ...current]);
-      setBalance((current) => current - cost);
-      adjustCredits?.(-cost);
+      adjustCredits(-cost, `image:${image.id}`);
       return;
     }
     setError(t(ERRORS[body.error as keyof typeof ERRORS] ?? "errors.failed"));

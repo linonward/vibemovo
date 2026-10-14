@@ -3,7 +3,7 @@
 import { Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { useCredits } from "@/components/dashboard/credits";
+import { useCreditBalance } from "@/components/dashboard/credits";
 import { PromptExamples } from "@/components/dashboard/prompt-examples";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -57,8 +57,7 @@ export function VideoGenerator(props: VideoGeneratorProps) {
   const [prompt, setPrompt] = useState("");
   const [duration, setDuration] = useState(props.durations[0]);
   const [resolution, setResolution] = useState(props.resolutions[0]);
-  const [balance, setBalance] = useState(props.balance);
-  const adjustCredits = useCredits()?.adjust;
+  const { balance, adjust: adjustCredits } = useCreditBalance(props.balance);
   const [videos, setVideos] = useState(props.videos);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -88,8 +87,7 @@ export function VideoGenerator(props: VideoGeneratorProps) {
       const updated = parse(video);
       setVideos((current) => current.map((item) => (item.id === id ? updated : item)));
       if (updated.status === "failed") {
-        setBalance((current) => current + updated.credits);
-        adjustCredits?.(updated.credits);
+        adjustCredits(updated.credits, `video-refund:${id}`);
       }
     },
   });
@@ -133,8 +131,7 @@ export function VideoGenerator(props: VideoGeneratorProps) {
     const { video } = body;
     if (response?.ok && video) {
       setVideos((current) => [parse(video), ...current]);
-      setBalance((current) => current - cost);
-      adjustCredits?.(-cost);
+      adjustCredits(-cost, `video:${video.id}`);
       return;
     }
     setError(t(ERRORS[body.error as keyof typeof ERRORS] ?? "errors.failed", messageValues));

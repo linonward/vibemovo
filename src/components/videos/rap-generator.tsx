@@ -3,7 +3,7 @@
 import { Sparkles } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
-import { useCredits } from "@/components/dashboard/credits";
+import { useCreditBalance } from "@/components/dashboard/credits";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -54,8 +54,7 @@ export function RapGenerator(props: RapGeneratorProps) {
   // The latest pick per side, so a slow size check for an earlier file changes nothing.
   const picked = useRef<Record<Side, File | null>>({ left: null, right: null });
   const [names, setNames] = useState<Record<Side, string>>({ left: "", right: "" });
-  const [balance, setBalance] = useState(props.balance);
-  const adjustCredits = useCredits()?.adjust;
+  const { balance, adjust: adjustCredits } = useCreditBalance(props.balance);
   const [videos, setVideos] = useState(props.videos);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -85,8 +84,7 @@ export function RapGenerator(props: RapGeneratorProps) {
       const updated = parse(video);
       setVideos((current) => current.map((item) => (item.id === id ? updated : item)));
       if (updated.status === "failed") {
-        setBalance((current) => current + updated.credits);
-        adjustCredits?.(updated.credits);
+        adjustCredits(updated.credits, `video-refund:${id}`);
       }
     },
   });
@@ -127,8 +125,7 @@ export function RapGenerator(props: RapGeneratorProps) {
     const { video } = body;
     if (response?.ok && video) {
       setVideos((current) => [parse(video), ...current]);
-      setBalance((current) => current - props.credits);
-      adjustCredits?.(-props.credits);
+      adjustCredits(-props.credits, `video:${video.id}`);
       return;
     }
     setError(t(ERRORS[body.error as keyof typeof ERRORS] ?? "errors.failed", messageValues));

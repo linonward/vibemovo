@@ -175,3 +175,27 @@ test("replies render Markdown; the user's message stays as typed", async ({ page
   await expect(log.locator("strong", { hasText: "bold" })).toBeVisible();
   await expect(log.locator("code", { hasText: "code" })).toBeVisible();
 });
+
+// Cache Components preserves visited pages. Their original balance must
+// not replace a newer balance when the user returns after spending.
+test("visited generation and billing pages keep the balance after a chat spends a credit", async ({ page }) => {
+  await signIn(page);
+  const sidebar = page.getByRole("navigation", { name: "Dashboard navigation" });
+  const generators = ["Image generator", "Video generator", "Rap duo"];
+  for (const name of generators) {
+    await sidebar.getByRole("link", { name, exact: true }).click();
+    await expect(page.getByText("10 credits left", { exact: true }).filter({ visible: true })).toBeVisible();
+  }
+  await sidebar.getByRole("link", { name: "Credits & billing", exact: true }).click();
+  await expect(page.getByText("10 credits", { exact: true })).toBeVisible();
+  await sidebar.getByRole("link", { name: "AI chat", exact: true }).click();
+  await page.getByRole("textbox", { name: "Message" }).fill("balance regression");
+  await page.getByRole("button", { name: "Send" }).click();
+  await expect(page.getByRole("log", { name: "Conversation" }).getByText("Echo: balance regression")).toBeVisible();
+  for (const name of generators) {
+    await sidebar.getByRole("link", { name, exact: true }).click();
+    await expect(page.getByText("9 credits left", { exact: true }).filter({ visible: true })).toBeVisible();
+  }
+  await sidebar.getByRole("link", { name: "Credits & billing", exact: true }).click();
+  await expect(page.getByText("9 credits", { exact: true })).toBeVisible();
+});
