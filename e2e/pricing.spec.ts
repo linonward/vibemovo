@@ -11,9 +11,13 @@ test("signed-out visitors see the plan, the packs and what credits buy", async (
   const main = page.getByRole("main");
   await expect(main).toContainText("$10.00 per month");
   await expect(main).toContainText("300 credits every month");
-  for (const [credits, price] of [["100 credits", "$5.00"], ["500 credits", "$20.00"], ["1,200 credits", "$40.00"]]) {
-    await expect(main.getByRole("listitem").filter({ hasText: credits })).toContainText(price);
+  for (const [credits, price] of [["75 credits", "$9.90"], ["225 credits", "$26.73"], ["375 credits", "$42.08"], ["750 credits", "$79.20"]]) {
+    const pack = main.getByRole("listitem").filter({ has: page.getByRole("heading", { name: credits, exact: true }) });
+    await expect(pack).toContainText(price);
   }
+  const largest = main.getByRole("listitem").filter({ hasText: "750 credits" });
+  await expect(largest).toContainText("Save 20%");
+  await expect(largest).toContainText("Enough for 10 rap videos");
   await expect(main).toContainText("1 credit per image");
   await expect(main).toContainText("1 credit per chat message");
   await expect(main).toContainText("From 4 credits per second of video");
@@ -31,7 +35,7 @@ test("every offer leads with its credits, and each kind's terms follow its list"
   await expect(main.getByRole("heading", { level: 2 })).toHaveText(["Credit packs", "Subscription", "What credits buy"]);
 
   await expect(plans.getByRole("heading", { level: 3 })).toHaveText(["300 credits every month"]);
-  await expect(packs.getByRole("heading", { level: 3 })).toHaveText(["100 credits", "500 credits", "1,200 credits"]);
+  await expect(packs.getByRole("heading", { level: 3 })).toHaveText(["75 credits", "225 credits", "375 credits", "750 credits"]);
   for (const item of await main.getByRole("listitem").filter({ has: page.getByRole("heading", { level: 3 }) }).all()) {
     expect(await item.evaluate((li) => li.firstElementChild?.tagName)).toBe("H3");
   }
@@ -80,12 +84,12 @@ test("buying opens billing for a signed-in user", async ({ page }) => {
   await signIn(page);
   await page.goto("/en/pricing");
 
-  await page.getByRole("link", { name: "Buy 500 credits for $20.00" }).click();
+  await page.getByRole("link", { name: "Buy 225 credits for $26.73" }).click();
 
   // Billing marks the chosen pack. Payments are off in E2E, so its button is
   // disabled and can't take focus; the card scrolls into view instead.
-  await expect(page).toHaveURL("/en/billing?pack=medium");
-  const buy = page.getByRole("button", { name: "Buy 500 credits for $20.00" });
+  await expect(page).toHaveURL("/en/billing?pack=video-3");
+  const buy = page.getByRole("button", { name: "Buy 225 credits for $26.73" });
   const card = page.getByRole("listitem").filter({ has: buy });
   await expect(card).toContainText("Selected");
   await expect(card).toBeInViewport();

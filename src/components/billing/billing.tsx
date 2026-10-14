@@ -11,7 +11,9 @@ import { useAwaitCredits } from "./await-credits";
 import { Chosen, CHOSEN, useRevealChoice } from "./chosen";
 import { redirectFrom } from "./redirect";
 
-type Pack = { id: string; credits: number; amount: number; currency: string };
+// `videos` is how many rap videos the credits make; `discount` is the
+// percentage off the one-video price.
+type Pack = { id: string; credits: number; amount: number; currency: string; videos: number; discount: number };
 
 type Order = {
   id: string;
@@ -87,7 +89,7 @@ export function Billing({
       <section className="flex flex-col gap-4">
         <h2 className="font-display text-lg font-semibold">{t("buyTitle")}</h2>
         {!enabled && <p className="text-muted-foreground">{t("disabled")}</p>}
-        <ul className="grid gap-3 sm:grid-cols-3">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {packs.map((pack) => {
             const credits = t("credits", { count: pack.credits });
             const amount = price(pack.amount, pack.currency);
@@ -104,7 +106,13 @@ export function Billing({
                   <h3 className="font-display text-xl font-semibold">{credits}</h3>
                   {pack.id === selected && <Chosen />}
                 </div>
-                <p className="text-muted-foreground">{amount}</p>
+                <p className="flex items-baseline gap-2 text-muted-foreground">
+                  {amount}
+                  {pack.discount > 0 && (
+                    <span className="text-sm font-semibold text-primary-text">{t("save", { discount: pack.discount })}</span>
+                  )}
+                </p>
+                <p className="text-sm text-muted-foreground">{t("videos", { count: pack.videos })}</p>
                 <Button
                   disabled={!enabled || buying !== null}
                   aria-label={t("buyLabel", { credits, price: amount })}

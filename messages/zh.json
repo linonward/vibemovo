@@ -407,6 +407,8 @@
     "selected": "已选",
     "buyTitle": "购买积分",
     "buy": "购买",
+    "videos": "可生成 {count} 个 rap 视频",
+    "save": "省 {discount}%",
     "buyLabel": "以 {price} 购买 {credits}",
     "disabled": "尚未配置支付。",
     "checkoutError": "无法发起支付，请重试。",

@@ -72,7 +72,7 @@ test("creates a checkout session priced from the pack", async () => {
   const session = await waffoProvider.createCheckout({
     userId: "user-1",
     orderId: "order-1",
-    pack: { id: "small", credits: 100, amount: 500, currency: "usd" },
+    pack: { id: "video-1", credits: 75, amount: 990, currency: "usd", videos: 1, discount: 0 },
     email: "ada@example.com",
     locale: "zh",
     successUrl: "https://app.test/zh/billing?checkout=success",
@@ -84,7 +84,7 @@ test("creates a checkout session priced from the pack", async () => {
     expect.objectContaining({
       productId: "PROD_credits",
       currency: "USD",
-      priceSnapshot: expect.objectContaining({ amount: "5.00" }),
+      priceSnapshot: expect.objectContaining({ amount: "9.90" }),
       buyerEmail: "ada@example.com",
       orderMerchantExternalId: "order-1",
       successUrl: "https://app.test/zh/billing?checkout=success",

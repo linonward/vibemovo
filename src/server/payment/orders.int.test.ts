@@ -50,7 +50,7 @@ afterEach(() => {
   waffo.createCheckout.mockClear();
 });
 
-function checkout(packId = "small") {
+function checkout(packId = "video-1") {
   return createCheckout({
     userId,
     email: "buyer@example.com",
@@ -77,14 +77,14 @@ async function onlyOrder() {
 }
 
 test("records a pending order with the active provider's session", async () => {
-  const url = await checkout("small");
+  const url = await checkout("video-1");
 
   expect(url).toBe("https://stripe.test/checkout");
   const row = await onlyOrder();
   expect(row).toMatchObject({
-    packId: "small",
-    credits: 100,
-    amount: 500,
+    packId: "video-1",
+    credits: 75,
+    amount: 990,
     currency: "usd",
     status: "pending",
     provider: "stripe",
@@ -103,45 +103,45 @@ test("PAYMENT_PROVIDER picks the provider for new checkouts", async () => {
 });
 
 test("a paid event marks the order paid and grants its credits once", async () => {
-  await checkout("small");
+  await checkout("video-1");
   const { id } = await onlyOrder();
 
   await webhook("stripe", { orderId: id, outcome: "paid" });
   await webhook("stripe", { orderId: id, outcome: "paid" }); // Providers may repeat events.
 
-  expect(await earned()).toBe(100);
+  expect(await earned()).toBe(75);
   const row = await onlyOrder();
   expect(row.status).toBe("paid");
   expect(row.paidAt).toBeInstanceOf(Date);
   expect((await pageNotifications(userId)).notifications).toMatchObject([
-    { type: "order_paid", data: { orderId: id, credits: 100 } },
+    { type: "order_paid", data: { orderId: id, credits: 75 } },
   ]);
 });
 
 test("a retry after a crash between granting and marking paid grants nothing twice", async () => {
-  await checkout("small");
+  await checkout("video-1");
   const { id } = await onlyOrder();
   // The crash: credits granted, order still pending.
-  await grantCredits({ userId, amount: 100, reason: "purchase", idempotencyKey: `order:${id}` });
+  await grantCredits({ userId, amount: 75, reason: "purchase", idempotencyKey: `order:${id}` });
 
   await webhook("stripe", { orderId: id, outcome: "paid" });
 
-  expect(await earned()).toBe(100);
+  expect(await earned()).toBe(75);
   expect((await onlyOrder()).status).toBe("paid");
 });
 
 test("an order started before a provider switch still completes", async () => {
-  await checkout("small");
+  await checkout("video-1");
   const { id } = await onlyOrder();
   vi.stubEnv("PAYMENT_PROVIDER", "waffo");
 
   await webhook("stripe", { orderId: id, outcome: "paid" });
 
-  expect(await earned()).toBe(100);
+  expect(await earned()).toBe(75);
 });
 
 test("only the provider that took the order can pay it", async () => {
-  await checkout("small");
+  await checkout("video-1");
   const { id } = await onlyOrder();
 
   await expect(webhook("waffo", { orderId: id, outcome: "paid" })).rejects.toBeInstanceOf(UnknownOrderError);
@@ -151,8 +151,8 @@ test("only the provider that took the order can pay it", async () => {
 });
 
 test("an expired or failed event closes the order without credits", async () => {
-  await checkout("small");
-  await checkout("large");
+  await checkout("video-1");
+  await checkout("video-10");
   const [large, small] = await listOrders(userId);
 
   await webhook("stripe", { orderId: small.id, outcome: "expired" });
@@ -164,14 +164,14 @@ test("an expired or failed event closes the order without credits", async () => 
 });
 
 test("a late expiry never undoes a paid order", async () => {
-  await checkout("small");
+  await checkout("video-1");
   const { id } = await onlyOrder();
 
   await webhook("stripe", { orderId: id, outcome: "paid" });
   await webhook("stripe", { orderId: id, outcome: "expired" });
 
   expect((await onlyOrder()).status).toBe("paid");
-  expect(await earned()).toBe(100);
+  expect(await earned()).toBe(75);
 });
 
 test("ignores events that don't change an order, or close an unknown one", async () => {
@@ -195,7 +195,7 @@ test("records the order before it asks the provider for a checkout", async () =>
     return { sessionId, url: "https://stripe.test/checkout" };
   });
 
-  await checkout("small");
+  await checkout("video-1");
 
   expect(recorded).toMatchObject([{ status: "pending", providerSessionId: null }]);
   expect(await onlyOrder()).toMatchObject({ status: "pending", providerSessionId: sessionId });
@@ -204,14 +204,14 @@ test("records the order before it asks the provider for a checkout", async () =>
 test("a checkout the provider refuses leaves a failed order, which a payment still completes", async () => {
   stripe.createCheckout.mockRejectedValueOnce(new Error("Stripe 500"));
 
-  await expect(checkout("small")).rejects.toThrow("Stripe 500");
+  await expect(checkout("video-1")).rejects.toThrow("Stripe 500");
   const { id, status } = await onlyOrder();
   expect(status).toBe("failed");
 
   // The provider may have opened the checkout before the error reached us.
   await webhook("stripe", { orderId: id, outcome: "paid" });
   expect((await onlyOrder()).status).toBe("paid");
-  expect(await earned()).toBe(100);
+  expect(await earned()).toBe(75);
 });
 
 test("rejects webhooks for an unknown provider", async () => {
@@ -219,24 +219,24 @@ test("rejects webhooks for an unknown provider", async () => {
 });
 
 test("lists a user's orders, newest first", async () => {
-  await checkout("small");
-  await checkout("large");
+  await checkout("video-1");
+  await checkout("video-10");
 
-  expect((await listOrders(userId)).map((o) => o.credits)).toEqual([1200, 100]);
+  expect((await listOrders(userId)).map((o) => o.credits)).toEqual([750, 75]);
 });
 
 // The billing page sends the list to the browser: only what its table shows.
 test("lists only the columns the billing table shows", async () => {
-  await checkout("small");
+  await checkout("video-1");
 
   const [listed] = await listOrders(userId);
   expect(Object.keys(listed).sort()).toEqual(["amount", "createdAt", "credits", "currency", "id", "status"]);
 });
 
 test("lists at most the newest orders it's asked for", async () => {
-  for (const pack of ["small", "medium", "large"]) await checkout(pack);
+  for (const pack of ["video-1", "video-3", "video-10"]) await checkout(pack);
 
-  expect((await listOrders(userId, { limit: 2 })).map((o) => o.credits)).toEqual([1200, 500]);
+  expect((await listOrders(userId, { limit: 2 })).map((o) => o.credits)).toEqual([750, 225]);
 });
 
 test("rejects an unknown pack without calling the provider", async () => {
@@ -252,7 +252,7 @@ test("refuses to check out when PAYMENT_PROVIDER is unset", async () => {
 });
 
 test("deleting the user removes their orders and credits", async () => {
-  await checkout("small");
+  await checkout("video-1");
   const { id } = await onlyOrder();
   await webhook("stripe", { orderId: id, outcome: "paid" });
 

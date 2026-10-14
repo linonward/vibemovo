@@ -24,7 +24,7 @@ test("the sidebar opens billing with the balance, the packs and the credit histo
   await expect(page.getByRole("heading", { level: 1, name: "Credits & billing" })).toBeVisible();
   // signupCredits in src/server/credits/config.ts
   await expect(page.getByText("Credit balance").locator("+ p")).toHaveText("10 credits");
-  await expect(page.getByRole("button", { name: "Buy 100 credits for $5.00" })).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Buy 75 credits for $9.90" })).toBeDisabled();
   await expect(page.getByText("Payments aren't set up yet.")).toBeVisible();
   await expect(page.getByText("No orders yet.")).toBeVisible();
   const rows = page.getByRole("table", { name: "Credit history" }).getByRole("row");
@@ -81,12 +81,12 @@ test("shows the result of a checkout the provider sent back", async ({ page }) =
 });
 
 test("checkout needs a session, then reports payments off", async ({ page, request }) => {
-  const anonymous = await request.post("/api/payment/checkout", { data: { packId: "small" } });
+  const anonymous = await request.post("/api/payment/checkout", { data: { packId: "video-1" } });
   expect(anonymous.status()).toBe(401);
 
   await signIn(page);
   const response = await page.request.post("/api/payment/checkout", {
-    data: { packId: "small", locale: "en" },
+    data: { packId: "video-1", locale: "en" },
     headers: { origin: BASE_URL },
   });
   expect(response.status()).toBe(503);

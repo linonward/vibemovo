@@ -5,6 +5,8 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 
 type Offer = { id: string; credits: number; amount: number; currency: string };
+// As on billing: rap videos the credits make, and the percentage off.
+type Pack = Offer & { videos: number; discount: number };
 // Credits are per month whatever the interval; the amount is per interval.
 type Plan = Offer & { interval: Interval };
 
@@ -14,7 +16,7 @@ export type Costs = { image: number; chat: number; videoPerSecond: number; signu
 // The public price list. Buying happens on /billing, which asks a signed-out
 // visitor to sign in first. Each link names the pack or plan, which billing
 // marks.
-export function Pricing({ plans, packs, costs }: { plans: readonly Plan[]; packs: readonly Offer[]; costs: Costs }) {
+export function Pricing({ plans, packs, costs }: { plans: readonly Plan[]; packs: readonly Pack[]; costs: Costs }) {
   const t = useTranslations("Pricing");
   const billing = useTranslations("Billing");
   const format = useFormatter();
@@ -30,7 +32,7 @@ export function Pricing({ plans, packs, costs }: { plans: readonly Plan[]; packs
 
   // One column of the packs' grid, so the plan lines up with the packs above it.
   const planList = (interval: Interval) => (
-    <ul className="grid gap-4 sm:grid-cols-3">
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {plans
         .filter((plan) => plan.interval === interval)
         .map((plan) => {
@@ -66,11 +68,19 @@ export function Pricing({ plans, packs, costs }: { plans: readonly Plan[]; packs
 
       <section aria-labelledby="pricing-packs" className="flex flex-col gap-4">
         <h2 id="pricing-packs" className="font-display text-lg font-semibold">{t("packsTitle")}</h2>
-        <ul className="grid gap-4 sm:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {packs.map((pack) => (
             <li key={pack.id} className="flex flex-col gap-3 rounded-xl border bg-card p-5">
               <h3 className="font-semibold">{credits(pack.credits)}</h3>
-              <p>{amount(price(pack))}</p>
+              <p className="flex items-baseline gap-2">
+                {amount(price(pack))}
+                {pack.discount > 0 && (
+                  <span className="text-sm font-semibold text-primary-text">
+                    {billing("save", { discount: pack.discount })}
+                  </span>
+                )}
+              </p>
+              <p className="text-sm text-muted-foreground">{billing("videos", { count: pack.videos })}</p>
               <Link
                 href={`/billing?pack=${pack.id}`}
                 aria-label={billing("buyLabel", { credits: credits(pack.credits), price: price(pack) })}

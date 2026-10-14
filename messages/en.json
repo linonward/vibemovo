@@ -407,6 +407,8 @@
     "selected": "Selected",
     "buyTitle": "Buy credits",
     "buy": "Buy",
+    "videos": "{count, plural, one {Enough for # rap video} other {Enough for # rap videos}}",
+    "save": "Save {discount}%",
     "buyLabel": "Buy {credits} for {price}",
     "disabled": "Payments aren't set up yet.",
     "checkoutError": "Couldn't start checkout. Try again.",

@@ -33,8 +33,8 @@ const props: BillingProps = {
   balance: 1200,
   enabled: true,
   packs: [
-    { id: "small", credits: 100, amount: 500, currency: "usd" },
-    { id: "large", credits: 1200, amount: 4000, currency: "usd" },
+    { id: "small", credits: 100, amount: 500, currency: "usd", videos: 1, discount: 0 },
+    { id: "large", credits: 1200, amount: 4000, currency: "usd", videos: 10, discount: 20 },
   ],
   transactions: [
     { id: "2", amount: -30, reason: "export", createdAt: new Date("2026-10-12T00:00:00Z") },
@@ -53,6 +53,16 @@ test("shows the balance, packs and past orders", () => {
   const orders = screen.getByRole("table", { name: "Orders" });
   expect(within(orders).getByText("Paid")).toBeTruthy();
   expect(within(orders).getByText("$40.00")).toBeTruthy();
+});
+
+test("says how many rap videos each pack makes and what it saves", () => {
+  renderWithIntl(<Billing {...props} />);
+
+  const [small, large] = screen.getAllByRole("listitem");
+  expect(small.textContent).toContain("Enough for 1 rap video");
+  expect(small.textContent).not.toContain("Save");
+  expect(large.textContent).toContain("Enough for 10 rap videos");
+  expect(large.textContent).toContain("Save 20%");
 });
 
 test("lists the credit history on the same page", () => {
