@@ -60,7 +60,10 @@ test("the tools link to where each one lives", () => {
   ).toEqual(["Text to image", "Image to video", "Rap duo"]);
   expect(
     within(tools).getAllByRole("link").map((link) => link.getAttribute("href")),
-  ).toEqual(["/en/images", "/en/videos", "/en/videos/rap"]);
+  ).toEqual(["/en/images", "/en/videos", "/en/ai-rap-video-generator"]);
+  // Crawlers can't follow the rap duo tool behind sign-in; its public page
+  // names what it is.
+  expect(within(tools).getByRole("link", { name: "See the AI rap video generator" })).toBeDefined();
 });
 
 test("the steps go from a prompt to a video", () => {
