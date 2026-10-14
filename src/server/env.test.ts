@@ -355,6 +355,13 @@ test("turns Vercel Web Analytics on with 1 only", () => {
   ]);
 });
 
+test("turns Vercel Speed Insights on with 1 only", () => {
+  expect(validateEnv({ ...base, NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS: "1" })).toEqual([]);
+  expect(validateEnv({ ...base, NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS: "true" })).toEqual([
+    "NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS: must be 1, or empty",
+  ]);
+});
+
 test("accepts every payment and video provider the code registers", () => {
   for (const id of PROVIDER_IDS) {
     expect(validateEnv({ ...base, PAYMENT_PROVIDER: id }).filter((p) => p.startsWith("PAYMENT_PROVIDER:"))).toEqual([]);

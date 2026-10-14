@@ -52,6 +52,7 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `SENTRY_ORG`         | With `SENTRY_AUTH_TOKEN` | Sentry organization slug                              |
 | `SENTRY_PROJECT`     | With `SENTRY_AUTH_TOKEN` | Sentry project slug                                   |
 | `NEXT_PUBLIC_VERCEL_ANALYTICS` | No      | `1` turns Vercel Web Analytics on. Empty turns it off. Read at build time |
+| `NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS` | No | `1` turns Vercel Speed Insights on. Empty turns it off. Read at build time |
 | `GOOGLE_CLIENT_ID`   | No                | Google OAuth client. Google sign-in is off unless both are set |
 | `GOOGLE_CLIENT_SECRET` | No              | Google OAuth client secret                                     |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | No    | Cloudflare Turnstile site key for magic-link sign-in. Read at build time. Turnstile is off unless both are set |
@@ -528,7 +529,7 @@ The `Dockerfile` builds a single image that runs the app with Node.js on any hos
 
 7. Point Resend, Google sign-in and your payment provider at the domain ([Deploy to Vercel § Connect the services](#4-connect-the-services)).
 
-Vercel Web Analytics works only on Vercel: leave `NEXT_PUBLIC_VERCEL_ANALYTICS` empty. The build sets `BUILD_STANDALONE`, which makes `next build` write `.next/standalone`; other builds leave it unset.
+Vercel Web Analytics and Speed Insights work only on Vercel: leave `NEXT_PUBLIC_VERCEL_ANALYTICS` and `NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS` empty. The build sets `BUILD_STANDALONE`, which makes `next build` write `.next/standalone`; other builds leave it unset.
 
 ## Error tracking (Sentry)
 
@@ -549,6 +550,16 @@ Counts page views and visitors without cookies, so it needs no consent banner. I
 3. Redeploy. The flag is read at build time.
 
 Pages then load `/_vercel/insights/script.js`. The app sends no custom events.
+
+## Performance (Vercel Speed Insights)
+
+Measures Core Web Vitals from real visits. It works only on Vercel and is off by default:
+
+1. In the Vercel project, open **Speed Insights** and select **Enable**.
+2. Set `NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS=1` for Production.
+3. Redeploy. The flag is read at build time.
+
+Pages then load `/_vercel/speed-insights/script.js`.
 
 ## Troubleshooting
 
