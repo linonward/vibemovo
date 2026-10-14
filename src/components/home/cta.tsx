@@ -6,7 +6,7 @@ import { Glow } from "./section-heading";
 const POINTS = ["1", "2", "3"] as const;
 
 // docs/DESIGN.md, Final CTA. Replace the glow with a full-bleed image or
-// video of your product.
+// video made with the product.
 export function Cta() {
   const t = useTranslations("Home.cta");
 

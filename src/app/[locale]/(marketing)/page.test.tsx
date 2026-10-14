@@ -10,17 +10,14 @@ test("hero headline is the page's only h1", () => {
 
   expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   expect(
-    screen.getByRole("heading", {
-      level: 1,
-      name: "Everything before your first feature, done.",
-    }),
+    screen.getByRole("heading", { level: 1, name: "Write a line. Watch it move." }),
   ).toBeDefined();
 });
 
 test("both calls to action lead to sign-in", () => {
   renderWithIntl(<Page />);
 
-  const links = screen.getAllByRole("link", { name: /Create your account/ });
+  const links = screen.getAllByRole("link", { name: /Start creating free/ });
   expect(links.map((link) => link.getAttribute("href"))).toEqual([
     "/en/sign-in",
     "/en/sign-in",
@@ -31,44 +28,48 @@ test("renders in Chinese", () => {
   renderWithIntl(<Page />, "zh");
 
   expect(
-    screen.getByRole("heading", { level: 1, name: "第一个功能之前的事，都做好了。" }),
+    screen.getByRole("heading", { level: 1, name: "写一句话，看它动起来。" }),
   ).toBeDefined();
 });
 
-test("the closing call to action lists three points", () => {
+test("the hero preview goes from a prompt to an image to a video", () => {
   renderWithIntl(<Page />);
 
-  const cta = screen.getByRole("region", { name: "Ready when you are." });
-  expect(within(cta).getAllByRole("listitem").map((item) => item.textContent)).toEqual([
-    "Magic-link sign-in",
-    "Credits and payments",
-    "English and 中文",
-  ]);
+  const preview = screen.getByRole("figure", { name: "Example generation" });
+  expect(within(preview).getByText(/A paper boat drifting/)).toBeDefined();
+  expect(within(preview).getByText("Image")).toBeDefined();
+  expect(within(preview).getByText("Video")).toBeDefined();
 });
 
-test("the features list what the template ships", () => {
+test("the prompt ideas name what each one makes", () => {
   renderWithIntl(<Page />);
 
-  const features = screen.getByRole("region", { name: "What's already built" });
+  const ideas = screen.getByRole("region", { name: "Start from a prompt like these" });
+  const items = within(ideas).getAllByRole("listitem");
+  expect(items).toHaveLength(6);
+  expect(within(items[0]).getByText("Video")).toBeDefined();
+  expect(within(items[4]).getByText("Rap duo")).toBeDefined();
+});
+
+test("the tools link to where each one lives", () => {
+  renderWithIntl(<Page />);
+
+  const tools = screen.getByRole("region", { name: "Three ways to create" });
   expect(
-    within(features).getAllByRole("heading", { level: 3 }).map((h) => h.textContent),
-  ).toEqual([
-    "Sign in without passwords",
-    "Credits and payments",
-    "AI chat, images and video",
-    "Notifications and admin",
-    "English and 中文",
-    "Accounts and legal pages",
-  ]);
+    within(tools).getAllByRole("heading", { level: 3 }).map((h) => h.textContent),
+  ).toEqual(["Text to image", "Image to video", "Rap duo"]);
+  expect(
+    within(tools).getAllByRole("link").map((link) => link.getAttribute("href")),
+  ).toEqual(["/en/images", "/en/videos", "/en/videos/rap"]);
 });
 
-test("the steps go from sign-in to creating", () => {
+test("the steps go from a prompt to a video", () => {
   renderWithIntl(<Page />);
 
-  const steps = screen.getByRole("region", { name: "How it works" });
+  const steps = screen.getByRole("region", { name: "From words to motion in three steps" });
   expect(
     within(steps).getAllByRole("heading", { level: 3 }).map((h) => h.textContent),
-  ).toEqual(["Sign in", "Get free credits", "Create"]);
+  ).toEqual(["Write a prompt", "Pick the best image", "Make it move"]);
 });
 
 test("FAQ questions are numbered", () => {
@@ -78,4 +79,15 @@ test("FAQ questions are numbered", () => {
   expect(within(faq).getByText("01")).toBeDefined();
   expect(within(faq).getByText("05")).toBeDefined();
   expect(within(faq).getByText("How do credits work?")).toBeDefined();
+});
+
+test("the closing call to action lists three points", () => {
+  renderWithIntl(<Page />);
+
+  const cta = screen.getByRole("region", { name: "Your first scene is one prompt away." });
+  expect(within(cta).getAllByRole("listitem").map((item) => item.textContent)).toEqual([
+    "Free credits on sign-up",
+    "Images and video",
+    "English and 中文",
+  ]);
 });

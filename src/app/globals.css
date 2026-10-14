@@ -259,6 +259,54 @@
     }
   }
 
+  /* The hero's generation console (docs/DESIGN.md, Motion): the progress
+     bar fills, a band of light sweeps the frame, the frame drifts slowly
+     and the prompt caret blinks. Transform and opacity only. */
+  .render-progress {
+    transform-origin: left;
+    animation: render-fill 6s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+  }
+  .render-scan {
+    animation: render-scan 3s ease-in-out infinite;
+  }
+  .scene-drift {
+    animation: scene-drift 12s ease-in-out infinite alternate;
+  }
+  .render-caret {
+    animation: render-caret 1s steps(1) infinite;
+  }
+  @keyframes render-fill {
+    from {
+      scale: 0.08 1;
+    }
+    85%,
+    to {
+      scale: 1 1;
+    }
+  }
+  @keyframes render-scan {
+    from {
+      translate: -100% 0;
+    }
+    to {
+      translate: 300% 0;
+    }
+  }
+  @keyframes scene-drift {
+    from {
+      scale: 1.04;
+    }
+    to {
+      scale: 1.12;
+      translate: -2% -1%;
+    }
+  }
+  @keyframes render-caret {
+    50% {
+      opacity: 0;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .icon-nudge,
     .icon-turn,
@@ -266,8 +314,18 @@
       transition: none;
     }
     .border-glow::before,
-    .border-glow::after {
+    .border-glow::after,
+    .render-progress,
+    .render-scan,
+    .scene-drift,
+    .render-caret {
       animation: none;
+    }
+    .render-scan {
+      opacity: 0;
+    }
+    .render-progress {
+      scale: 0.62 1;
     }
   }
 }

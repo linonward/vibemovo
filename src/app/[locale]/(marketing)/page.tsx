@@ -6,6 +6,7 @@ import { Faq } from "@/components/home/faq";
 import { Features } from "@/components/home/features";
 import { Hero } from "@/components/home/hero";
 import { HowItWorks } from "@/components/home/how-it-works";
+import { Ideas } from "@/components/home/ideas";
 import type { Locale } from "@/i18n/routing";
 import { jsonLd, languageAlternates, website } from "@/lib/seo";
 
@@ -25,6 +26,7 @@ export default function Home() {
     <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
       <SiteData />
       <Hero />
+      <Ideas />
       <Features />
       <HowItWorks />
       <Faq />

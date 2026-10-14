@@ -6,137 +6,143 @@
   },
   "Home": {
     "hero": {
-      "eyebrow": "v0.1 · open template",
-      "title": "Everything before your first feature, done.",
-      "body": "Sign-in, credits, payments, AI generation and two languages are already wired up. Replace this copy with what your product does.",
-      "cta": "Create your account",
-      "secondary": "See how it works"
+      "eyebrow": "AI images and video",
+      "title": "Write a line. Watch it move.",
+      "body": "Describe a scene and get an image. Keep the one you like and turn it into a 5 or 10 second video.",
+      "cta": "Start creating free",
+      "secondary": "See prompt ideas",
+      "points": {
+        "1": "Free credits on sign-up",
+        "2": "No password"
+      }
     },
-    "mock": {
-      "label": "Product screenshot placeholder",
-      "overview": "Overview",
-      "nav": {
-        "1": "Overview",
-        "2": "Members",
-        "3": "Billing",
-        "4": "Settings"
-      },
-      "stats": {
+    "console": {
+      "label": "Example generation",
+      "title": "New generation",
+      "credits": "9 credits",
+      "prompt": "Prompt",
+      "promptText": "A paper boat drifting through a neon-lit canal at dusk, soft rain, cinematic",
+      "image": "Image",
+      "imageMeta": "16:9 · 1696×960",
+      "done": "Done",
+      "video": "Video",
+      "videoMeta": "5 s · 1080p",
+      "rendering": "Rendering",
+      "time": "00:03 / 00:05"
+    },
+    "ideas": {
+      "eyebrow": "Prompt ideas",
+      "title": "Start from a prompt like these",
+      "body": "Copy one, change a word, and see where it goes.",
+      "items": {
         "1": {
-          "label": "Users",
-          "value": "1,284"
+          "prompt": "Paper boat in a neon canal, rain at dusk",
+          "kind": "Video",
+          "meta": "10 s"
         },
         "2": {
-          "label": "Retention",
-          "value": "47.2%"
+          "prompt": "Ceramic mug on marble, studio light",
+          "kind": "Image",
+          "meta": "1:1"
         },
         "3": {
-          "label": "Uptime",
-          "value": "99.94%"
-        }
-      },
-      "activity": "Recent sign-ins",
-      "rows": {
-        "1": {
-          "email": "priya.mehta@meridian.dev",
-          "method": "Magic link",
-          "time": "09:42"
+          "prompt": "Desert road at golden hour, slow push forward",
+          "kind": "Video",
+          "meta": "5 s"
         },
-        "2": {
-          "email": "lars.eriksson@hokkaido.co",
-          "method": "Google",
-          "time": "09:17"
+        "4": {
+          "prompt": "Koi under lily pads, seen from above",
+          "kind": "Image",
+          "meta": "3:4"
         },
-        "3": {
-          "email": "nia.okafor@vantage.bio",
-          "method": "Magic link",
-          "time": "08:55"
+        "5": {
+          "prompt": "Two friends trading verses on a rooftop",
+          "kind": "Rap duo",
+          "meta": "15 s"
+        },
+        "6": {
+          "prompt": "Pine forest in fog at blue hour",
+          "kind": "Image",
+          "meta": "16:9"
         }
       }
     },
     "features": {
-      "title": "What's already built",
+      "eyebrow": "Tools",
+      "title": "Three ways to create",
       "items": {
         "1": {
-          "title": "Sign in without passwords",
-          "body": "Magic links by email through Resend, or one click with Google. New users get an account on first sign-in."
+          "title": "Text to image",
+          "body": "Write what you want to see. Pick one of five shapes, from square to 9:16 for phones.",
+          "meta": "1 credit per image",
+          "link": "Open images"
         },
         "2": {
-          "title": "Credits and payments",
-          "body": "Credit packs and monthly or yearly plans through Stripe or Waffo. Every credit change goes into a ledger the user can read."
+          "title": "Image to video",
+          "body": "Upload a photo or use one you made. Describe the motion and choose 5 or 10 seconds.",
+          "meta": "5 or 10 s · up to 1080p",
+          "link": "Open videos"
         },
         "3": {
-          "title": "AI chat, images and video",
-          "body": "Chat with DeepSeek, turn prompts into images and images into videos. A failed job gives its credits back."
-        },
-        "4": {
-          "title": "Notifications and admin",
-          "body": "Users hear when a job finishes or a payment arrives. Admins manage users, orders, broadcasts and metrics."
-        },
-        "5": {
-          "title": "English and 中文",
-          "body": "Every page, title and error message ships in both languages, with a blog, a sitemap and llms.txt."
-        },
-        "6": {
-          "title": "Accounts and legal pages",
-          "body": "Users delete their own account. Privacy, terms and refund templates are linked from every footer."
+          "title": "Rap duo",
+          "body": "Two photos and two names become a 15-second rap video. Each person raps a line written for them.",
+          "meta": "15 s · 720p",
+          "link": "Open rap duo"
         }
-      },
-      "eyebrow": "What's included"
+      }
     },
     "steps": {
-      "title": "How it works",
+      "eyebrow": "How it works",
+      "title": "From words to motion in three steps",
       "items": {
         "1": {
-          "title": "Sign in",
-          "body": "Enter your email or continue with Google. There's no password to create."
+          "title": "Write a prompt",
+          "body": "Describe the subject, the light and the mood. Plain words work."
         },
         "2": {
-          "title": "Get free credits",
-          "body": "Every new account starts with free credits to try chat and images."
+          "title": "Pick the best image",
+          "body": "Make a few and keep the one that fits. A failed image gives its credit back."
         },
         "3": {
-          "title": "Create",
-          "body": "Chat, generate images and turn them into videos. Buy more credits when you need them."
+          "title": "Make it move",
+          "body": "Turn the image into a video. We tell you when it's ready, so you can leave the page."
         }
-      },
-      "eyebrow": "Three steps",
-      "step": "Step {n}"
+      }
     },
     "faq": {
+      "eyebrow": "FAQ",
       "title": "Questions",
       "items": {
         "1": {
-          "title": "Do I need a password?",
-          "body": "No. We email you a sign-in link, or you can use your Google account."
+          "title": "What can I make?",
+          "body": "Images from a text prompt, videos from an image, and 15-second rap duo videos from two photos."
         },
         "2": {
           "title": "How do credits work?",
-          "body": "Chat messages, images and seconds of video each cost credits. New accounts start with free credits. Buy a pack or subscribe on the Credits & billing page. Credits never expire, and a failed generation gives them back."
+          "body": "Images and seconds of video each cost credits. New accounts start with free credits. Buy a pack or subscribe on the Credits & billing page. Credits never expire, and a failed generation gives them back."
         },
         "3": {
-          "title": "Can I delete my account?",
-          "body": "Yes. Open your profile and choose Delete account. It's permanent and signs you out everywhere."
+          "title": "How long does a video take?",
+          "body": "Usually a few minutes. You can close the page: you get a notification when the video is ready."
         },
         "4": {
-          "title": "Which languages are supported?",
-          "body": "English and Chinese. Switch at the top of any page; your choice is remembered."
+          "title": "Do I need a password?",
+          "body": "No. We email you a sign-in link, or you can use your Google account."
         },
         "5": {
           "title": "How do I contact support?",
           "body": "Email <email></email>. We reply within 3 business days."
         }
-      },
-      "eyebrow": "FAQ"
+      }
     },
     "cta": {
-      "title": "Ready when you are.",
-      "body": "It takes one email to start.",
-      "button": "Create your account",
       "eyebrow": "Start free",
+      "title": "Your first scene is one prompt away.",
+      "body": "Sign in with your email and try it on free credits.",
+      "button": "Start creating free",
       "points": {
-        "1": "Magic-link sign-in",
-        "2": "Credits and payments",
+        "1": "Free credits on sign-up",
+        "2": "Images and video",
         "3": "English and 中文"
       }
     }
