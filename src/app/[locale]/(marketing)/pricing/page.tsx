@@ -13,8 +13,8 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/pricing"
   const { locale } = await params;
   const t = await getTranslations("Pricing");
   return {
-    title: t("title"),
-    description: t("description"),
+    title: t("metaTitle"),
+    description: t("metaDescription"),
     alternates: { canonical: `/${locale}/pricing`, languages: languageAlternates("/pricing") },
   };
 }

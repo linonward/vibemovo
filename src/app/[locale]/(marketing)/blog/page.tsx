@@ -7,8 +7,8 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/blog">):
   const { locale } = await params;
   const t = await getTranslations("Blog");
   return {
-    title: t("title"),
-    description: t("description"),
+    title: t("metaTitle"),
+    description: t("metaDescription"),
     alternates: { canonical: `/${locale}/blog`, languages: languageAlternates("/blog") },
   };
 }

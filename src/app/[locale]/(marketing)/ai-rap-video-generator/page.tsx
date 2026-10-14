@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/ai-rap-v
   const { locale } = await params;
   const t = await getTranslations("RapLanding");
   return {
-    title: t("title"),
+    title: t("metaTitle"),
     description: t("description"),
     alternates: { canonical: `/${locale}${PATH}`, languages: languageAlternates(PATH) },
   };

@@ -98,6 +98,22 @@ test("the home, legal and rap video pages name their canonical URL and every loc
   }
 });
 
+// Search titles lead with the keyword and end with the brand.
+test("marketing pages carry keyword-first titles", async ({ page }) => {
+  const titles = {
+    "/en/ai-rap-video-generator": "AI Rap Video Generator: Two Photos to a Rap Video | vibemovo",
+    "/zh": "AI 图像与视频生成器：照片一键变视频 | vibemovo",
+    "/zh/pricing": "AI 视频生成器价格：积分包与订阅方案 | vibemovo",
+    "/zh/blog": "AI 视频教程：照片变视频与说唱视频 | vibemovo",
+    "/zh/ai-rap-video-generator": "AI 说唱视频生成器：用照片做说唱视频 | vibemovo",
+  };
+  for (const [path, title] of Object.entries(titles)) {
+    await page.goto(path);
+
+    await expect(page, path).toHaveTitle(title);
+  }
+});
+
 // The page's own hreflang links are the only ones. A Link header would also
 // name translations that don't exist, such as a Chinese photo-to-video-ai.
 test("responses carry no hreflang Link header", async ({ request }) => {
