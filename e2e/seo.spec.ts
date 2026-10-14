@@ -164,7 +164,7 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   const lines = text.split("\n");
   expect(lines[0]).toBe("# vibemovo");
   expect(lines[2]).toBe(
-    "> Turn a prompt into an image and an image into a video. vibemovo makes AI images, image-to-video clips and rap duo videos. New accounts start with free credits.",
+    "> Make AI images from text and turn photos into videos, including 15-second rap duo videos. Sign in with email or Google and start with free credits.",
   );
   expect(text).toContain("- Text to image: Write what you want to see.");
   expect(text).toContain("- Image to video: Upload a photo or use one you made.");

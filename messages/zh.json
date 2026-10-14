@@ -1,9 +1,9 @@
 {
   "Metadata": {
     "title": "vibemovo",
-    "homeTitle": "vibemovo – AI 图像与视频生成",
+    "homeTitle": "AI 图像与视频生成器：照片一键变视频 | vibemovo",
     "tagline": "AI 图像与视频生成",
-    "description": "输入提示词生成图片，再把图片变成视频。vibemovo 支持 AI 生图、图生视频和说唱双人视频，新账号自带免费积分。"
+    "description": "输入文字生成 AI 图片，把照片变成视频，还能制作 15 秒双人说唱视频。用邮箱或 Google 登录，新账号自带免费积分。"
   },
   "Home": {
     "hero": {
