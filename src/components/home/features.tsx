@@ -7,10 +7,12 @@ import { SectionHeading } from "./section-heading";
 
 // The three tools. Text to image leads with a large panel; the other two
 // stack beside it (docs/DESIGN.md, Home). Tiles follow the signal order.
+// The rap duo links its public page, which crawlers can follow; the tool
+// itself is behind sign-in.
 const TOOLS = [
   ["1", ImageIcon, "bg-primary-text/12 text-primary-text", "/images"],
   ["2", Film, "bg-amber-400/12 text-amber-600 dark:text-amber-300", "/videos"],
-  ["3", Mic, "bg-violet-400/12 text-violet-600 dark:text-violet-300", "/videos/rap"],
+  ["3", Mic, "bg-violet-400/12 text-violet-600 dark:text-violet-300", "/ai-rap-video-generator"],
 ] as const;
 
 export function Features() {
