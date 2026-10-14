@@ -9,13 +9,13 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
   expect(response.status()).toBe(200);
   const xml = await response.text();
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/blog", "/blog/welcome"];
+  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/blog"];
   expect(locs.sort()).toEqual(
     [
       ...pages.flatMap((page) => [`${baseURL}/en${page}`, `${baseURL}/zh${page}`]),
       // English only, so no Chinese entry.
-      `${baseURL}/en/blog/writing-a-post`,
       `${baseURL}/en/blog/ai-rap-video-two-people`,
+      `${baseURL}/en/blog/photo-to-video-ai`,
     ].sort(),
   );
   expect(xml).toContain(`hreflang="zh" href="${baseURL}/zh/privacy"`);
@@ -34,29 +34,25 @@ test("robots.txt keeps crawlers out of the API and points to the sitemap", async
 });
 
 test("a post names its canonical URL and only the translations that exist", async ({ page, baseURL }) => {
-  await page.goto("/en/blog/welcome");
+  await page.goto("/en/blog/photo-to-video-ai");
 
   const head = page.locator("head");
-  await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/en/blog/welcome`);
-  await expect(head.locator('link[rel="alternate"][hreflang="zh"]')).toHaveAttribute("href", `${baseURL}/zh/blog/welcome`);
-  await expect(head.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
-
-  await page.goto("/en/blog/writing-a-post");
-  await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/en/blog/writing-a-post`);
+  await expect(head.locator('link[rel="canonical"]')).toHaveAttribute("href", `${baseURL}/en/blog/photo-to-video-ai`);
   await expect(head.locator('link[rel="alternate"][hreflang="zh"]')).toHaveCount(0);
+  await expect(head.locator('meta[property="og:type"]')).toHaveAttribute("content", "article");
 });
 
 test("a post describes itself to search engines as a BlogPosting", async ({ page, baseURL }) => {
-  await page.goto("/en/blog/welcome");
+  await page.goto("/en/blog/photo-to-video-ai");
 
   const data = JSON.parse((await page.locator('script[type="application/ld+json"]').textContent())!);
   expect(data).toMatchObject({
     "@type": "BlogPosting",
-    headline: "Welcome to the blog",
-    datePublished: "2026-10-01",
-    keywords: ["announcements"],
+    headline: "How to Turn a Photo into a Video with AI",
+    datePublished: "2026-10-14",
+    keywords: ["guides", "video"],
     inLanguage: "en",
-    url: `${baseURL}/en/blog/welcome`,
+    url: `${baseURL}/en/blog/photo-to-video-ai`,
   });
   // Only what the page shows: the same title and description.
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(data.headline);
@@ -103,9 +99,9 @@ test("the home, legal and rap video pages name their canonical URL and every loc
 });
 
 // The page's own hreflang links are the only ones. A Link header would also
-// name translations that don't exist, such as a Chinese writing-a-post.
+// name translations that don't exist, such as a Chinese photo-to-video-ai.
 test("responses carry no hreflang Link header", async ({ request }) => {
-  for (const path of ["/en", "/en/pricing", "/en/blog/writing-a-post"]) {
+  for (const path of ["/en", "/en/pricing", "/en/blog/photo-to-video-ai"]) {
     const response = await request.get(path);
 
     expect(response.headers().link ?? "", path).not.toContain("hreflang");
@@ -152,7 +148,7 @@ test("signed-in pages stay out of search results", async ({ page }) => {
 // afterwards, so each run asks for paths no earlier request has seen.
 test("an unknown post, tag or translation answers 404 on the first request", async ({ request }) => {
   const unseen = `unseen-${Date.now()}`;
-  for (const path of [`/en/blog/${unseen}`, `/en/blog/tags/${unseen}`, `/zh/blog/writing-a-post`]) {
+  for (const path of [`/en/blog/${unseen}`, `/en/blog/tags/${unseen}`, `/zh/blog/photo-to-video-ai`]) {
     const response = await request.get(path);
 
     expect(response.status(), path).toBe(404);
@@ -178,9 +174,8 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   expect(text).toContain(`- [Pricing](${baseURL}/en/pricing): Pay with credits`);
   expect(text).toContain(`- [AI Rap Video Generator from Photos](${baseURL}/en/ai-rap-video-generator): Turn two photos`);
   expect(text).toContain(`- [Blog](${baseURL}/en/blog): `);
-  expect(text).toContain(`](${baseURL}/en/blog/welcome): `);
-  expect(text).toContain(`](${baseURL}/zh/blog/welcome): `);
-  expect(text).not.toContain(`${baseURL}/zh/blog/writing-a-post`);
+  expect(text).toContain(`](${baseURL}/en/blog/photo-to-video-ai): `);
+  expect(text).not.toContain(`${baseURL}/zh/blog/photo-to-video-ai`);
   expect(text).toContain(`- [Sitemap](${baseURL}/sitemap.xml)`);
   // No ICU or markup left over.
   expect(text).not.toMatch(/[{}]|<\/?\w/);
@@ -202,7 +197,7 @@ test("every public page shares a preview image", async ({ page, request }) => {
 });
 
 test("a post shares a preview image of its own", async ({ page, request, baseURL }) => {
-  for (const path of ["/en/blog/welcome", "/zh/blog/welcome"]) {
+  for (const path of ["/en/blog/photo-to-video-ai", "/en/blog/ai-rap-video-two-people"]) {
     await page.goto(path);
 
     const image = await page.locator('head meta[property="og:image"]').getAttribute("content");

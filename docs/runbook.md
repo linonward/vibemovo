@@ -357,7 +357,6 @@ Posts are MDX files in `content/blog/<locale>/<slug>.mdx`; the file name is the 
 - `/blog` lists posts newest first. A missing title, description or `YYYY-MM-DD` date fails the build, and so does a post called `tags`.
 - Posts appear in the sitemap and `/llms.txt`. Each post's page names its canonical URL, links only the translations that exist, carries schema.org `BlogPosting` JSON-LD (`blogPosting` in `src/lib/seo.ts`) and has its own preview image.
 - Tags are optional words in the post's language, such as `guides` or `公告`, without `/` or `%`. Each links to `/blog/tags/<tag>`, which lists the locale's posts with it and stays out of the sitemap.
-- Replace the sample posts in `content/blog/`.
 
 ## Languages
 
