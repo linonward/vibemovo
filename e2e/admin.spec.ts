@@ -29,7 +29,11 @@ test("non-admins see no admin link and get the 404 page", async ({ page }) => {
 
     await expect(page.getByRole("heading", { level: 1, name: "Page not found" })).toBeVisible();
     await expect(page.getByRole("table")).toHaveCount(0);
-    await expect(page.locator('head meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    // The dashboard layout and the 404 page each add a noindex tag.
+    for (const robots of await page.locator('head meta[name="robots"]').all()) {
+      await expect(robots).toHaveAttribute("content", /noindex/);
+    }
+    await expect(page.locator('head meta[name="robots"]').first()).toBeAttached();
   }
 });
 

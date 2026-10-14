@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getLocale } from "next-intl/server";
 import { cookies } from "next/headers";
 import { Suspense } from "react";
@@ -13,6 +14,10 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { redirect } from "@/i18n/navigation";
 import { isAdmin } from "@/server/admin/access";
 import { unreadCount } from "@/server/notifications";
+
+// Signed-out crawlers are redirected to sign-in; noindex keeps these pages
+// out of search results even if that redirect fails.
+export const metadata: Metadata = { robots: { index: false } };
 
 // Signed-in area with a sidebar shell. src/proxy.ts redirects early on a
 // missing cookie; this layout verifies the session itself, behind Suspense
