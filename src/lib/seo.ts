@@ -61,7 +61,8 @@ export function website(locale: Locale, description: string, base?: string) {
         name,
         description,
         inLanguage: locale,
-        ...(base && { url: url(`/${locale}`) }),
+        // One WebSite identity for all languages, at the domain root.
+        ...(base && { url: url("/") }),
         publisher: organization ? { "@id": organization } : { name },
       },
     ],
