@@ -38,7 +38,7 @@ Pine on near-black has a contrast of 2.9:1, so on dark surfaces it is a fill onl
 
 | Token | Dark | Light | Notes |
 |---|---|---|---|
-| `--primary` | `#1F634A` (oklch 0.45 0.08 165) | same | Fills: primary buttons, the brand dot, the avatar |
+| `--primary` | `#1F634A` (oklch 0.45 0.08 165) | same | Fills: primary buttons, the avatar |
 | `--primary-hover` | `#358264` (oklch 0.55 0.09 165) | `#0A553D` (oklch 0.40 0.08 165) | Lighter on dark, darker on light |
 | `--primary-foreground` | `#F7FBF9` (oklch 0.985 0.006 165) | same | Text on pine (6.8:1) |
 | `--primary-text` | `#62B995` (oklch 0.72 0.1 165) | `#1F634A` | Pine text, icons, links, eyebrows, active nav |
@@ -46,6 +46,10 @@ Pine on near-black has a contrast of 2.9:1, so on dark surfaces it is a fill onl
 | `--ring` | `#62B995` | `#1F634A` | Focus ring. Equals `--primary-text` |
 
 For a pine tint, use `--primary-text` at low alpha (`bg-primary-text/10`); pine itself at low alpha disappears on near-black.
+
+| Token | Dark | Light | Notes |
+|---|---|---|---|
+| `--film` | `#F0B04A` | `#D9901F` | Film amber, the projector light. Brand only: the logo's viewfinder and the preview image. Not for UI text or buttons |
 
 ### 2.3 Signal colors
 
@@ -165,7 +169,7 @@ Base card: `rounded-xl border bg-card p-5`. Empty states use `rounded-xl border 
 
 ### Site header and footer (`layout/`)
 
-- Header: `Brand` (pine dot and the project name in `font-display font-semibold`), then the Pricing and Blog links, the language menu and an account button: Sign in for visitors, Dashboard once signed in. Links are `text-sm font-semibold` and underline on hover; the account button is a primary button, `h-9 px-2.5` below `sm`. Below `sm` the Blog link hides, the language menu shows only its icon and the gaps shrink from 24px to 8px, so the header fits a 320px phone.
+- Header: `Brand` (the logo mark (7.1) and the project name in `font-display font-semibold`), then the Pricing and Blog links, the language menu and an account button: Sign in for visitors, Dashboard once signed in. Links are `text-sm font-semibold` and underline on hover; the account button is a primary button, `h-9 px-2.5` below `sm`. Below `sm` the Blog link hides, the language menu shows only its icon and the gaps shrink from 24px to 8px, so the header fits a 320px phone.
 - Footer: brand and blurb, then link columns (Product, Support, Legal) with `.eyebrow` titles and the theme switcher; a bottom bar with the copyright in `text-xs uppercase tracking-[0.08em]`.
 
 ### Theme switcher (`layout/theme-switcher.tsx`)
@@ -197,6 +201,12 @@ Posts list as base cards: date, a card title (3) that links the whole card, desc
 - Stroke width 1.75, set once on `svg.lucide` in `globals.css`.
 - Sizes: 16px in buttons (the button default), 18px in sidebar items, 20px in tiles.
 - Icons are `aria-hidden` by default; give icon-only buttons an `aria-label`.
+
+### 7.1 Logo
+
+- **Mark** (`layout/logo-mark.tsx`): four rounded viewfinder corners in `--film` around the brand dot in `--primary-text`, which leaves a short `--primary-text/35` trail to its left: a frame, and a picture that moves. 32-unit grid, 3-unit strokes. Shown at 24px (`size-6`) next to the name.
+- **Favicon** (`src/app/icon.svg`, `favicon.ico`, `apple-icon.png`): the dark-theme mark on a `#0D0D0D` tile with a 7-unit radius, so it reads on light and dark browser tabs.
+- **Preview image** (`src/app/_lib/og-image.tsx`): film strip perforations along the top and bottom edges, lit in `--film`; the mark and the name, then the title and description, on the dark canvas.
 
 ## 8. Motion
 

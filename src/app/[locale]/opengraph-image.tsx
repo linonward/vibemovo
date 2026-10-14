@@ -16,5 +16,5 @@ export function generateStaticParams() {
 export default async function Image({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale: locale as Locale, namespace: "Metadata" });
-  return ogImage({ title: t("title"), description: t("description"), locale });
+  return ogImage({ title: t("tagline"), description: t("description"), locale });
 }
