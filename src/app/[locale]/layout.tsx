@@ -35,7 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
     // Resolves relative canonical and hreflang URLs. Prerendered pages bake
     // it in, so set BETTER_AUTH_URL when building.
     metadataBase: process.env.BETTER_AUTH_URL ? new URL(process.env.BETTER_AUTH_URL) : undefined,
-    title: { default: t("title"), template: `%s · ${t("title")}` },
+    title: { default: t("title"), template: `%s | ${t("title")}` },
     description: t("description"),
   };
 }

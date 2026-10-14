@@ -210,6 +210,8 @@
   },
   "Blog": {
     "title": "Blog",
+    "metaTitle": "AI Video Guides: Photo to Video and Rap Videos",
+    "metaDescription": "Step-by-step guides for making AI videos with vibemovo: how to turn a photo into a video, and how to make a rap duo video from two photos.",
     "eyebrow": "Blog",
     "description": "Notes on what we're building and how to use it.",
     "empty": "No posts yet.",
@@ -219,6 +221,8 @@
   },
   "Pricing": {
     "title": "Pricing",
+    "metaTitle": "AI Video Generator Pricing: Credit Packs & Plans",
+    "metaDescription": "Pay only for what you make with credits. Buy a one-time pack or subscribe for monthly credits. Credits never expire, and failed generations are refunded.",
     "eyebrow": "Pricing",
     "description": "Pay with credits for what you use. Subscribe for credits every month, or buy a pack once.",
     "price": "<amount>{price}</amount> per month",
@@ -237,6 +241,7 @@
   "RapLanding": {
     "nav": "AI rap videos",
     "title": "AI Rap Video Generator from Photos",
+    "metaTitle": "AI Rap Video Generator: Two Photos to a Rap Video",
     "description": "Turn two photos and two names into a 15-second rap video. vibemovo writes the lyrics and makes the beat, the vocals and the lip sync.",
     "hero": {
       "eyebrow": "Rap duo",

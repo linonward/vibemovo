@@ -210,6 +210,8 @@
   },
   "Blog": {
     "title": "博客",
+    "metaTitle": "AI 视频教程：照片变视频与说唱视频",
+    "metaDescription": "用 vibemovo 制作 AI 视频的分步教程：怎样把照片变成视频，以及怎样用两张照片做双人说唱视频。",
     "eyebrow": "博客",
     "description": "关于我们在做什么、以及如何使用它的文章。",
     "empty": "还没有文章。",
@@ -219,6 +221,8 @@
   },
   "Pricing": {
     "title": "价格",
+    "metaTitle": "AI 视频生成器价格：积分包与订阅方案",
+    "metaDescription": "用积分按用量付费。可以一次性购买积分包，也可以订阅每月获得积分。积分永不过期，生成失败会自动退回积分。",
     "eyebrow": "价格",
     "description": "用积分按用量付费。订阅每月获得积分，或一次性购买积分包。",
     "price": "每月 <amount>{price}</amount>",
@@ -237,6 +241,7 @@
   "RapLanding": {
     "nav": "AI 说唱视频",
     "title": "AI 说唱视频生成器：用照片做说唱视频",
+    "metaTitle": "AI 说唱视频生成器：用照片做说唱视频",
     "description": "上传两张照片，输入两个名字，生成一段 15 秒的双人说唱视频。vibemovo 会写好歌词，并生成节拍、人声和口型。",
     "hero": {
       "eyebrow": "双人说唱",
