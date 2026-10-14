@@ -14,8 +14,8 @@ test("groups support and legal links under headings", () => {
   renderWithIntl(<Footer />);
 
   const support = screen.getByRole("navigation", { name: "Support" });
-  expect(within(support).getByRole("link", { name: "support@example.com" }).getAttribute("href")).toBe(
-    "mailto:support@example.com",
+  expect(within(support).getByRole("link", { name: "support@vibemovo.com" }).getAttribute("href")).toBe(
+    "mailto:support@vibemovo.com",
   );
   const legal = screen.getByRole("navigation", { name: "Legal" });
   expect(within(legal).getAllByRole("link").map((link) => link.getAttribute("href"))).toEqual([

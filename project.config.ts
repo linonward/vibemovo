@@ -3,7 +3,7 @@
 // browser. Admin emails live in ADMIN_EMAILS.
 export const projectConfig = {
   name: "vibemovo",
-  supportEmail: "support@example.com",
+  supportEmail: "support@vibemovo.com",
 } as const satisfies {
   name: string;
   supportEmail: string;
