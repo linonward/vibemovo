@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { signIn } from "./support/auth";
 
 // Search engines find the public pages in every locale, and nothing behind
 // sign-in or the API.
@@ -131,6 +132,18 @@ test("the sign-in page stays out of search results", async ({ page }) => {
   await page.goto("/en/sign-in?next=%2Fen%2Fdashboard");
 
   await expect(page.locator('head meta[name="robots"]')).toHaveAttribute("content", "noindex");
+});
+
+// Signed-out crawlers get redirected to sign-in, but a signed-in page still
+// says noindex in case that redirect ever fails.
+test("signed-in pages stay out of search results", async ({ page }) => {
+  await signIn(page);
+
+  for (const path of ["/en/dashboard", "/en/images", "/en/videos", "/en/billing"]) {
+    await page.goto(path);
+
+    await expect(page.locator('head meta[name="robots"]'), path).toHaveAttribute("content", "noindex");
+  }
 });
 
 // A crawler's first request decides the status. Next.js caches the 404
