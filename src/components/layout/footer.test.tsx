@@ -10,12 +10,15 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
-test("the product links include the rap video page", () => {
+test("the product links include the rap video and zombie couple pages", () => {
   renderWithIntl(<Footer />);
 
   const product = screen.getByRole("navigation", { name: "Product" });
   expect(within(product).getByRole("link", { name: "AI rap videos" }).getAttribute("href")).toBe(
     "/en/ai-rap-video-generator",
+  );
+  expect(within(product).getByRole("link", { name: "AI zombie couple videos" }).getAttribute("href")).toBe(
+    "/en/ai-zombie-couple-video",
   );
 });
 

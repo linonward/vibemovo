@@ -9,7 +9,7 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
   expect(response.status()).toBe(200);
   const xml = await response.text();
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/blog"];
+  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/blog"];
   expect(locs.sort()).toEqual(
     [
       ...pages.flatMap((page) => [`${baseURL}/en${page}`, `${baseURL}/zh${page}`]),
@@ -86,7 +86,7 @@ test("the blog index names its canonical URL and every locale", async ({ page, b
 });
 
 test("the home, legal and rap video pages name their canonical URL and every locale", async ({ page, baseURL }) => {
-  for (const path of ["", "/privacy", "/terms", "/refund", "/ai-rap-video-generator"]) {
+  for (const path of ["", "/privacy", "/terms", "/refund", "/ai-rap-video-generator", "/ai-zombie-couple-video"]) {
     await page.goto(`/zh${path}`);
 
     const head = page.locator("head");
@@ -107,6 +107,8 @@ test("marketing pages carry keyword-first titles", async ({ page }) => {
     "/zh/pricing": "AI 视频生成器价格：积分包与订阅方案 | vibemovo",
     "/zh/blog": "AI 视频教程：照片变视频与说唱视频 | vibemovo",
     "/zh/ai-rap-video-generator": "AI 说唱视频生成器：用照片做说唱视频 | vibemovo",
+    "/en/ai-zombie-couple-video": "AI Zombie Couple Video: Photos to a Love Story | vibemovo",
+    "/zh/ai-zombie-couple-video": "AI 僵尸情侣视频：两张照片变末日爱情故事 | vibemovo",
   };
   for (const [path, title] of Object.entries(titles)) {
     await page.goto(path);
@@ -135,6 +137,8 @@ test("the legal, sign-in, tag and rap video pages describe themselves", async ({
     "/en/blog/tags/guides": "Every post tagged “guides”, newest first.",
     "/en/ai-rap-video-generator":
       "Turn two photos and two names into a 15-second rap video. vibemovo writes the lyrics and makes the beat, the vocals and the lip sync.",
+    "/en/ai-zombie-couple-video":
+      "Turn two photos into a 15-second zombie love story: your partner turns zombie, you drop the bat and hug them. Vertical 9:16 video with music.",
   };
   for (const [path, description] of Object.entries(descriptions)) {
     await page.goto(path);
@@ -190,6 +194,7 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   expect(text).toContain(`- [隐私政策](${baseURL}/zh/privacy)`);
   expect(text).toContain(`- [Pricing](${baseURL}/en/pricing): Pay with credits`);
   expect(text).toContain(`- [AI Rap Video Generator from Photos](${baseURL}/en/ai-rap-video-generator): Turn two photos`);
+  expect(text).toContain(`- [AI Zombie Couple Video Generator](${baseURL}/en/ai-zombie-couple-video): Turn two photos`);
   expect(text).toContain(`- [Blog](${baseURL}/en/blog): `);
   expect(text).toContain(`](${baseURL}/en/blog/photo-to-video-ai): `);
   expect(text).not.toContain(`${baseURL}/zh/blog/photo-to-video-ai`);
@@ -200,10 +205,12 @@ test("llms.txt describes the product and links the public pages", async ({ reque
 
 // Links shared in chats and on social sites show a preview image.
 // It shows a real result, so a shared link previews what the page makes.
-test("the rap video page shares a preview image of its own", async ({ page, request, baseURL }) => {
+test("the rap video and zombie couple pages share preview images of their own", async ({ page, request, baseURL }) => {
   for (const [path, alt] of [
     ["/en/ai-rap-video-generator", "AI Rap Video Generator from Photos"],
     ["/zh/ai-rap-video-generator", "AI 说唱视频生成器：用照片做说唱视频"],
+    ["/en/ai-zombie-couple-video", "AI Zombie Couple Video Generator"],
+    ["/zh/ai-zombie-couple-video", "AI 僵尸情侣视频生成器"],
   ]) {
     await page.goto(path);
 
