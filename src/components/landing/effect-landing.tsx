@@ -17,11 +17,11 @@ const QUESTIONS = ["1", "2", "3", "4"] as const;
 // server config.
 export type EffectFacts = { credits: number; signup: number; maxImageBytes: number; imageLimits: ImageLimits };
 
-// The four frames of each effect's real result.
+// Each effect's real result: the video and four of its frames.
 const LANDINGS = {
-  zombie: { frames: "/blog/ai-zombie-couple-video/frames.jpg" },
-  hug: { frames: "/landing/hug/frames.jpg" },
-  vampire: { frames: "/landing/vampire/frames.jpg" },
+  zombie: { frames: "/blog/ai-zombie-couple-video/frames.jpg", sample: "/landing/zombie" },
+  hug: { frames: "/landing/hug/frames.jpg", sample: "/landing/hug" },
+  vampire: { frames: "/landing/vampire/frames.jpg", sample: "/landing/vampire" },
 } as const;
 
 export type EffectLandingKind = keyof typeof LANDINGS;
@@ -37,7 +37,7 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
     vampire: useTranslations("VampireLanding"),
   };
   const t = messages[kind] as typeof messages.zombie;
-  const { frames } = LANDINGS[kind];
+  const { frames, sample } = LANDINGS[kind];
   const maxImageMb = facts.maxImageBytes / (1024 * 1024);
 
   return (
@@ -83,7 +83,23 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
       </section>
 
       <figure className="flex flex-col gap-3 pb-20">
-        <Image src={frames} alt={t("result.alt")} width={1440} height={640} className="w-full rounded-2xl border" />
+        {/* The video is 9:16 and the frames 9:4, so 1fr and 4fr give them the same height. */}
+        <div className="grid gap-3 md:grid-cols-[1fr_4fr]">
+          <video
+            src={`${sample}/sample.mp4`}
+            poster={`${sample}/poster.jpg`}
+            aria-label={t("result.video")}
+            width={540}
+            height={960}
+            autoPlay
+            muted
+            loop
+            playsInline
+            controls
+            className="mx-auto w-full max-w-72 rounded-2xl border bg-muted md:max-w-none"
+          />
+          <Image src={frames} alt={t("result.alt")} width={1440} height={640} className="w-full rounded-2xl border" />
+        </div>
         <figcaption className="text-sm text-muted-foreground">{t("result.caption")}</figcaption>
       </figure>
 

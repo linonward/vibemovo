@@ -53,7 +53,12 @@ test("links the guide when the locale has one", () => {
 test("shows a real result and the real cost", () => {
   renderWithIntl(<RapLanding facts={facts} />);
 
-  expect(screen.getByRole("img", { name: /Four frames from a 15-second AI rap video/ })).toBeDefined();
+  const video = screen.getByLabelText(/A real 15-second AI rap video/) as HTMLVideoElement;
+  expect(video.tagName).toBe("VIDEO");
+  expect(video.getAttribute("src")).toBe("/landing/rap/sample.mp4");
+  expect(video.getAttribute("poster")).toBe("/landing/rap/poster.jpg");
+  expect(video.muted && video.loop && video.autoplay && video.controls).toBe(true);
+  expect(video.hasAttribute("playsinline")).toBe(true);
   expect(screen.getByText(/One video costs 75 credits/)).toBeDefined();
   expect(screen.getByText(/New accounts get 75 free credits, enough for your first/)).toBeDefined();
   expect(screen.getByRole("link", { name: "pricing page" }).getAttribute("href")).toBe("/en/pricing");

@@ -278,8 +278,8 @@
       }
     },
     "result": {
-      "alt": "Four frames from a 15-second AI rap video: two people in an orange studio with a hanging microphone. The woman on the left raps first, then the man on the right.",
-      "caption": "Four frames from a real result. The left person raps first, then the right person takes the mic."
+      "video": "A real 15-second AI rap video: a woman in a green suit and a man in a blue suit rap in an orange studio with a hanging microphone.",
+      "caption": "A real result, made from two photos of AI-generated people. Turn on the sound to hear the rap."
     },
     "steps": {
       "eyebrow": "How it works",
@@ -432,7 +432,8 @@
     },
     "result": {
       "alt": "Four frames from a 15-second AI zombie couple video: a woman in a green suit holds a bat in a ruined street as a zombie in a blue suit walks out of the fog, she lowers the bat, hugs him in tears, then the two laugh in a sunny kitchen.",
-      "caption": "Four frames from a real result, made from two photos of AI-generated people. The survivor meets her partner, lowers the bat and hugs him; then it cuts to a happy memory."
+      "video": "A real 15-second AI zombie couple video: the survivor meets her zombie partner, lowers the bat and hugs him.",
+      "caption": "A real result and four of its frames, made from two photos of AI-generated people. The survivor meets her partner, lowers the bat and hugs him; then it cuts to a happy memory."
     },
     "steps": {
       "eyebrow": "How it works",
@@ -515,7 +516,8 @@
     },
     "result": {
       "alt": "Four frames from a 15-second AI younger-self hug video: a man in a blue suit walks into a sunny park toward a boy playing with a toy car, kneels beside him, hugs him with his eyes closed, then golden light surrounds the boy.",
-      "caption": "Four frames from a real result, made from two photos of an AI-generated person. The hug starts at about 8 seconds, and the light comes at about 12."
+      "video": "A real 15-second AI younger-self hug video: a man in a blue suit kneels beside a boy in a sunny park and hugs him.",
+      "caption": "A real result and four of its frames, made from two photos of an AI-generated person. The hug starts at about 8 seconds, and the light comes at about 12."
     },
     "steps": {
       "eyebrow": "How it works",
@@ -598,7 +600,8 @@
     },
     "result": {
       "alt": "Four frames from a 10-second AI vampire transformation video: a man in a blue blazer in a candlelit castle hall, lightning strikes and he wears a crimson-lined cape with red eyes, a close-up of his fangs, then bats fly around him.",
-      "caption": "Four frames from a real result, made from one photo of an AI-generated person. The change starts with the lightning at about 3 seconds; the fangs show at about 6."
+      "video": "A real 10-second AI vampire transformation video: a man in a candlelit castle hall turns into a vampire with red eyes and fangs.",
+      "caption": "A real result and four of its frames, made from one photo of an AI-generated person. The change starts with the lightning at about 3 seconds; the fangs show at about 6."
     },
     "steps": {
       "eyebrow": "How it works",
