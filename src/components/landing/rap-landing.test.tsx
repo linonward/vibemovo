@@ -77,7 +77,7 @@ test("covers ideas, photo tips and the common questions", () => {
 
   expect(screen.getByRole("heading", { level: 2, name: "Rap videos for the people in your life" })).toBeDefined();
   expect(screen.getByRole("heading", { level: 2, name: "Photos that work" })).toBeDefined();
-  const faq = screen.getByRole("region", { name: "Questions" });
+  const faq = screen.getByRole("region", { name: "AI rap video questions" });
   expect(within(faq).getAllByRole("term")).toHaveLength(8);
   expect(within(faq).getByRole("link", { name: "Terms of Service" }).getAttribute("href")).toBe("/en/terms");
   expect(within(faq).getByText(/16:9 MP4, 1280×720/)).toBeDefined();
