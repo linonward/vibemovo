@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { projectConfig } from "project.config";
 import { LOCALE_NAMES, type Locale, routing } from "@/i18n/routing";
 import { LEGAL_DOCS, listPosts } from "@/lib/content";
+import { EFFECT_PAGES } from "@/lib/effect-pages";
 // Every locale has the same keys (a unit test checks), so en's list them all.
 import messages from "../../../messages/en.json";
 
@@ -32,20 +33,17 @@ export async function GET() {
     const legal = await getTranslations({ locale, namespace: "Legal" });
     const pricing = await getTranslations({ locale, namespace: "Pricing" });
     const blog = await getTranslations({ locale, namespace: "Blog" });
-    const rap = await getTranslations({ locale, namespace: "RapLanding" });
-    const zombie = await getTranslations({ locale, namespace: "ZombieLanding" });
-    const hug = await getTranslations({ locale, namespace: "HugLanding" });
-    const vampire = await getTranslations({ locale, namespace: "VampireLanding" });
-    const raindance = await getTranslations({ locale, namespace: "RaindanceLanding" });
+    const effects = await Promise.all(
+      EFFECT_PAGES.map(async ({ path, namespace }) => {
+        const effect = await getTranslations({ locale, namespace });
+        return `- [${effect("title")}](${url(`/${locale}${path}`)}): ${effect("description")}`;
+      }),
+    );
     return [
       `- [${projectConfig.name}](${url(`/${locale}`)}): ${home("hero.title")}`,
       ...LEGAL_DOCS.map((doc) => `- [${legal(doc)}](${url(`/${locale}/${doc}`)})`),
       `- [${pricing("title")}](${url(`/${locale}/pricing`)}): ${pricing("description")}`,
-      `- [${rap("title")}](${url(`/${locale}/ai-rap-video-generator`)}): ${rap("description")}`,
-      `- [${zombie("title")}](${url(`/${locale}/ai-zombie-couple-video`)}): ${zombie("description")}`,
-      `- [${hug("title")}](${url(`/${locale}/hug-your-younger-self-ai`)}): ${hug("description")}`,
-      `- [${vampire("title")}](${url(`/${locale}/ai-vampire-transformation-video`)}): ${vampire("description")}`,
-      `- [${raindance("title")}](${url(`/${locale}/raindance-ai-trend`)}): ${raindance("description")}`,
+      ...effects,
       `- [${blog("title")}](${url(`/${locale}/blog`)}): ${blog("description")}`,
       ...(await listPosts(locale)).map(
         (post) => `- [${post.title}](${url(`/${locale}/blog/${post.slug}`)}): ${post.description}`,

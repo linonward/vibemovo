@@ -2,18 +2,16 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { cn } from "cn";
 import { Link } from "@/i18n/navigation";
+import { EFFECT_PAGES, type EffectPage, effectPoster } from "@/lib/effect-pages";
 
 const LABEL = "font-display text-[10px] font-bold tracking-[0.13em] text-muted-foreground uppercase";
 
-// The template that plays leads the list; the rest follow the home
-// templates section's order.
+// The template that plays (the zombie couple) leads the list; the rest
+// follow the home templates section's order.
 const TEMPLATES = [
-  ["ZombieLanding", "/ai-zombie-couple-video", "/landing/zombie/poster.jpg"],
-  ["RapLanding", "/ai-rap-video-generator", "/landing/rap/poster.jpg"],
-  ["HugLanding", "/hug-your-younger-self-ai", "/landing/hug/poster.jpg"],
-  ["VampireLanding", "/ai-vampire-transformation-video", "/landing/vampire/poster.jpg"],
-  ["RaindanceLanding", "/raindance-ai-trend", "/landing/raindance/poster.jpg"],
-] as const;
+  ...EFFECT_PAGES.filter((page) => page.kind === "zombie"),
+  ...EFFECT_PAGES.filter((page) => page.kind !== "zombie"),
+];
 
 // The hero's showcase (docs/DESIGN.md, Home): a real zombie couple result
 // plays beside the list of templates, each linking its public page. The
@@ -54,7 +52,7 @@ export function TemplateShowcase() {
             <p className={LABEL}>{t("list")}</p>
             <ul className="flex flex-col gap-1.5">
               {TEMPLATES.map((template, i) => (
-                <TemplateRow key={template[0]} template={template} playing={i === 0} />
+                <TemplateRow key={template.kind} template={template} playing={i === 0} />
               ))}
             </ul>
           </div>
@@ -65,10 +63,10 @@ export function TemplateShowcase() {
 }
 
 function TemplateRow({
-  template: [namespace, href, poster],
+  template: { kind, path, namespace },
   playing,
 }: {
-  template: (typeof TEMPLATES)[number];
+  template: EffectPage;
   playing: boolean;
 }) {
   const t = useTranslations(namespace);
@@ -77,13 +75,13 @@ function TemplateRow({
   return (
     <li>
       <Link
-        href={href}
+        href={path}
         className={cn(
           "flex items-center gap-3 rounded-lg border p-2 transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]",
           playing ? "border-primary-text/60 bg-muted/60" : "border-transparent",
         )}
       >
-        <Image src={poster} alt="" width={40} height={40} className="hidden size-10 shrink-0 rounded-md object-cover sm:block" />
+        <Image src={effectPoster(kind)} alt="" width={40} height={40} className="hidden size-10 shrink-0 rounded-md object-cover sm:block" />
         <span className="flex min-w-0 flex-col gap-0.5">
           <span className="text-sm leading-5 font-semibold text-pretty break-keep">{t("nav")}</span>
           <span className="text-xs text-muted-foreground tabular-nums">

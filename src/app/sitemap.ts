@@ -2,10 +2,11 @@ import type { MetadataRoute } from "next";
 import { connection } from "next/server";
 import { routing } from "@/i18n/routing";
 import { LEGAL_DOCS, listPosts, postLocales } from "@/lib/content";
+import { EFFECT_PAGES } from "@/lib/effect-pages";
 import { languageAlternates } from "@/lib/seo";
 
 // The public pages in every locale, without the locale prefix.
-const PAGES = ["", ...LEGAL_DOCS.map((doc) => `/${doc}`), "/pricing", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/hug-your-younger-self-ai", "/ai-vampire-transformation-video", "/raindance-ai-trend", "/blog"];
+const PAGES = ["", ...LEGAL_DOCS.map((doc) => `/${doc}`), "/pricing", ...EFFECT_PAGES.map((page) => page.path), "/blog"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Read BETTER_AUTH_URL per request, so a build doesn't bake in its own URL.
