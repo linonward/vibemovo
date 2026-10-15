@@ -65,7 +65,7 @@ test("a signed-out visitor picks photos here, and generating asks them to sign i
   const dialog = await screen.findByRole("dialog", { name: "Sign in to make your video" });
   expect(dialog.textContent).toContain("New accounts get 75 free credits");
   expect(screen.getByRole("button", { name: "Continue with Google" })).toBeDefined();
-  expect(savePhotoDraft).toHaveBeenCalledWith("landing:hug", [today, child]);
+  expect(savePhotoDraft).toHaveBeenCalledWith("landing:hug", { photos: [today, child], fields: {} });
   expect(fetchMock).not.toHaveBeenCalled();
 });
 
@@ -90,7 +90,7 @@ test("back from sign-in, the saved photos return and go out without another clic
   useSession.mockReturnValue(signedIn);
   const today = new File(["a"], "today.jpg", { type: "image/jpeg" });
   const child = new File(["b"], "child.jpg", { type: "image/jpeg" });
-  loadPhotoDraft.mockResolvedValue([today, child]);
+  loadPhotoDraft.mockResolvedValue({ photos: [today, child], fields: {} });
   fetchMock.mockResolvedValueOnce(reply(200, { video: { id: "v1" } }));
   window.history.replaceState(null, "", "/en/hug-your-younger-self-ai?try=1");
   renderWithIntl(<LandingTryout {...props} />);
@@ -128,6 +128,52 @@ test("the vampire transformation takes one photo", async () => {
   await waitFor(() => expect(push).toHaveBeenCalledWith("/videos/vampire"));
   expect(fetchMock.mock.calls[0][0]).toBe("/api/videos/vampire");
   expect((fetchMock.mock.calls[0][1].body as FormData).get("image1")).toBe(photo);
+});
+
+test("the rap duo asks for two names too and sends them with the page's language", async () => {
+  useSession.mockReturnValue(signedIn);
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { id: "v1" } }));
+  renderWithIntl(<LandingTryout {...props} kind="rap" maxNameLength={30} />, "zh");
+
+  const left = pick("左侧照片");
+  const right = pick("右侧照片");
+  const button = screen.getByRole("button", { name: "生成（75 积分）" });
+  expect(button.hasAttribute("disabled")).toBe(true);
+  fireEvent.change(screen.getByLabelText("左侧名字"), { target: { value: "Ada" } });
+  fireEvent.change(screen.getByLabelText("右侧名字"), { target: { value: "Bo" } });
+  fireEvent.click(button);
+
+  await waitFor(() => expect(push).toHaveBeenCalledWith("/videos/rap"));
+  const [url, init] = fetchMock.mock.calls[0];
+  expect(url).toBe("/api/videos/rap");
+  const form = init.body as FormData;
+  expect([form.get("image1"), form.get("image2")]).toEqual([left, right]);
+  expect([form.get("name1"), form.get("name2"), form.get("language")]).toEqual(["Ada", "Bo", "zh"]);
+});
+
+test("the rap duo keeps the names across sign-in", async () => {
+  useSession.mockReturnValue(signedOut);
+  renderWithIntl(<LandingTryout {...props} kind="rap" maxNameLength={30} />);
+
+  const left = pick("Left photo");
+  const right = pick("Right photo");
+  fireEvent.change(screen.getByLabelText("Left name"), { target: { value: "Ada" } });
+  fireEvent.change(screen.getByLabelText("Right name"), { target: { value: "Bo" } });
+  fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
+  await screen.findByRole("dialog");
+  expect(savePhotoDraft).toHaveBeenCalledWith("landing:rap", { photos: [left, right], fields: { left: "Ada", right: "Bo" } });
+
+  cleanup();
+  useSession.mockReturnValue(signedIn);
+  loadPhotoDraft.mockResolvedValue({ photos: [left, right], fields: { left: "Ada", right: "Bo" } });
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { id: "v1" } }));
+  window.history.replaceState(null, "", "/en/ai-rap-video-generator?try=1");
+  renderWithIntl(<LandingTryout {...props} kind="rap" maxNameLength={30} />);
+
+  await waitFor(() => expect(push).toHaveBeenCalledWith("/videos/rap"));
+  expect((screen.getByLabelText("Left name") as HTMLInputElement).value).toBe("Ada");
+  const form = fetchMock.mock.calls[0][1].body as FormData;
+  expect([form.get("name1"), form.get("name2"), form.get("language")]).toEqual(["Ada", "Bo", "en"]);
 });
 
 test("renders in Chinese", () => {

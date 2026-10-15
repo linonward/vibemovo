@@ -1,11 +1,25 @@
-import { afterEach, expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { cleanup, screen, within } from "@testing-library/react";
 import { renderWithIntl } from "@/test/intl";
-import { RapLanding } from "./rap-landing";
+
+// The form in the hero (landing-tryout.test.tsx covers it) reads the session.
+vi.mock("@/lib/auth-client", () => ({ authClient: { useSession: () => ({ data: null, isPending: false }) } }));
+vi.mock("@/i18n/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/i18n/navigation")>()),
+  useRouter: () => ({ push: vi.fn() }),
+}));
+
+const { RapLanding } = await import("./rap-landing");
 
 afterEach(cleanup);
 
-const facts = { credits: 75, signup: 75, maxImageMb: 2, maxNameLength: 30 };
+const facts = {
+  credits: 75,
+  signup: 75,
+  maxImageBytes: 2 * 1024 * 1024,
+  imageLimits: { minSide: 240, maxSide: 8000, maxRatio: 8 },
+  maxNameLength: 30,
+};
 
 test("the headline names the query and is the page's only h1", () => {
   renderWithIntl(<RapLanding facts={facts} guide="/blog/ai-rap-video-two-people" />);
@@ -14,14 +28,15 @@ test("the headline names the query and is the page's only h1", () => {
   expect(screen.getByRole("heading", { level: 1, name: "AI rap video generator from photos" })).toBeDefined();
 });
 
-test("both calls to action sign in and return to the rap duo page", () => {
+test("the hero holds the rap duo's form, and the closing call to action leads back to it", () => {
   renderWithIntl(<RapLanding facts={facts} guide="/blog/ai-rap-video-two-people" />);
 
-  const links = screen.getAllByRole("link", { name: /Make a rap video/ });
-  expect(links.map((link) => link.getAttribute("href"))).toEqual([
-    "/en/sign-in?next=%2Fen%2Fvideos%2Frap",
-    "/en/sign-in?next=%2Fen%2Fvideos%2Frap",
-  ]);
+  const form = screen.getByRole("region", { name: "Try it now" });
+  expect(form.id).toBe("try");
+  for (const label of ["Left photo", "Right photo", "Left name", "Right name"]) {
+    expect(within(form).getByLabelText(label)).toBeDefined();
+  }
+  expect(screen.getByRole("link", { name: /Make a rap video/ }).getAttribute("href")).toBe("#try");
 });
 
 test("links the guide when the locale has one", () => {

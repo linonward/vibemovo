@@ -1,28 +1,40 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { LoginForm } from "@/components/auth/login-form";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { EFFECT_KINDS } from "@/components/videos/effect-generator";
-import { usePhotoPicks } from "@/components/videos/use-photo-picks";
+import { type Side, usePhotoPicks } from "@/components/videos/use-photo-picks";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { ApiBody, ApiErrorCode, VideoResponse } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { type ImageLimits, limitValues } from "@/lib/image-limits";
-import { clearPhotoDraft, loadPhotoDraft, savePhotoDraft } from "@/lib/photo-draft";
+import { clearPhotoDraft, loadPhotoDraft, type PhotoDraft, savePhotoDraft } from "@/lib/photo-draft";
+
+// Each landing page's route and photos, sent as image1 and image2 in this
+// order. The rap duo also sends a name per photo and the page's language.
+const KINDS = {
+  zombie: EFFECT_KINDS.zombie,
+  hug: EFFECT_KINDS.hug,
+  vampire: EFFECT_KINDS.vampire,
+  rap: { endpoint: "/api/videos/rap", sides: ["left", "right"] },
+} as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
 
 export type LandingTryoutProps = {
-  kind: "zombie" | "hug" | "vampire";
+  kind: keyof typeof KINDS;
   // The fixed price of one video.
   credits: number;
   signup: number;
   // Per photo.
   maxImageBytes: number;
   imageLimits: ImageLimits;
+  // For kind "rap".
+  maxNameLength?: number;
 };
 
 // Sign-in returns with it, so the page sends the saved photos.
@@ -36,12 +48,13 @@ const ERRORS = {
   VIDEOS_DISABLED: "disabled",
 } as const satisfies Partial<Record<ApiErrorCode, string>>;
 
-// The effect's form on its landing page, for visitors signed in or not. A
+// A video's form on its landing page, for visitors signed in or not. A
 // signed-out visitor picks photos and signs in from a dialog; the photos
 // wait in the browser and go out when sign-in brings them back here. Once
 // sent, the tool page shows the video as it renders.
 export function LandingTryout(props: LandingTryoutProps) {
-  const { endpoint, sides } = EFFECT_KINDS[props.kind];
+  const { endpoint, sides } = KINDS[props.kind];
+  const withNames = props.kind === "rap";
   const tool = `/videos/${props.kind}`;
   const draftKey = `landing:${props.kind}`;
   // Literal names, so the client messages test can check them.
@@ -49,8 +62,10 @@ export function LandingTryout(props: LandingTryoutProps) {
     zombie: useTranslations("ZombieVideos"),
     hug: useTranslations("HugVideos"),
     vampire: useTranslations("VampireVideos"),
+    rap: useTranslations("RapVideos"),
   };
   const t = messages[props.kind] as typeof messages.zombie;
+  const locale = useLocale();
   const tt = useTranslations("LandingTryout");
   const router = useRouter();
   const session = authClient.useSession();
@@ -58,13 +73,14 @@ export function LandingTryout(props: LandingTryoutProps) {
   const [noCredits, setNoCredits] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [signIn, setSignIn] = useState<string | null>(null);
-  // Photos restored after sign-in, sent once the session is known.
-  const [resume, setResume] = useState<File[] | null>(null);
+  const [names, setNames] = useState<Record<Side, string>>({ left: "", right: "" });
+  // The draft restored after sign-in, sent once the session is known.
+  const [resume, setResume] = useState<PhotoDraft | null>(null);
   const resumed = useRef(false);
 
   const size = Math.round(props.maxImageBytes / 1024 / 1024);
   const { min, max: maxSide, ratio } = limitValues(props.imageLimits);
-  const messageValues = { size, min, maxSide, ratio };
+  const messageValues = { size, max: props.maxNameLength ?? 0, min, maxSide, ratio };
   const { photos, previews, pick } = usePhotoPicks({
     maxImageBytes: props.maxImageBytes,
     imageLimits: props.imageLimits,
@@ -73,14 +89,18 @@ export function LandingTryout(props: LandingTryoutProps) {
       setError(key && t(`errors.${key}`, messageValues));
     },
   });
-  const ready = sides.every((side) => photos[side]);
+  const ready = sides.every((side) => photos[side] && (!withNames || names[side].trim()));
 
-  async function send(files: File[]) {
+  async function send(draft: PhotoDraft) {
     setSubmitting(true);
     setError(null);
     setNoCredits(false);
     const form = new FormData();
-    files.forEach((file, index) => form.set(`image${index + 1}`, file));
+    draft.photos.forEach((file, index) => form.set(`image${index + 1}`, file));
+    if (withNames) {
+      sides.forEach((side, index) => form.set(`name${index + 1}`, draft.fields[side] ?? ""));
+      form.set("language", locale);
+    }
     const response = await fetch(endpoint, { method: "POST", body: form }).catch(() => null);
     const body: ApiBody<VideoResponse> = response ? await response.json().catch(() => ({})) : {};
 
@@ -90,13 +110,13 @@ export function LandingTryout(props: LandingTryoutProps) {
       return;
     }
     setSubmitting(false);
-    if (response?.status === 401) return askToSignIn(files);
+    if (response?.status === 401) return askToSignIn(draft);
     if (body.error === "INSUFFICIENT_CREDITS") return setNoCredits(true);
     setError(t(ERRORS[body.error as keyof typeof ERRORS] ?? "errors.failed", messageValues));
   }
 
-  async function askToSignIn(files: File[]) {
-    await savePhotoDraft(draftKey, files);
+  async function askToSignIn(draft: PhotoDraft) {
+    await savePhotoDraft(draftKey, draft);
     const url = new URL(window.location.href);
     url.searchParams.set(RESUME, "1");
     setSignIn(url.pathname + url.search);
@@ -107,10 +127,11 @@ export function LandingTryout(props: LandingTryoutProps) {
     if (!url.searchParams.has(RESUME)) return;
     url.searchParams.delete(RESUME);
     window.history.replaceState(null, "", url);
-    void loadPhotoDraft(draftKey).then((files) => {
-      if (!files || files.length !== sides.length) return;
-      files.forEach((file, index) => pick(sides[index], file));
-      setResume(files);
+    void loadPhotoDraft(draftKey).then((draft) => {
+      if (!draft || draft.photos.length !== sides.length) return;
+      draft.photos.forEach((file, index) => pick(sides[index], file));
+      if (withNames) setNames({ left: draft.fields.left ?? "", right: draft.fields.right ?? "" });
+      setResume(draft);
     });
     // Once, on the page sign-in returned to.
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,9 +148,12 @@ export function LandingTryout(props: LandingTryoutProps) {
   function submit(event: React.FormEvent) {
     event.preventDefault();
     if (!ready) return;
-    const files = sides.map((side) => photos[side] as File);
-    if (session.data) void send(files);
-    else void askToSignIn(files);
+    const draft = {
+      photos: sides.map((side) => photos[side] as File),
+      fields: withNames ? { ...names } : {},
+    };
+    if (session.data) void send(draft);
+    else void askToSignIn(draft);
   }
 
   return (
@@ -165,6 +189,20 @@ export function LandingTryout(props: LandingTryoutProps) {
                   alt={t(`${side}.preview`)}
                   className="max-h-48 w-fit max-w-full rounded-lg border bg-muted object-contain"
                 />
+              )}
+              {withNames && (
+                <>
+                  <Label htmlFor={`try-${props.kind}-${side}-name`} className="mt-2">
+                    {messages.rap(`${side}.name`)}
+                  </Label>
+                  <Input
+                    id={`try-${props.kind}-${side}-name`}
+                    value={names[side]}
+                    onChange={(event) => setNames((current) => ({ ...current, [side]: event.target.value }))}
+                    maxLength={props.maxNameLength}
+                    autoComplete="off"
+                  />
+                </>
               )}
             </div>
           ))}
