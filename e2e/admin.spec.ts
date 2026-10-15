@@ -109,7 +109,7 @@ test("admins open a user's details from the list and add credits there", async (
   await dialog.getByRole("button", { name: "Add" }).click();
   await expect(dialog).toBeHidden();
   // signupCredits in src/server/credits/config.ts
-  await expect(page.getByText("15 credits", { exact: true })).toBeVisible();
+  await expect(page.getByText("35 credits", { exact: true })).toBeVisible();
   const history = page.getByRole("table", { name: "Credit history" });
   await expect(history.getByRole("row").nth(1)).toContainText("Added by an admin");
 
@@ -192,7 +192,7 @@ test("admins add credits to a user, who sees them in their history", async ({ pa
 
   const row = page.getByRole("table", { name: "Users" }).getByRole("row").filter({ hasText: user });
   // signupCredits in src/server/credits/config.ts
-  await expect(row.getByRole("cell", { name: "10", exact: true })).toBeVisible();
+  await expect(row.getByRole("cell", { name: "30", exact: true })).toBeVisible();
   await row.getByRole("button", { name: `Add credits to ${user}` }).click();
   const dialog = page.getByRole("alertdialog");
   await expect(dialog).toContainText(user);
@@ -201,7 +201,7 @@ test("admins add credits to a user, who sees them in their history", async ({ pa
 
   await expect(dialog).toBeHidden();
   // The dialog closes with the refreshed balance, never over the old one.
-  expect(await row.getByRole("cell", { name: "35", exact: true }).isVisible()).toBe(true);
+  expect(await row.getByRole("cell", { name: "55", exact: true }).isVisible()).toBe(true);
 
   await signIn(page, user);
   await page.goto("/en/billing");

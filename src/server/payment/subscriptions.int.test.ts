@@ -473,8 +473,8 @@ test("records a yearly subscription with its interval and yearly price", async (
   expect(await onlySubscription()).toMatchObject({
     planId: "pro-yearly",
     interval: "year",
-    credits: 250,
-    amount: 10000,
+    credits: 300,
+    amount: 10800,
     status: "pending",
   });
   expect(stripe.createSubscriptionCheckout).toHaveBeenCalledWith(
@@ -522,19 +522,19 @@ test("the sweep grants each month of a yearly plan that has begun, once", async 
   await grantYearlyMonths();
   await grantYearlyMonths(); // A repeated or concurrent run.
 
-  expect(await earned()).toBe(1000);
+  expect(await earned()).toBe(1200);
   expect(await notificationTypes()).toEqual(["credits_added", "credits_added", "credits_added", "subscription_paid"]);
-  expect((await pageNotifications(userId)).notifications[0].data).toEqual({ credits: 250 });
+  expect((await pageNotifications(userId)).notifications[0].data).toEqual({ credits: 300 });
 });
 
 test("a later run grants only the months begun since", async () => {
   await yearly(daysAgo(20));
 
   await grantYearlyMonths();
-  expect(await earned()).toBe(250);
+  expect(await earned()).toBe(300);
 
   await grantYearlyMonths(new Date(Date.now() + 15 * DAY));
-  expect(await earned()).toBe(500);
+  expect(await earned()).toBe(600);
 });
 
 test("grants nothing while the payment is past due or after the subscription ends", async () => {
@@ -542,11 +542,11 @@ test("grants nothing while the payment is past due or after the subscription end
   await webhook("stripe", { subscriptionId: id, status: "past_due" });
 
   await grantYearlyMonths();
-  expect(await earned()).toBe(250);
+  expect(await earned()).toBe(300);
 
   await webhook("stripe", { subscriptionId: id, status: "canceled" });
   await grantYearlyMonths();
-  expect(await earned()).toBe(250);
+  expect(await earned()).toBe(300);
 });
 
 test("a canceling subscription keeps the months it paid for", async () => {
@@ -555,20 +555,20 @@ test("a canceling subscription keeps the months it paid for", async () => {
 
   await grantYearlyMonths();
 
-  expect(await earned()).toBe(500);
+  expect(await earned()).toBe(600);
 });
 
 test("a renewal starts the months again from the new period", async () => {
   const start = daysAgo(400);
   const id = await yearly(start);
   await grantYearlyMonths();
-  expect(await earned()).toBe(3000);
+  expect(await earned()).toBe(3600);
 
   // The renewal charge grants the new period's first month.
   await webhook("stripe", { subscriptionId: id, paymentId: payment("in"), currentPeriodEnd: addMonths(start, 24) });
   await grantYearlyMonths();
 
-  expect(await earned()).toBe(3500); // The new period's second month began 4 days ago.
+  expect(await earned()).toBe(4200); // The new period's second month began 4 days ago.
 });
 
 test("monthly plans get nothing from the sweep", async () => {
@@ -589,7 +589,7 @@ test("without a period end, a yearly subscription waits, and is logged once a da
   await webhook("stripe", { subscriptionId: id, paymentId: payment("in") });
 
   await grantYearlyMonths();
-  expect(await earned()).toBe(250);
+  expect(await earned()).toBe(300);
   expect(error).not.toHaveBeenCalledWith("subscription.no_period_end", { subscriptionId: id });
 
   await getDb()
@@ -598,6 +598,6 @@ test("without a period end, a yearly subscription waits, and is logged once a da
     .where(eq(subscription.id, id));
   await grantYearlyMonths();
 
-  expect(await earned()).toBe(250);
+  expect(await earned()).toBe(300);
   expect(error).toHaveBeenCalledWith("subscription.no_period_end", { subscriptionId: id });
 });

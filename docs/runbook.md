@@ -168,7 +168,7 @@ Set `ADMIN_EMAILS` to allow administrators to read `/admin/feedback`. The list i
 
 ## Credits
 
-Every new user gets `signupCredits` (10) credits once, when the account is created (`src/server/credits/config.ts`). Set it to `0` to turn the grant off. Images, videos and chat messages spend credits; packs and subscriptions add them.
+Every new user gets `signupCredits` (30) credits once, when the account is created (`src/server/credits/config.ts`). Set it to `0` to turn the grant off. Images, videos and chat messages spend credits; packs and subscriptions add them.
 
 ## Payments
 

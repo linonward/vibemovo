@@ -228,7 +228,7 @@ test("lists a user's orders, newest first", async () => {
   await checkout("small");
   await checkout("large");
 
-  expect((await listOrders(userId)).map((o) => o.credits)).toEqual([1200, 100]);
+  expect((await listOrders(userId)).map((o) => o.credits)).toEqual([1000, 100]);
 });
 
 // The billing page sends the list to the browser: only what its table shows.
@@ -242,7 +242,7 @@ test("lists only the columns the billing table shows", async () => {
 test("lists at most the newest orders it's asked for", async () => {
   for (const pack of ["small", "medium", "large"]) await checkout(pack);
 
-  expect((await listOrders(userId, { limit: 2 })).map((o) => o.credits)).toEqual([1200, 500]);
+  expect((await listOrders(userId, { limit: 2 })).map((o) => o.credits)).toEqual([1000, 450]);
 });
 
 test("rejects an unknown pack without calling the provider", async () => {

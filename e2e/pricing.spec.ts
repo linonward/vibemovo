@@ -11,13 +11,13 @@ test("signed-out visitors see the plan, the packs and what credits buy", async (
   const main = page.getByRole("main");
   await expect(main).toContainText("$10.00 per month");
   await expect(main).toContainText("300 credits every month");
-  for (const [credits, price] of [["100 credits", "$5.00"], ["500 credits", "$20.00"], ["1,200 credits", "$40.00"]]) {
+  for (const [credits, price] of [["100 credits", "$5.00"], ["450 credits", "$20.00"], ["1,000 credits", "$40.00"]]) {
     await expect(main.getByRole("listitem").filter({ hasText: credits })).toContainText(price);
   }
   await expect(main).toContainText("1 credit per image");
   await expect(main).toContainText("1 credit per chat message");
   await expect(main).toContainText("From 4 credits per second of video");
-  await expect(main).toContainText("10 free credits");
+  await expect(main).toContainText("30 free credits");
 });
 
 // Plans and packs read the same way: what you get, what it costs, then the
@@ -31,7 +31,7 @@ test("every offer leads with its credits, and each kind's terms follow its list"
   await expect(main.getByRole("heading", { level: 2 })).toHaveText(["Credit packs", "Subscription", "What credits buy"]);
 
   await expect(plans.getByRole("heading", { level: 3 })).toHaveText(["300 credits every month"]);
-  await expect(packs.getByRole("heading", { level: 3 })).toHaveText(["100 credits", "500 credits", "1,200 credits"]);
+  await expect(packs.getByRole("heading", { level: 3 })).toHaveText(["100 credits", "450 credits", "1,000 credits"]);
   for (const item of await main.getByRole("listitem").filter({ has: page.getByRole("heading", { level: 3 }) }).all()) {
     expect(await item.evaluate((li) => li.firstElementChild?.tagName)).toBe("H3");
   }
@@ -47,7 +47,7 @@ test("the yearly price stays on one line, its period in smaller type", async ({ 
   const main = page.getByRole("main");
   await main.getByRole("button", { name: "Yearly" }).click();
 
-  const price = main.getByRole("region", { name: "Subscription" }).getByText("$100.00 per year");
+  const price = main.getByRole("region", { name: "Subscription" }).getByText("$108.00 per year");
   const { lines, amount, period } = await price.evaluate((el) => {
     const figure = getComputedStyle(el.firstElementChild!);
     return {
@@ -67,10 +67,10 @@ test("the toggle switches the plans to yearly billing", async ({ page }) => {
 
   await main.getByRole("button", { name: "Yearly" }).click();
 
-  await expect(main).toContainText("$100.00 per year");
-  await expect(main).toContainText("250 credits every month");
+  await expect(main).toContainText("$108.00 per year");
+  await expect(main).toContainText("300 credits every month");
   await expect(main).not.toContainText("$10.00 per month");
-  await expect(main.getByRole("link", { name: "Subscribe for $100.00 per year" })).toHaveAttribute(
+  await expect(main.getByRole("link", { name: "Subscribe for $108.00 per year" })).toHaveAttribute(
     "href",
     "/en/billing?plan=pro-yearly",
   );
@@ -80,12 +80,12 @@ test("buying opens billing for a signed-in user", async ({ page }) => {
   await signIn(page);
   await page.goto("/en/pricing");
 
-  await page.getByRole("link", { name: "Buy 500 credits for $20.00" }).click();
+  await page.getByRole("link", { name: "Buy 450 credits for $20.00" }).click();
 
   // Billing marks the chosen pack. Payments are off in E2E, so its button is
   // disabled and can't take focus; the card scrolls into view instead.
   await expect(page).toHaveURL("/en/billing?pack=medium");
-  const buy = page.getByRole("button", { name: "Buy 500 credits for $20.00" });
+  const buy = page.getByRole("button", { name: "Buy 450 credits for $20.00" });
   const card = page.getByRole("listitem").filter({ has: buy });
   await expect(card).toContainText("Selected");
   await expect(card).toBeInViewport();
