@@ -812,10 +812,6 @@
     "previous": "上一页",
     "next": "下一页",
     "videoRap": "双人说唱",
-    "videoZombie": "僵尸情侣",
-    "videoHug": "拥抱童年的自己",
-    "videoVampire": "吸血鬼变身",
-    "videoRaindance": "Raindance 双人",
     "videoObject": "物体特效",
     "videoLibrary": "全部视频",
     "adminOrders": "订单",
@@ -1249,116 +1245,75 @@
       "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
     }
   },
-  "ZombieVideos": {
-    "title": "僵尸情侣",
-    "description": "上传两张照片，生成一段 15 秒的竖屏视频：你发现伴侣变成了僵尸，放下球棒抱住对方，然后切回你们的幸福回忆。",
-    "left": {
-      "photo": "你的照片",
-      "preview": "你的照片预览"
-    },
-    "right": {
-      "photo": "伴侣的照片",
-      "preview": "伴侣的照片预览"
-    },
-    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。伴侣的照片会变成僵尸。",
+  "PhotoEffects": {
     "generate": "生成（{count} 积分）",
     "generating": "正在提交…",
     "balance": "剩余 {count} 积分",
     "buyCredits": "购买积分",
-    "disabled": "僵尸情侣尚未配置。",
     "historyTitle": "你的视频",
     "empty": "还没有视频。",
     "viewAll": "查看全部",
     "errors": {
       "credits": "积分不足。请到积分与账单页面购买。",
-      "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
+      "invalid": "{photos, plural, one {请使用不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。} other {请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。}}",
       "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
       "failed": "生成失败，积分已退回。请重试。",
       "blocked": "照片未通过内容审核。请换一张。",
       "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
-    }
-  },
-  "HugVideos": {
-    "title": "拥抱童年的自己",
-    "description": "上传两张照片，生成一段 15 秒的竖屏视频：现在的你在阳光下的公园遇见童年的自己，蹲下来紧紧拥抱，然后金色的光笼罩住童年的你。",
-    "left": {
-      "photo": "你现在的照片",
-      "preview": "你现在的照片预览"
     },
-    "right": {
-      "photo": "你小时候的照片",
-      "preview": "你小时候的照片预览"
-    },
-    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。请用你自己小时候的照片。",
-    "generate": "生成（{count} 积分）",
-    "generating": "正在提交…",
-    "balance": "剩余 {count} 积分",
-    "buyCredits": "购买积分",
-    "disabled": "拥抱童年的自己尚未配置。",
-    "historyTitle": "你的视频",
-    "empty": "还没有视频。",
-    "viewAll": "查看全部",
-    "errors": {
-      "credits": "积分不足。请到积分与账单页面购买。",
-      "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
-      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
-      "failed": "生成失败，积分已退回。请重试。",
-      "blocked": "照片未通过内容审核。请换一张。",
-      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
-    }
-  },
-  "RaindanceVideos": {
-    "title": "Raindance 双人",
-    "description": "两张照片变成一段 15 秒的竖屏视频，还原 Raindance 热梗的码头场景：一个人在黄昏的木码头尽头等待，另一个人边唱边走向对方。原曲请在发布时自己加上。",
-    "left": {
-      "photo": "码头上等待的人的照片",
-      "preview": "码头上等待的人的照片预览"
-    },
-    "right": {
-      "photo": "唱歌的人的照片",
-      "preview": "唱歌的人的照片预览"
-    },
-    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正对镜头，光线充足。",
-    "generate": "生成（{count} 积分）",
-    "generating": "正在提交…",
-    "balance": "剩余 {count} 积分",
-    "buyCredits": "购买积分",
-    "disabled": "Raindance 双人还没有配置好。",
-    "historyTitle": "你的视频",
-    "empty": "还没有视频。",
-    "viewAll": "查看全部",
-    "errors": {
-      "credits": "积分不足。请到积分与账单页面购买。",
-      "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
-      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
-      "failed": "生成失败，积分已退回。请重试。",
-      "blocked": "照片未通过内容审核。请换一张。",
-      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
-    }
-  },
-  "VampireVideos": {
-    "title": "吸血鬼变身",
-    "description": "上传一张照片，生成一段 10 秒的竖屏万圣节视频：烛光城堡里电闪雷鸣，你变身成披着斗篷的吸血鬼。",
-    "left": {
-      "photo": "你的照片",
-      "preview": "你的照片预览"
-    },
-    "photoHint": "JPEG、PNG 或 WebP，不超过 {size} MB。照片里一个人，正脸，光线充足。",
-    "generate": "生成（{count} 积分）",
-    "generating": "正在提交…",
-    "balance": "剩余 {count} 积分",
-    "buyCredits": "购买积分",
-    "disabled": "吸血鬼变身尚未配置。",
-    "historyTitle": "你的视频",
-    "empty": "还没有视频。",
-    "viewAll": "查看全部",
-    "errors": {
-      "credits": "积分不足。请到积分与账单页面购买。",
-      "invalid": "请使用不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
-      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
-      "failed": "生成失败，积分已退回。请重试。",
-      "blocked": "照片未通过内容审核。请换一张。",
-      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    "kinds": {
+      "zombie": {
+        "title": "僵尸情侣",
+        "description": "上传两张照片，生成一段 15 秒的竖屏视频：你发现伴侣变成了僵尸，放下球棒抱住对方，然后切回你们的幸福回忆。",
+        "left": {
+          "photo": "你的照片",
+          "preview": "你的照片预览"
+        },
+        "right": {
+          "photo": "伴侣的照片",
+          "preview": "伴侣的照片预览"
+        },
+        "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。伴侣的照片会变成僵尸。",
+        "disabled": "僵尸情侣尚未配置。"
+      },
+      "hug": {
+        "title": "拥抱童年的自己",
+        "description": "上传两张照片，生成一段 15 秒的竖屏视频：现在的你在阳光下的公园遇见童年的自己，蹲下来紧紧拥抱，然后金色的光笼罩住童年的你。",
+        "left": {
+          "photo": "你现在的照片",
+          "preview": "你现在的照片预览"
+        },
+        "right": {
+          "photo": "你小时候的照片",
+          "preview": "你小时候的照片预览"
+        },
+        "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。请用你自己小时候的照片。",
+        "disabled": "拥抱童年的自己尚未配置。"
+      },
+      "vampire": {
+        "title": "吸血鬼变身",
+        "description": "上传一张照片，生成一段 10 秒的竖屏万圣节视频：烛光城堡里电闪雷鸣，你变身成披着斗篷的吸血鬼。",
+        "left": {
+          "photo": "你的照片",
+          "preview": "你的照片预览"
+        },
+        "photoHint": "JPEG、PNG 或 WebP，不超过 {size} MB。照片里一个人，正脸，光线充足。",
+        "disabled": "吸血鬼变身尚未配置。"
+      },
+      "raindance": {
+        "title": "Raindance 双人",
+        "description": "两张照片变成一段 15 秒的竖屏视频，还原 Raindance 热梗的码头场景：一个人在黄昏的木码头尽头等待，另一个人边唱边走向对方。原曲请在发布时自己加上。",
+        "left": {
+          "photo": "码头上等待的人的照片",
+          "preview": "码头上等待的人的照片预览"
+        },
+        "right": {
+          "photo": "唱歌的人的照片",
+          "preview": "唱歌的人的照片预览"
+        },
+        "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正对镜头，光线充足。",
+        "disabled": "Raindance 双人还没有配置好。"
+      }
     }
   },
   "ObjectVideos": {

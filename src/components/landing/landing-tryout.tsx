@@ -8,26 +8,21 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { EFFECT_KINDS } from "@/components/videos/effect-generator";
+import { effectSides } from "@/components/videos/effect-generator";
+import { useEffectMessages } from "@/components/videos/effect-messages";
 import { type Side, usePhotoPicks } from "@/components/videos/use-photo-picks";
 import { Link, useRouter } from "@/i18n/navigation";
 import type { ApiBody, ApiErrorCode, VideoResponse } from "@/lib/api";
 import { authClient } from "@/lib/auth-client";
 import { type ImageLimits, limitValues } from "@/lib/image-limits";
+import { PHOTO_EFFECT_KINDS, type PhotoEffectKind } from "@/lib/photo-effects";
 import { clearPhotoDraft, loadPhotoDraft, type PhotoDraft, savePhotoDraft } from "@/lib/photo-draft";
 
-// Each landing page's route and photos, sent as image1 and image2 in this
-// order. The rap duo also sends a name per photo and the page's language.
-const KINDS = {
-  zombie: EFFECT_KINDS.zombie,
-  hug: EFFECT_KINDS.hug,
-  vampire: EFFECT_KINDS.vampire,
-  raindance: EFFECT_KINDS.raindance,
-  rap: { endpoint: "/api/videos/rap", sides: ["left", "right"] },
-} as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
-
 export type LandingTryoutProps = {
-  kind: keyof typeof KINDS;
+  // A photo effect or the rap duo. Each posts to /api/videos/<kind>, its
+  // photos as image1 and image2 in this order; the rap duo also sends a
+  // name per photo and the page's language.
+  kind: PhotoEffectKind | "rap";
   // The fixed price of one video.
   credits: number;
   signup: number;
@@ -54,19 +49,14 @@ const ERRORS = {
 // wait in the browser and go out when sign-in brings them back here. Once
 // sent, the tool page shows the video as it renders.
 export function LandingTryout(props: LandingTryoutProps) {
-  const { endpoint, sides } = KINDS[props.kind];
+  const endpoint = `/api/videos/${props.kind}`;
   const withNames = props.kind === "rap";
+  const sides = effectSides(props.kind === "rap" ? 2 : PHOTO_EFFECT_KINDS[props.kind].photos);
   const tool = `/videos/${props.kind}`;
   const draftKey = `landing:${props.kind}`;
-  // Literal names, so the client messages test can check them.
-  const messages = {
-    zombie: useTranslations("ZombieVideos"),
-    hug: useTranslations("HugVideos"),
-    vampire: useTranslations("VampireVideos"),
-    raindance: useTranslations("RaindanceVideos"),
-    rap: useTranslations("RapVideos"),
-  };
-  const t = messages[props.kind] as typeof messages.zombie;
+  const t = useEffectMessages(props.kind);
+  // Literal name, so the client messages test can check it.
+  const rapMessages = useTranslations("RapVideos");
   const locale = useLocale();
   const tt = useTranslations("LandingTryout");
   const router = useRouter();
@@ -195,7 +185,7 @@ export function LandingTryout(props: LandingTryoutProps) {
               {withNames && (
                 <>
                   <Label htmlFor={`try-${props.kind}-${side}-name`} className="mt-2">
-                    {messages.rap(`${side}.name`)}
+                    {rapMessages(`${side}.name`)}
                   </Label>
                   <Input
                     id={`try-${props.kind}-${side}-name`}

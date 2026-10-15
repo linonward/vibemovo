@@ -33,6 +33,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Link, usePathname } from "@/i18n/navigation";
+import { photoEffectKinds, type PhotoEffectKind } from "@/lib/photo-effects";
 import { markSidebarCollapsed } from "./sidebar-state";
 import { UserMenu } from "./user-menu";
 
@@ -54,10 +55,8 @@ const CREATE = [
     icon: Clapperboard,
     children: [
       { href: "/videos/rap", key: "videoRap" },
-      { href: "/videos/zombie", key: "videoZombie" },
-      { href: "/videos/hug", key: "videoHug" },
-      { href: "/videos/vampire", key: "videoVampire" },
-      { href: "/videos/raindance", key: "videoRaindance" },
+      // Each photo effect, under its PhotoEffects title.
+      ...photoEffectKinds.map((effect) => ({ href: `/videos/${effect}`, effect })),
       { href: "/videos/effects", key: "videoObject" },
       { href: "/videos/library", key: "videoLibrary" },
     ],
@@ -90,7 +89,7 @@ type Item = {
   href: string;
   key: Parameters<ReturnType<typeof useTranslations<"Dashboard">>>[0];
   icon: React.ComponentType;
-  children?: readonly { href: string; key: Item["key"] }[];
+  children?: readonly ({ href: string; key: Item["key"] } | { href: string; effect: PhotoEffectKind })[];
 };
 
 type User = { name: string; email: string; plan: string | null };
@@ -127,6 +126,7 @@ export function AppSidebar({ user, isAdmin }: { user: User; isAdmin: boolean }) 
 // One group of links. With a label, the list is named by it.
 function NavGroup({ label, items }: { label?: string; items: readonly Item[] }) {
   const t = useTranslations("Dashboard");
+  const effects = useTranslations("PhotoEffects");
   const pathname = usePathname();
   const labelId = useId();
 
@@ -167,7 +167,7 @@ function NavGroup({ label, items }: { label?: string; items: readonly Item[] }) 
                               />
                             }
                           >
-                            <span>{t(child.key)}</span>
+                            <span>{"effect" in child ? effects(`kinds.${child.effect}.title`) : t(child.key)}</span>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       );

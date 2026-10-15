@@ -20,10 +20,7 @@ export const CLIENT_NAMESPACES = [
   "RapVideos",
   "Theme",
   "Videos",
-  "ZombieVideos",
-  "HugVideos",
-  "RaindanceVideos",
-  "VampireVideos",
+  "PhotoEffects",
   "ObjectVideos",
   "LandingTryout",
 ] as const;

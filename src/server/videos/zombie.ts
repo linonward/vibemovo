@@ -1,3 +1,6 @@
+import { RAP_DURATION } from "./config";
+import type { PhotoEffect } from "./photo-effects";
+
 // The zombie couple, after the "zombie love story" trend: two reference
 // photos become a 15-second vertical video. The survivor meets their
 // partner, now a zombie, lowers the weapon and hugs them; then it cuts to a
@@ -23,3 +26,16 @@ Beat three, 11 to 15 seconds, match cut on the hug: the same hug, months earlier
 Style: photorealistic, natural skin texture, sharp focus, 35mm film look, desaturated teal grade in the street and warm amber in the memory. Zombie look like film makeup: no blood, no wounds, no gore, no biting.
 No text, no logos, no extra people, the two never swap faces.`;
 }
+
+// Two photos: the survivor, then the partner who turns zombie. The poster
+// is cut at the hug (6 to 11 s in the prompt), not the survivor's photo.
+export const zombie = {
+  kind: "zombie",
+  title: "Zombie couple",
+  photos: 2,
+  duration: RAP_DURATION,
+  ratio: "9:16",
+  credits: 5 * RAP_DURATION,
+  posterMs: 10_000,
+  prompt: zombiePrompt,
+} as const satisfies PhotoEffect;

@@ -5,7 +5,8 @@ import type { Locale } from "@/i18n/routing";
 import { postLocales, relatedPosts } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 import { signupCredits } from "@/server/credits/config";
-import { RAINDANCE_CREDITS, RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES } from "@/server/videos/config";
+import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES } from "@/server/videos/config";
+import { raindance } from "@/server/videos/raindance";
 
 const PATH = "/raindance-ai-trend";
 // The step-by-step guide to the raindance duo, linked where the locale has it.
@@ -31,7 +32,7 @@ export default async function Page({ params }: PageProps<"/[locale]/raindance-ai
     <EffectLanding
       kind="raindance"
       facts={{
-        credits: RAINDANCE_CREDITS,
+        credits: raindance.credits,
         signup: signupCredits,
         maxImageBytes: RAP_MAX_IMAGE_BYTES,
         imageLimits: RAP_IMAGE_LIMITS,

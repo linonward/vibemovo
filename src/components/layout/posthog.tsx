@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { authClient } from "@/lib/auth-client";
 import { EFFECT_PAGES } from "@/lib/effect-pages";
+import { photoEffectKinds } from "@/lib/photo-effects";
 // Analytics needs the locale-prefixed URL, not the locale-stripped navigation helper.
 // eslint-disable-next-line no-restricted-imports
 import { usePathname } from "next/navigation";
@@ -11,7 +12,7 @@ import { usePathname } from "next/navigation";
 // user input, including on 404 pages. Never send search, hash or referrer.
 const ROUTES = new Set([
   "", "pricing", ...EFFECT_PAGES.map((page) => page.path.slice(1)), "privacy", "terms", "refund", "sign-in",
-  "dashboard", "images", "images/library", "videos", "videos/library", "videos/rap", "videos/zombie", "videos/hug", "videos/vampire", "videos/raindance", "videos/effects",
+  "dashboard", "images", "images/library", "videos", "videos/library", "videos/rap", ...photoEffectKinds.map((kind) => `videos/${kind}`), "videos/effects",
   "chat", "notifications", "feedback", "billing", "api-keys", "profile", "admin",
   "admin/users", "admin/orders", "admin/notifications", "admin/metrics", "admin/feedback", "blog",
 ]);

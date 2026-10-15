@@ -2,6 +2,11 @@
 
 How to turn one search query into a page that ranks and converts. Use it for every new video effect. Code layout is in [`architecture.md`](architecture.md); the PR flow is in [`workflow.md`](workflow.md).
 
+A new effect ships in two steps:
+
+1. **Generation first.** Add the photo effect ([`runbook.md` § Add a photo effect](runbook.md#add-a-photo-effect)): its file, its entry in the two lists and its dashboard copy. Deploy, then tune the prompt on real photos until the result is good. This step proves the effect works.
+2. **Landing page and guide later.** Follow the checklist below in a separate PR. It is content for search, and it needs a real result from step 1.
+
 ## Principles
 
 1. **One query, one page.** Each effect gets its own landing page for one search query, a blog guide for the same query, and links from the rest of the site.
@@ -11,18 +16,20 @@ How to turn one search query into a page that ranks and converts. Use it for eve
 5. **Measure before tuning.** Pageviews, business events, checkout conversion and model cost are tracked. Check `/admin/metrics` and PostHog after each change.
 6. **Guard the spend.** Prompts are screened before credits are spent. When free credits rise, write down the cost per signup and how to spot mass signups.
 
-## Checklist for a new effect
+## Checklist for a new landing page
+
+Start when the effect is live at `/videos/<kind>` and has a good real result.
 
 ### Query and copy
 
 - [ ] Pick one query. The page path is the query (`/ai-vampire-transformation-video`).
 - [ ] Title: `<Query>: <benefit> | vibemovo`, 50–60 characters. Description: 120–155 characters. Chinese follows the same shape.
 - [ ] One H1 that holds the query. The FAQ H2 names the query (`AI vampire transformation video questions`). Leave the other H2s natural.
-- [ ] Copy in `messages/en.json` and `messages/zh.json`, under the effect's own namespace with the same keys as the other landings.
+- [ ] Copy in `messages/en.json` and `messages/zh.json`, under the page's own namespace (`VampireLanding`) with the same keys as the other landings.
 
 ### Real result
 
-- [ ] Generate a real result from photos of AI-generated people.
+- [ ] Pick a real result from step 1, made from photos of AI-generated people.
 - [ ] Add `public/landing/<kind>/`: `frames.jpg` (four frames, 1440×640), `preview.jpg`, `sample.mp4` and `poster.jpg`.
 - [ ] Compress the video: H.264 + AAC, `-movflags +faststart`, 540×960 (portrait) or 960×540 (landscape), under 2 MB:
 
@@ -37,7 +44,7 @@ How to turn one search query into a page that ranks and converts. Use it for eve
 ### Page
 
 - [ ] Route `src/app/[locale]/(marketing)/<path>/page.tsx` and `opengraph-image.tsx`.
-- [ ] Add the kind to `EffectLanding` (`src/components/landing/effect-landing.tsx`) and `LandingTryout`, so the hero holds the form.
+- [ ] Add the kind to `EffectLanding` (`src/components/landing/effect-landing.tsx`). Its hero form, `LandingTryout`, already knows every photo effect.
 - [ ] Unit tests: the H1, the form, the real video and frames, the cost, the FAQ heading, en and zh.
 - [ ] E2E: the signed-out flow (pick photos, sign in in the dialog, the job starts on return) if the form differs from the existing ones.
 

@@ -1,3 +1,6 @@
+import { RAP_DURATION } from "./config";
+import type { PhotoEffect } from "./photo-effects";
+
 // The raindance duo, after the "Raindance" AI trend: two reference photos
 // become a 15-second vertical video of the trend's dock scene. One person
 // waits at the end of a wooden dock over the sea at golden hour; the other
@@ -24,3 +27,17 @@ Beat three, 10 to 15 seconds, hard cut to a static shot from behind the two: bot
 Style: photorealistic, natural skin texture, sharp focus, 35mm film look, warm golden grade, soft lens flare. A heartfelt music-video moment between two people.
 No text, no subtitles, no logos, no extra people, the two never swap faces.`;
 }
+
+// Two photos: the one waiting on the dock, then the singer. The poster is
+// cut where both faces show, as the two look at each other (5 to 10 s in
+// the prompt), not the first photo.
+export const raindance = {
+  kind: "raindance",
+  title: "Raindance duo",
+  photos: 2,
+  duration: RAP_DURATION,
+  ratio: "9:16",
+  credits: 5 * RAP_DURATION,
+  posterMs: 9_500,
+  prompt: raindancePrompt,
+} as const satisfies PhotoEffect;

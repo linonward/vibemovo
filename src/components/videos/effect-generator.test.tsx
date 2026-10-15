@@ -174,6 +174,19 @@ test.each([
   expect(screen.getByText("100 credits left")).toBeTruthy();
 });
 
+test.each([
+  ["zombie", ["Your photo", "Your partner's photo"], "A photo was blocked by content moderation. Try a different one."],
+  ["vampire", ["Your photo"], "The photo was blocked by content moderation. Try a different one."],
+] as const)("a %s's shared errors speak of its number of photos", async (kind, labels, text) => {
+  fetchMock.mockResolvedValueOnce(reply(422, { error: "CONTENT_BLOCKED" }));
+  renderWithIntl(<EffectGenerator {...props} kind={kind} />);
+
+  labels.forEach((label) => pick(label));
+  fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
+
+  await waitFor(() => expect(screen.getByRole("alert").textContent).toBe(text));
+});
+
 test("links to billing when the balance is short, and says when it is off", () => {
   renderWithIntl(<EffectGenerator {...props} balance={10} enabled={false} />);
 

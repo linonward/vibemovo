@@ -5,7 +5,8 @@ import type { Locale } from "@/i18n/routing";
 import { postLocales, relatedPosts } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 import { signupCredits } from "@/server/credits/config";
-import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES, VAMPIRE_CREDITS } from "@/server/videos/config";
+import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES } from "@/server/videos/config";
+import { vampire } from "@/server/videos/vampire";
 
 const PATH = "/ai-vampire-transformation-video";
 // The step-by-step guide to the vampire transformation, linked where the locale has it.
@@ -31,7 +32,7 @@ export default async function Page({ params }: PageProps<"/[locale]/ai-vampire-t
     <EffectLanding
       kind="vampire"
       facts={{
-        credits: VAMPIRE_CREDITS,
+        credits: vampire.credits,
         signup: signupCredits,
         maxImageBytes: RAP_MAX_IMAGE_BYTES,
         imageLimits: RAP_IMAGE_LIMITS,

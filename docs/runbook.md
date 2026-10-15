@@ -84,7 +84,7 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `FAL_KEY`            | With fal          | fal API key                                                   |
 | `SEEAPI_API_KEY`     | With SeeAPI       | SeeAPI API key                                                |
 | `PROMPT_MODERATION` | No | `waffo` screens image/video prompts before spending credits; empty uses only the local blocklist. Requires `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY` |
-| `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and the photos of the Wan 3.0 photo effects (rap duo, zombie couple, younger-self hug, vampire transformation, raindance duo) with SeeAPI's NSFW filter. Empty turns the check off |
+| `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and the photos of the rap duo and the photo effects with SeeAPI's NSFW filter. Empty turns the check off |
 | `STORAGE_ENDPOINT`   | No                | S3-compatible endpoint. Empty means AWS S3                    |
 | `STORAGE_REGION`     | No                | Region for request signing. Default `auto`                    |
 | `STORAGE_BUCKET`     | With images or videos | Private bucket for generated images and videos            |
@@ -280,39 +280,26 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 - The price in `src/server/videos/config.ts` assumes about $0.10 a second. Check the Bailian console and adjust it.
 - The prompt template is `rapPrompt` in `src/server/videos/rap.ts`. Wan 3.0 calls the photos 图1 and 图2.
 
-### Zombie couple (Bailian Wan 3.0)
+### Photo effects (Bailian Wan 3.0)
 
-`/videos/zombie` turns two photos into a 15-second 720p vertical (9:16) video with sound, after the "zombie love story" trend: the survivor (first photo) finds their partner (second photo) turned zombie, drops the bat and hugs them, then it cuts to a happy memory. It needs the same setup as the [rap duo](#rap-duo-bailian-wan-30), without DeepSeek, and costs `ZOMBIE_CREDITS` (75, the rap duo's price).
-
-- Photo limits are the rap duo's.
-- The prompt template is `zombiePrompt` in `src/server/videos/zombie.ts`. It asks for film-makeup zombies with no blood or gore, so Bailian's moderation lets it through.
-- Keep it `RAP_DURATION` long: the upload cleanup finds the second photo of a two-photo video by that length.
-- Its poster is the frame at `ZOMBIE_POSTER_MS` (10 s, the hug), cut with the `ffmpeg-static` binary when the video finishes. `pnpm install` downloads the binary (`allowBuilds` in `pnpm-workspace.yaml`). If the prompt's timing changes, move `ZOMBIE_POSTER_MS` with it. Videos made before the poster existed keep the first photo.
-
-### Hug your younger self (Bailian Wan 3.0)
-
-`/videos/hug` turns two photos into a 15-second 720p vertical (9:16) video with sound, after the "hug your younger self" trend: the person today (first photo) finds themselves as a child (second photo) in a sunny park, kneels and hugs them, then the child fades into golden light. It needs the zombie couple's setup and costs `HUG_CREDITS` (75).
+`/videos/<kind>` turns one or two photos into a 720p vertical video with sound from a fixed prompt, after a trend, such as the zombie couple. `PHOTO_EFFECTS` (`src/server/videos/photo-effects.ts`) lists them. They need the [rap duo](#rap-duo-bailian-wan-30)'s setup, without DeepSeek, and cost 5 credits a second (75 for 15 s), refunded on failure.
 
 - Photo limits are the rap duo's.
-- The prompt template is `hugPrompt` in `src/server/videos/hug.ts`. It keeps the scene a family moment, not a romantic one.
-- Keep it `RAP_DURATION` long, like the zombie couple.
+- Each effect's file (`src/server/videos/zombie.ts`) holds its prompt and its definition: title, photos, duration, ratio, credits and poster time. Prompts ask for film makeup and costumes with no blood or gore, so Bailian's moderation lets them through. Never name a trend's real song, artists or lyrics: the singing is the model's own wordless melody, and users add the song when they post.
+- A two-photo effect lasts `RAP_DURATION`: the upload cleanup finds the second photo by that length. A one-photo effect is shorter.
+- An effect with `posterMs` gets the frame at that time as its poster, cut with the `ffmpeg-static` binary when the video finishes. `pnpm install` downloads the binary (`allowBuilds` in `pnpm-workspace.yaml`). If the prompt's timing changes, move `posterMs` with it. Videos made before the poster existed keep the first photo.
 
-### Vampire transformation (Bailian Wan 3.0)
+#### Add a photo effect
 
-`/videos/vampire` turns one photo into a 10-second 720p vertical (9:16) Halloween video with sound: lightning strikes in a candlelit castle and the person turns into a vampire with a cape. It needs the zombie couple's setup and costs `VAMPIRE_CREDITS` (50, 5 credits a second).
+Ship the effect first and check its prompt on real photos. Its landing page and blog guide follow in a later PR.
 
-- Photo limits are the rap duo's.
-- The prompt template is `vampirePrompt` in `src/server/videos/vampire.ts`. It keeps the fangs and eyes at costume level, with no blood or gore, so Bailian's moderation lets it through.
-- Keep it shorter than `RAP_DURATION`: the upload cleanup would otherwise look for a second photo.
+1. Add `src/server/videos/<kind>.ts`: the prompt function and the definition, as in `vampire.ts`. Add a prompt test next to it.
+2. Add the definition to `PHOTO_EFFECTS`, and the kind and its number of photos to `PHOTO_EFFECT_KINDS` (`src/lib/photo-effects.ts`), in the same order.
+3. Add `PhotoEffects.kinds.<kind>` to `messages/en.json` and `messages/zh.json`: `title`, `description`, `left` (and `right` for two photos), `photoHint` and `disabled`.
+4. Run `pnpm test`. `src/test/photo-effects.test.ts` checks the two lists and the copy; `src/server/credits/config.test.ts` checks the signup credits cover the price.
+5. Deploy. Generate 2 or 3 videos at `/videos/<kind>` with photos of AI-generated people, tune the prompt, and write the final prompt in the PR.
 
-### Raindance duo (Bailian Wan 3.0)
-
-`/videos/raindance` turns two photos into a 15-second 720p vertical (9:16) video with sound, after the "Raindance" AI trend: the first person waits at the end of a wooden dock at golden hour, the second walks up singing to them, then both sit at the end of the dock at sunset. It needs the zombie couple's setup and costs `RAINDANCE_CREDITS` (75).
-
-- Photo limits are the rap duo's.
-- The prompt template is `raindancePrompt` in `src/server/videos/raindance.ts`. The singing is a wordless melody of the model's own. Never name the trend's song, its artists or its lyrics in the prompt: users add the song when they post.
-- The poster is cut at `RAINDANCE_POSTER_MS` (9.5 s), where both faces show.
-- Keep it `RAP_DURATION` long, like the zombie couple.
+The sidebar, `POST /api/videos/<kind>`, the page, analytics and the legal pages need no change.
 
 ## API keys
 
@@ -347,7 +334,7 @@ Image and video prompts are checked against a blocklist before they spend credit
 
 - Matching ignores case, full-width letters, extra spaces and zero-width characters. Latin terms match whole words (`csam` doesn't block `csamplitude`); Chinese terms match anywhere.
 - The template's list covers only content that is illegal everywhere. Add the terms your content policy forbids to `BLOCKED_TERMS` in `src/server/moderation/blocklist.ts`, in every language your users write in, then deploy.
-- With `IMAGE_MODERATION=seeapi`, each video start image (and both photos of a rap duo, before the lines are written, or a zombie couple, younger-self hug or vampire transformation) is stored, then checked with SeeAPI's [NSFW filter](https://www.seeapi.com/docs/nsfw-filter/image-moderation) before it spends credits. SeeAPI downloads it from a signed URL, so the bucket must be reachable from the internet (not the local MinIO). The check takes a few seconds and costs 0.01 SeeAPI credits.
+- With `IMAGE_MODERATION=seeapi`, each video start image (and the photos of a rap duo, before the lines are written, or a photo effect) is stored, then checked with SeeAPI's [NSFW filter](https://www.seeapi.com/docs/nsfw-filter/image-moderation) before it spends credits. SeeAPI downloads it from a signed URL, so the bucket must be reachable from the internet (not the local MinIO). The check takes a few seconds and costs 0.01 SeeAPI credits.
   - A flagged image returns 422 `CONTENT_BLOCKED` and logs `video.blocked` with the labels.
   - No verdict within 30 seconds, or an error from SeeAPI, returns 503 `MODERATION_UNAVAILABLE` and logs `video.moderation_failed`. The upload is refused (fail closed); nothing is spent.
   - Either way the stored image is deleted.
