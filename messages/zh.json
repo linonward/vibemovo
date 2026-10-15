@@ -368,7 +368,7 @@
       "items": {
         "1": {
           "title": "一段说唱视频要多少积分？",
-          "body": "一段 15 秒的视频消耗 {credits} 积分。新账号送 {signup} 免费积分，不够生成一段说唱视频。可以在<pricing>价格页面</pricing>购买积分。"
+          "body": "一段 15 秒的视频消耗 {credits} 积分。新账号送 {signup} 免费积分，够生成第一段说唱视频。可以在<pricing>价格页面</pricing>购买积分。"
         },
         "2": {
           "title": "生成失败怎么办？",
@@ -477,7 +477,7 @@
       "items": {
         "1": {
           "title": "一段僵尸情侣视频多少钱？",
-          "body": "一段 15 秒视频 {credits} 积分。新账户赠送 {signup} 积分，不够做一段。在<pricing>价格页面</pricing>购买积分。"
+          "body": "一段 15 秒视频 {credits} 积分。新账户赠送 {signup} 积分，够做第一段。在<pricing>价格页面</pricing>购买积分。"
         },
         "2": {
           "title": "生成失败怎么办？",
@@ -561,7 +561,7 @@
       "items": {
         "1": {
           "title": "一段拥抱童年视频多少钱？",
-          "body": "一段 15 秒视频 {credits} 积分。新账户赠送 {signup} 积分，不够做一段。在<pricing>价格页面</pricing>购买积分。"
+          "body": "一段 15 秒视频 {credits} 积分。新账户赠送 {signup} 积分，够做第一段。在<pricing>价格页面</pricing>购买积分。"
         },
         "2": {
           "title": "生成失败怎么办？",
@@ -645,7 +645,7 @@
       "items": {
         "1": {
           "title": "一段吸血鬼视频多少钱？",
-          "body": "一段 10 秒视频 {credits} 积分。新账户赠送 {signup} 积分，不够做一段。在<pricing>价格页面</pricing>购买积分。"
+          "body": "一段 10 秒视频 {credits} 积分。新账户赠送 {signup} 积分，够做第一段。在<pricing>价格页面</pricing>购买积分。"
         },
         "2": {
           "title": "生成失败怎么办？",
