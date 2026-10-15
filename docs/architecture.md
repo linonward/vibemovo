@@ -57,6 +57,8 @@ API routes answer errors with `apiError(code, status)` and type success bodies w
 
 Use `Link`, `redirect` and `useRouter` from `@/i18n/navigation`, not `next/*`, so URLs keep the locale.
 
+Dates: the server renders them in UTC (`timeZone` in `src/i18n/request.ts`), so pages hydrate wherever they render. `LocalTimeZone` (`src/components/layout/local-time-zone.tsx`), inside the locale layout's provider, then re-renders client components' dates in the browser's time zone. Format dates with `useFormatter` in a client component, not on the server, so readers see their own time.
+
 ## Server modules
 
 A module that owns tables keeps them in its `schema.ts`; `db/schema.ts` re-exports them all.
