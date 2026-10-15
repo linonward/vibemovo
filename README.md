@@ -31,6 +31,7 @@ A minimal project template with a workflow for people and AI coding agents.
 - [`docs/architecture.md`](docs/architecture.md): layers, import rules, routes, target structure
 - [`docs/runbook.md`](docs/runbook.md): setup, environment, database, email, deploying to Vercel or with Docker, troubleshooting
 - [`docs/DESIGN.md`](docs/DESIGN.md): visual design reference: color tokens, type, layout, components
+- [`docs/landing-playbook.md`](docs/landing-playbook.md): one search query → a landing page that ranks and converts; checklist for a new effect
 - [`.github/pull_request_template.md`](.github/pull_request_template.md): PR template
 
 ## Stack
