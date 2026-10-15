@@ -35,6 +35,10 @@ import {
   HUG_CREDITS,
   HUG_RATIO,
   HUG_TITLE,
+  RAINDANCE_CREDITS,
+  RAINDANCE_POSTER_MS,
+  RAINDANCE_RATIO,
+  RAINDANCE_TITLE,
   VAMPIRE_CREDITS,
   VAMPIRE_DURATION,
   VAMPIRE_RATIO,
@@ -57,6 +61,7 @@ import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
 import { posterFrame } from "./poster";
 import { zombiePrompt } from "./zombie";
 import { hugPrompt } from "./hug";
+import { raindancePrompt } from "./raindance";
 import { vampirePrompt } from "./vampire";
 import { isObjectEffect, OBJECT_EFFECT_TITLES, OBJECT_EFFECTS, objectEffectPrompt } from "./effects";
 import { checkImageSize, type ImageLimits, imageSize } from "./image-size";
@@ -260,7 +265,7 @@ function blocked(error: unknown): unknown {
 }
 
 // The photo effects on Wan 3.0 (rap duo, zombie couple, younger-self hug,
-// vampire transformation) need Bailian and storage, whatever VIDEO_PROVIDER says.
+// vampire transformation, raindance duo) need Bailian and storage, whatever VIDEO_PROVIDER says.
 function referenceEnabled() {
   return getReferenceVideoProvider() !== null && storageConfigured();
 }
@@ -279,6 +284,10 @@ export function hugOptions(): { enabled: boolean; credits: number } {
 
 export function vampireOptions(): { enabled: boolean; credits: number } {
   return { enabled: referenceEnabled(), credits: VAMPIRE_CREDITS };
+}
+
+export function raindanceOptions(): { enabled: boolean; credits: number } {
+  return { enabled: referenceEnabled(), credits: RAINDANCE_CREDITS };
 }
 
 // Two photos and two names become a 15-second video where each person raps
@@ -329,6 +338,19 @@ export function createHugVideo(input: { userId: string; images: [Uint8Array, Uin
     credits: HUG_CREDITS,
     ratio: HUG_RATIO,
     prompt: async () => ({ title: HUG_TITLE, prompt: hugPrompt() }),
+  });
+}
+
+// Two photos become a 15-second vertical video on a dock at golden hour: the
+// first photo waits at the end, the second walks up singing to them.
+export function createRaindanceVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
+  return createReferenceVideo({
+    ...input,
+    text: null,
+    credits: RAINDANCE_CREDITS,
+    ratio: RAINDANCE_RATIO,
+    posterMs: RAINDANCE_POSTER_MS,
+    prompt: async () => ({ title: RAINDANCE_TITLE, prompt: raindancePrompt() }),
   });
 }
 

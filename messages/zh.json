@@ -731,6 +731,7 @@
     "videoZombie": "僵尸情侣",
     "videoHug": "拥抱童年的自己",
     "videoVampire": "吸血鬼变身",
+    "videoRaindance": "Raindance 双人",
     "videoObject": "物体特效",
     "videoLibrary": "全部视频",
     "adminOrders": "订单",
@@ -1210,6 +1211,35 @@
     "balance": "剩余 {count} 积分",
     "buyCredits": "购买积分",
     "disabled": "拥抱童年的自己尚未配置。",
+    "historyTitle": "你的视频",
+    "empty": "还没有视频。",
+    "viewAll": "查看全部",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
+      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
+      "failed": "生成失败，积分已退回。请重试。",
+      "blocked": "照片未通过内容审核。请换一张。",
+      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    }
+  },
+  "RaindanceVideos": {
+    "title": "Raindance 双人",
+    "description": "两张照片变成一段 15 秒的竖屏视频，还原 Raindance 热梗的码头场景：一个人在黄昏的木码头尽头等待，另一个人边唱边走向对方。原曲请在发布时自己加上。",
+    "left": {
+      "photo": "码头上等待的人的照片",
+      "preview": "码头上等待的人的照片预览"
+    },
+    "right": {
+      "photo": "唱歌的人的照片",
+      "preview": "唱歌的人的照片预览"
+    },
+    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正对镜头，光线充足。",
+    "generate": "生成（{count} 积分）",
+    "generating": "正在提交…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "Raindance 双人还没有配置好。",
     "historyTitle": "你的视频",
     "empty": "还没有视频。",
     "viewAll": "查看全部",

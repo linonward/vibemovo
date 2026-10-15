@@ -21,6 +21,7 @@ export const EFFECT_KINDS = {
   zombie: { endpoint: "/api/videos/zombie", sides: ["left", "right"] },
   hug: { endpoint: "/api/videos/hug", sides: ["left", "right"] },
   vampire: { endpoint: "/api/videos/vampire", sides: ["left"] },
+  raindance: { endpoint: "/api/videos/raindance", sides: ["left", "right"] },
   object: { endpoint: "/api/videos/effects", sides: ["left"] },
 } as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
 
@@ -69,6 +70,7 @@ export function EffectGenerator(props: EffectGeneratorProps) {
     zombie: useTranslations("ZombieVideos"),
     hug: useTranslations("HugVideos"),
     vampire: useTranslations("VampireVideos"),
+    raindance: useTranslations("RaindanceVideos"),
     object: useTranslations("ObjectVideos"),
   };
   const t = messages[props.kind] as typeof messages.zombie;

@@ -4,7 +4,8 @@ import { VIDEO_PROVIDER_IDS } from "@/server/ai/video/types";
 import { generationColumns } from "@/server/generations/columns";
 
 // One row per generation. The start image and the MP4 live in object
-// storage; a two-photo video (rap duo, zombie couple, younger-self hug)
+// storage; a two-photo video (rap duo, zombie couple, younger-self hug,
+// raindance duo)
 // also stores its second photo as <id>-2.<ext>.
 export const video = pgTable(
   "video",
