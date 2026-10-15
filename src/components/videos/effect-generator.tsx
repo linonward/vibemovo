@@ -2,28 +2,29 @@
 
 import { Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useCreditBalance } from "@/components/dashboard/credits";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { usePendingPoll } from "@/hooks/use-pending-poll";
 import { Link } from "@/i18n/navigation";
 import type { ApiBody, ApiErrorCode, GeneratedVideo, Serialized, VideoResponse } from "@/lib/api";
-import { fitsImageLimits, type ImageLimits, limitValues } from "@/lib/image-limits";
+import { type ImageLimits, limitValues } from "@/lib/image-limits";
+import { type Side, usePhotoPicks } from "./use-photo-picks";
 import { VideoList } from "./video-list";
 
 type Video = GeneratedVideo;
 
 // The photo effects without words: their route and their photos, sent as
 // image1 and image2 in this order.
-const KINDS = {
+export const EFFECT_KINDS = {
   zombie: { endpoint: "/api/videos/zombie", sides: ["left", "right"] },
   hug: { endpoint: "/api/videos/hug", sides: ["left", "right"] },
   vampire: { endpoint: "/api/videos/vampire", sides: ["left"] },
   object: { endpoint: "/api/videos/effects", sides: ["left"] },
 } as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
 
-export type EffectKind = keyof typeof KINDS;
+export type EffectKind = keyof typeof EFFECT_KINDS;
 
 // The object effects, as ObjectVideos.effects names them. The page passes
 // the server's list, so an effect without copy fails the typecheck.
@@ -47,9 +48,6 @@ export type EffectGeneratorProps = {
 
 const POLL_MS = 5000;
 
-// 图1 stands on the left, 图2 on the right.
-type Side = "left" | "right";
-
 const ERRORS = {
   INSUFFICIENT_CREDITS: "errors.credits",
   INVALID_REQUEST: "errors.invalid",
@@ -62,7 +60,7 @@ const ERRORS = {
 const parse = (video: Serialized<Video>): Video => ({ ...video, createdAt: new Date(video.createdAt) });
 
 export function EffectGenerator(props: EffectGeneratorProps) {
-  const { endpoint, sides } = KINDS[props.kind];
+  const { endpoint, sides } = EFFECT_KINDS[props.kind];
   // Literal names, so the client messages test can check that the browser
   // gets them. The namespaces share their keys, except that a one-photo
   // effect has no "right" (it never reads them, having no right side) and
@@ -74,10 +72,6 @@ export function EffectGenerator(props: EffectGeneratorProps) {
     object: useTranslations("ObjectVideos"),
   };
   const t = messages[props.kind] as typeof messages.zombie;
-  const [photos, setPhotos] = useState<Record<Side, File | null>>({ left: null, right: null });
-  const [previews, setPreviews] = useState<Record<Side, string | null>>({ left: null, right: null });
-  // The latest pick per side, so a slow size check for an earlier file changes nothing.
-  const picked = useRef<Record<Side, File | null>>({ left: null, right: null });
   const { balance, adjust: adjustCredits } = useCreditBalance(props.balance);
   const [videos, setVideos] = useState(props.videos);
   const [submitting, setSubmitting] = useState(false);
@@ -88,15 +82,13 @@ export function EffectGenerator(props: EffectGeneratorProps) {
   const size = Math.round(props.maxImageBytes / 1024 / 1024);
   const { min, max: maxSide, ratio } = limitValues(props.imageLimits);
   const messageValues = { size, min, maxSide, ratio };
+  const { photos, previews, pick } = usePhotoPicks({
+    maxImageBytes: props.maxImageBytes,
+    imageLimits: props.imageLimits,
+    onError: (key) => setError(key && t(`errors.${key}`, messageValues)),
+  });
   const ready = sides.every((side) => photos[side]);
   const pendingIds = videos.filter((video) => video.status === "pending").map((video) => video.id);
-
-  useEffect(
-    () => () => {
-      for (const url of Object.values(previews)) if (url) URL.revokeObjectURL(url);
-    },
-    [previews],
-  );
 
   // A failure was refunded on the server, so the balance gets the credits back.
   usePendingPoll({
@@ -113,24 +105,6 @@ export function EffectGenerator(props: EffectGeneratorProps) {
       }
     },
   });
-
-  function pick(side: Side, event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0] ?? null;
-    setError(null);
-    const tooBig = file !== null && file.size > props.maxImageBytes;
-    if (tooBig) setError(t("errors.invalid", messageValues));
-    setPhotos((current) => ({ ...current, [side]: tooBig ? null : file }));
-    setPreviews((current) => ({ ...current, [side]: file && !tooBig ? URL.createObjectURL(file) : null }));
-    picked.current[side] = tooBig ? null : file;
-    if (!file || tooBig) return;
-    void fitsImageLimits(file, props.imageLimits).then((fits) => {
-      if (fits !== false || picked.current[side] !== file) return;
-      picked.current[side] = null;
-      setPhotos((current) => ({ ...current, [side]: null }));
-      setPreviews((current) => ({ ...current, [side]: null }));
-      setError(t("errors.imageSize", messageValues));
-    });
-  }
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
@@ -165,7 +139,7 @@ export function EffectGenerator(props: EffectGeneratorProps) {
                 id={`${props.kind}-${side}-photo`}
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
-                onChange={(event) => pick(side, event)}
+                onChange={(event) => pick(side, event.target.files?.[0] ?? null)}
                 aria-describedby={`${props.kind}-photo-hint`}
                 className="w-full min-w-0 rounded-lg border border-input bg-card px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1 file:text-sm file:font-medium focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               />
