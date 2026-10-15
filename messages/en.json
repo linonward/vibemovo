@@ -317,6 +317,51 @@
         }
       }
     },
+    "ideas": {
+      "eyebrow": "Ideas",
+      "title": "Rap videos for the people in your life",
+      "items": {
+        "birthday": {
+          "title": "Birthday shout-outs",
+          "body": "Put the birthday person and a friend in the booth. Each one raps a line with their own name in it."
+        },
+        "couple": {
+          "title": "Couples and anniversaries",
+          "body": "Two photos of a couple become a 15-second duet, ready for the group chat."
+        },
+        "team": {
+          "title": "Team goodbyes",
+          "body": "Send off a coworker with a rap that names them and the teammate who made it."
+        },
+        "friends": {
+          "title": "Best friends and siblings",
+          "body": "Swap the photos to swap the order: the left photo always raps first."
+        }
+      }
+    },
+    "tips": {
+      "eyebrow": "Tips",
+      "title": "Photos that work",
+      "guide": "Read the full guide with a real test run",
+      "items": {
+        "1": {
+          "title": "One person per photo.",
+          "body": "Two faces in one photo can end up mixed."
+        },
+        "2": {
+          "title": "Face the camera, in good light.",
+          "body": "The model copies the face it can see. Sunglasses stay on."
+        },
+        "3": {
+          "title": "Show more of the body if you can.",
+          "body": "A full-body photo keeps the real outfit. A portrait leaves the rest to the model."
+        },
+        "4": {
+          "title": "Use photos you may use.",
+          "body": "Only animate people who agreed to it."
+        }
+      }
+    },
     "faq": {
       "eyebrow": "FAQ",
       "title": "Questions",
@@ -336,7 +381,32 @@
         "4": {
           "title": "Which languages are the lyrics in?",
           "body": "The language of the page: English on the English site, Chinese on the Chinese site."
+        },
+        "5": {
+          "title": "Is the song original?",
+          "body": "Yes. The page writes new lines from the two names and creates its own beat and vocals, so the clip uses no one else's song. Clips that copy a real track can be muted or taken down."
+        },
+        "6": {
+          "title": "Can I choose the song or the lines?",
+          "body": "Not yet. The page writes the lines, and the model makes the beat."
+        },
+        "7": {
+          "title": "What format is the video?",
+          "body": "A 16:9 MP4, 1280×720, 15 seconds, with sound. For TikTok or Reels, crop it to 9:16."
+        },
+        "8": {
+          "title": "Whose photos can I use?",
+          "body": "Your own, or photos of people who agreed to be in the video. See the <terms>Terms of Service</terms>."
         }
+      }
+    },
+    "more": {
+      "eyebrow": "Keep going",
+      "title": "More AI video effects",
+      "guide": "A guide with steps, costs and tips.",
+      "zombie": {
+        "title": "Zombie couple",
+        "body": "Two photos become a 15-second zombie love story: one of you turns zombie, the other drops the bat and hugs them."
       }
     },
     "cta": {

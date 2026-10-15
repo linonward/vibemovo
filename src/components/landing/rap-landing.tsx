@@ -1,4 +1,4 @@
-import { BookOpen, Check } from "lucide-react";
+import { ArrowRight, BookOpen, Check } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { cn } from "cn";
@@ -9,7 +9,9 @@ import { Link } from "@/i18n/navigation";
 const POINTS = ["1", "2"] as const;
 const STEPS = ["1", "2", "3"] as const;
 const FEATURES = ["1", "2", "3"] as const;
-const QUESTIONS = ["1", "2", "3", "4"] as const;
+const IDEAS = ["birthday", "couple", "team", "friends"] as const;
+const TIPS = ["1", "2", "3", "4"] as const;
+const QUESTIONS = ["1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
 // What the copy states about the rap duo, from its server config.
 export type RapFacts = { credits: number; signup: number; maxImageMb: number; maxNameLength: number };
@@ -17,8 +19,16 @@ export type RapFacts = { credits: number; signup: number; maxImageMb: number; ma
 // The public page for "AI rap video generator from photos": what the rap
 // duo makes, a real result, the steps and the cost. Sections follow the
 // home page's (docs/DESIGN.md, Home). `guide` is the locale's blog guide,
-// if it has one.
-export function RapLanding({ facts, guide }: { facts: RapFacts; guide?: string }) {
+// if it has one; `related` are the locale's other guides worth a link.
+export function RapLanding({
+  facts,
+  guide,
+  related = [],
+}: {
+  facts: RapFacts;
+  guide?: string;
+  related?: { href: string; title: string }[];
+}) {
   const t = useTranslations("RapLanding");
   const locale = useLocale();
   // Sign-in returns visitors to the tool itself.
@@ -116,6 +126,47 @@ export function RapLanding({ facts, guide }: { facts: RapFacts; guide?: string }
         </ul>
       </section>
 
+      <section aria-labelledby="rap-ideas" className="flex flex-col gap-12 border-t py-20">
+        <SectionHeading eyebrow={t("ideas.eyebrow")} id="rap-ideas">
+          {t("ideas.title")}
+        </SectionHeading>
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {IDEAS.map((key) => (
+            <li key={key} className="flex flex-col gap-2 rounded-xl border bg-card p-6">
+              <h3 className="font-display text-lg font-semibold">{t(`ideas.items.${key}.title`)}</h3>
+              <p className="text-pretty text-muted-foreground">{t(`ideas.items.${key}.body`)}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section
+        aria-labelledby="rap-tips"
+        className="grid gap-10 border-t py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"
+      >
+        <SectionHeading eyebrow={t("tips.eyebrow")} id="rap-tips">
+          {t("tips.title")}
+        </SectionHeading>
+        <div className="flex flex-col gap-6">
+          <ul className="flex flex-col gap-4">
+            {TIPS.map((key) => (
+              <li key={key} className="flex items-start gap-3">
+                <Check aria-hidden className="mt-1 size-4 shrink-0 text-primary-text" />
+                <p className="max-w-[65ch] leading-7 text-pretty text-muted-foreground">
+                  <strong className="font-semibold text-foreground">{t(`tips.items.${key}.title`)}</strong>{" "}
+                  {t(`tips.items.${key}.body`)}
+                </p>
+              </li>
+            ))}
+          </ul>
+          {guide && (
+            <Link href={guide} className="w-fit font-medium text-primary-text underline underline-offset-4">
+              {t("tips.guide")}
+            </Link>
+          )}
+        </div>
+      </section>
+
       <section
         aria-labelledby="rap-faq"
         className="grid gap-10 border-t py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"
@@ -136,11 +187,41 @@ export function RapLanding({ facts, guide }: { facts: RapFacts; guide?: string }
                       {chunks}
                     </Link>
                   ),
+                  terms: (chunks) => (
+                    <Link href="/terms" className="font-medium text-primary-text underline underline-offset-4">
+                      {chunks}
+                    </Link>
+                  ),
                 })}
               </dd>
             </div>
           ))}
         </dl>
+      </section>
+
+      <section aria-labelledby="rap-more" className="flex flex-col gap-8 border-t py-20">
+        <SectionHeading eyebrow={t("more.eyebrow")} id="rap-more">
+          {t("more.title")}
+        </SectionHeading>
+        <ul className="grid gap-4 md:grid-cols-2">
+          {[
+            { href: "/ai-zombie-couple-video", title: t("more.zombie.title"), body: t("more.zombie.body") },
+            ...related.map((post) => ({ ...post, body: t("more.guide") })),
+          ].map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                className="group flex h-full flex-col gap-2 rounded-xl border bg-card p-6 transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
+              >
+                <span className="flex items-center gap-2 font-display text-lg font-semibold">
+                  {item.title}
+                  <ArrowRight aria-hidden className="icon-nudge size-4" />
+                </span>
+                <span className="text-pretty text-muted-foreground">{item.body}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
       <section

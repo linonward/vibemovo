@@ -1,5 +1,5 @@
 import { afterEach, expect, test } from "vitest";
-import { cleanup, screen } from "@testing-library/react";
+import { cleanup, screen, within } from "@testing-library/react";
 import { renderWithIntl } from "@/test/intl";
 import { RapLanding } from "./rap-landing";
 
@@ -48,4 +48,27 @@ test("renders in Chinese", () => {
   renderWithIntl(<RapLanding facts={facts} />, "zh");
 
   expect(screen.getByRole("heading", { level: 1, name: "AI 说唱视频生成器，用照片就能做" })).toBeDefined();
+});
+
+const related = [{ href: "/blog/migos-ai-song-video-generator", title: "Migos AI Song & Video Generator from Two Photos" }];
+
+test("covers ideas, photo tips and the common questions", () => {
+  renderWithIntl(<RapLanding facts={facts} guide="/blog/ai-rap-video-two-people" related={related} />);
+
+  expect(screen.getByRole("heading", { level: 2, name: "Rap videos for the people in your life" })).toBeDefined();
+  expect(screen.getByRole("heading", { level: 2, name: "Photos that work" })).toBeDefined();
+  const faq = screen.getByRole("region", { name: "Questions" });
+  expect(within(faq).getAllByRole("term")).toHaveLength(8);
+  expect(within(faq).getByRole("link", { name: "Terms of Service" }).getAttribute("href")).toBe("/en/terms");
+  expect(within(faq).getByText(/16:9 MP4, 1280×720/)).toBeDefined();
+});
+
+test("links the other effects and the locale's related guides", () => {
+  renderWithIntl(<RapLanding facts={facts} related={related} />);
+
+  const more = screen.getByRole("region", { name: "More AI video effects" });
+  expect(within(more).getByRole("link", { name: /Zombie couple/ }).getAttribute("href")).toBe("/en/ai-zombie-couple-video");
+  expect(within(more).getByRole("link", { name: /Migos AI Song/ }).getAttribute("href")).toBe(
+    "/en/blog/migos-ai-song-video-generator",
+  );
 });
