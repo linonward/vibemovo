@@ -22,7 +22,7 @@ export function VideoList({
           {video.url ? (
             <video
               src={video.url}
-              poster={video.imageUrl ?? undefined}
+              poster={video.posterUrl ?? video.imageUrl ?? undefined}
               aria-label={video.prompt}
               controls
               playsInline

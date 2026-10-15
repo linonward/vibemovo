@@ -23,6 +23,12 @@ export const video = pgTable(
     // The provider's request ID, set once the job is submitted.
     requestId: text("request_id"),
     imageKey: text("image_key"),
+    // Where the poster frame is cut, in milliseconds, for videos whose first
+    // photo makes a poor poster. Null keeps the first photo.
+    posterMs: integer("poster_ms"),
+    // The poster frame, `<id>-poster.jpg`, cut once the MP4 is stored. Kept
+    // after the uploads expire.
+    posterKey: text("poster_key"),
   },
   (table) => [
     index("video_userId_createdAt_idx").on(table.userId, table.createdAt),

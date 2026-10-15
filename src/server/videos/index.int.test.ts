@@ -65,6 +65,11 @@ vi.mock("@/server/email/client", () => ({ sendEmail }));
 // The model's lines; rap.test.ts covers writing them.
 const writeLyrics = vi.hoisted(() => vi.fn(async (names: string[]) => [`${names[0]} raps`, `${names[1]} raps`]));
 vi.mock("./rap", async (importOriginal) => ({ ...(await importOriginal<object>()), writeLyrics }));
+// poster.test.ts covers cutting a frame with ffmpeg.
+const posterFrame = vi.hoisted(() =>
+  vi.fn<(video: Uint8Array, seconds: number) => Promise<Uint8Array>>(async () => new Uint8Array([0xff, 0xd8, 0xff])),
+);
+vi.mock("./poster", () => ({ posterFrame }));
 // The image check's own tests cover SeeAPI's API.
 const moderation = vi.hoisted(() => ({
   enabled: vi.fn(() => false),
@@ -805,6 +810,40 @@ test.each([
   expect(storage.putObject).not.toHaveBeenCalled();
   expect(await getBalance(userId)).toBe(before);
   expect(ai.reference.submit).not.toHaveBeenCalled();
+});
+
+test("a finished zombie couple video gets a poster cut at the hug, in place of the first photo", async () => {
+  const created = await zombie();
+  ai.providers.dashscope.result.mockResolvedValueOnce({ status: "succeeded", url: "https://dashscope.test/out.mp4" });
+
+  const result = await refreshVideo(userId, created.id);
+
+  const poster = `videos/${userId}/${created.id}-poster.jpg`;
+  expect(posterFrame).toHaveBeenCalledWith(mp4, 10);
+  expect(storage.putObject).toHaveBeenCalledWith(poster, new Uint8Array([0xff, 0xd8, 0xff]), "image/jpeg");
+  expect(result).toMatchObject({ status: "succeeded", posterUrl: `https://storage.test/${poster}?signed` });
+  expect(await rows()).toMatchObject([{ posterMs: 10_000, posterKey: poster }]);
+});
+
+test("a poster that can't be cut leaves the zombie couple video finished, with the first photo", async () => {
+  const created = await zombie();
+  ai.providers.dashscope.result.mockResolvedValueOnce({ status: "succeeded", url: "https://dashscope.test/out.mp4" });
+  posterFrame.mockRejectedValueOnce(new Error("ffmpeg failed"));
+
+  const result = await refreshVideo(userId, created.id);
+
+  expect(result).toMatchObject({ status: "succeeded", posterUrl: null });
+  expect(result?.imageUrl).toContain(`${created.id}.jpg`);
+});
+
+test("a rap video keeps the first photo as its poster", async () => {
+  const created = await rap();
+  ai.providers.dashscope.result.mockResolvedValueOnce({ status: "succeeded", url: "https://dashscope.test/out.mp4" });
+
+  const result = await refreshVideo(userId, created.id);
+
+  expect(posterFrame).not.toHaveBeenCalled();
+  expect(result).toMatchObject({ status: "succeeded", posterUrl: null });
 });
 
 test("the zombie couple is off without a Bailian key", async () => {

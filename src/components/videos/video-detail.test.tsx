@@ -20,6 +20,7 @@ const done: GeneratedVideo = {
   createdAt: new Date("2026-10-01T08:30:00Z"),
   url: "https://storage.test/done.mp4",
   imageUrl: "https://storage.test/done.png",
+  posterUrl: null,
 };
 
 test("plays the video and shows its prompt and details", () => {
@@ -68,4 +69,10 @@ test("renders in Chinese", () => {
 
   expect(screen.getByRole("heading", { level: 1, name: "视频详情" })).toBeTruthy();
   expect(screen.getByText("已完成")).toBeTruthy();
+});
+
+test("the player shows the video's own poster frame when it has one", () => {
+  renderWithIntl(<VideoDetail video={{ ...done, posterUrl: "https://storage.test/done-poster.jpg" }} />);
+
+  expect(screen.getByLabelText(/The fox turns/).getAttribute("poster")).toBe("https://storage.test/done-poster.jpg");
 });

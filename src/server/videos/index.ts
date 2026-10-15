@@ -28,6 +28,7 @@ import {
   RAP_RATIO,
   RAP_RESOLUTION,
   ZOMBIE_CREDITS,
+  ZOMBIE_POSTER_MS,
   ZOMBIE_RATIO,
   ZOMBIE_TITLE,
   HUG_CREDITS,
@@ -50,6 +51,7 @@ import {
   videoCost,
 } from "./config";
 import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
+import { posterFrame } from "./poster";
 import { zombiePrompt } from "./zombie";
 import { hugPrompt } from "./hug";
 import { vampirePrompt } from "./vampire";
@@ -89,6 +91,8 @@ export type Video = {
   // Signed URLs, valid for an hour. url is null until the MP4 is stored.
   url: string | null;
   imageUrl: string | null;
+  // The frame cut from the video, if it has one; else the player shows imageUrl.
+  posterUrl: string | null;
 };
 
 type Row = typeof video.$inferSelect;
@@ -102,6 +106,7 @@ const videos = lifecycle({
   // The provider that took the job, even if VIDEO_PROVIDER changed since.
   poll: (row, requestId) => getVideoProvider(row.provider).result(requestId),
   output: { ext: "mp4", mime: "video/mp4", timeoutMs: 120_000, error: (message) => new VideoGenerationError(message) },
+  stored: storePoster,
   notification: {
     succeeded: (row) => ({ type: "video_succeeded", data: { videoId: row.id, prompt: row.prompt } }),
     failed: (row, credits) => ({ type: "video_failed", data: { videoId: row.id, prompt: row.prompt, credits } }),
@@ -262,6 +267,7 @@ export function createZombieVideo(input: { userId: string; images: [Uint8Array, 
     text: null,
     credits: ZOMBIE_CREDITS,
     ratio: ZOMBIE_RATIO,
+    posterMs: ZOMBIE_POSTER_MS,
     prompt: async () => ({ title: ZOMBIE_TITLE, prompt: zombiePrompt() }),
   });
 }
@@ -306,6 +312,8 @@ async function createReferenceVideo(input: {
   credits: number;
   duration?: number;
   ratio: string;
+  // Where to cut the poster frame; without it the first photo is the poster.
+  posterMs?: number;
   prompt: () => Promise<{ title: string; prompt: string }>;
 }): Promise<Video> {
   const images = input.images.map((bytes) => {
@@ -343,6 +351,7 @@ async function createReferenceVideo(input: {
           provider: provider.id,
           resolution: RAP_RESOLUTION,
           credits,
+          posterMs: input.posterMs ?? null,
         }),
       async () => {
         if (!moderated) await storeFiles(files);
@@ -375,6 +384,19 @@ async function createReferenceVideo(input: {
 }
 
 type StoredFile = { key: string; bytes: Uint8Array; mime: string };
+
+// A video with posterMs gets that frame as its poster, `<id>-poster.jpg`.
+// A poster that can't be cut is logged; the video finishes without it.
+async function storePoster(row: Row, file: Uint8Array) {
+  if (row.posterMs === null) return;
+  try {
+    const posterKey = videos.fileKey(row.userId, `${row.id}-poster`, "jpg");
+    await putObject(posterKey, await posterFrame(file, row.posterMs / 1000), "image/jpeg");
+    await getDb().update(video).set({ posterKey }).where(eq(video.id, row.id));
+  } catch (error) {
+    log.warn("video.poster_failed", { id: row.id, error });
+  }
+}
 
 // Emails the video's owner. The links have no locale: the app redirects
 // them to the reader's. A lost email is logged, never thrown.
@@ -525,6 +547,7 @@ async function withUrls(row: Row): Promise<Video> {
     createdAt: row.createdAt,
     url: row.status === "succeeded" && row.storageKey ? await signedUrl(row.storageKey) : null,
     imageUrl: row.imageKey ? await signedUrl(row.imageKey) : null,
+    posterUrl: row.posterKey ? await signedUrl(row.posterKey) : null,
   };
 }
 
