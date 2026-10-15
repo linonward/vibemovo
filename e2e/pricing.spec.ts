@@ -17,7 +17,7 @@ test("signed-out visitors see the plan, the packs and what credits buy", async (
   await expect(main).toContainText("1 credit per image");
   await expect(main).toContainText("1 credit per chat message");
   await expect(main).toContainText("From 4 credits per second of video");
-  await expect(main).toContainText("30 free credits");
+  await expect(main).toContainText("75 free credits");
 });
 
 // Plans and packs read the same way: what you get, what it costs, then the

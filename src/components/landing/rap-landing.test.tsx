@@ -5,7 +5,7 @@ import { RapLanding } from "./rap-landing";
 
 afterEach(cleanup);
 
-const facts = { credits: 75, signup: 10, maxImageMb: 2, maxNameLength: 30 };
+const facts = { credits: 75, signup: 75, maxImageMb: 2, maxNameLength: 30 };
 
 test("the headline names the query and is the page's only h1", () => {
   renderWithIntl(<RapLanding facts={facts} guide="/blog/ai-rap-video-two-people" />);
@@ -40,7 +40,7 @@ test("shows a real result and the real cost", () => {
 
   expect(screen.getByRole("img", { name: /Four frames from a 15-second AI rap video/ })).toBeDefined();
   expect(screen.getByText(/One video costs 75 credits/)).toBeDefined();
-  expect(screen.getByText(/New accounts get 10 free credits, which is not enough/)).toBeDefined();
+  expect(screen.getByText(/New accounts get 75 free credits, enough for your first/)).toBeDefined();
   expect(screen.getByRole("link", { name: "pricing page" }).getAttribute("href")).toBe("/en/pricing");
 });
 

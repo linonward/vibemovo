@@ -368,7 +368,7 @@
       "items": {
         "1": {
           "title": "How much does a rap video cost?",
-          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, which is not enough for a rap video. Buy credits on the <pricing>pricing page</pricing>."
+          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, enough for your first rap video. Buy credits on the <pricing>pricing page</pricing>."
         },
         "2": {
           "title": "What if a video fails?",
@@ -477,7 +477,7 @@
       "items": {
         "1": {
           "title": "How much does a zombie couple video cost?",
-          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, which is not enough for one. Buy credits on the <pricing>pricing page</pricing>."
+          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, enough for your first one. Buy credits on the <pricing>pricing page</pricing>."
         },
         "2": {
           "title": "What if a video fails?",
@@ -561,7 +561,7 @@
       "items": {
         "1": {
           "title": "How much does a younger-self hug video cost?",
-          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, which is not enough for one. Buy credits on the <pricing>pricing page</pricing>."
+          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, enough for your first one. Buy credits on the <pricing>pricing page</pricing>."
         },
         "2": {
           "title": "What if a video fails?",
@@ -645,7 +645,7 @@
       "items": {
         "1": {
           "title": "How much does a vampire video cost?",
-          "body": "{credits} credits for one 10-second video. New accounts get {signup} free credits, which is not enough for one. Buy credits on the <pricing>pricing page</pricing>."
+          "body": "{credits} credits for one 10-second video. New accounts get {signup} free credits, enough for your first one. Buy credits on the <pricing>pricing page</pricing>."
         },
         "2": {
           "title": "What if a video fails?",

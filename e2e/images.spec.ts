@@ -23,7 +23,7 @@ test("the sidebar opens images, off while Bailian isn't set up", async ({ page }
   await expect(page.getByRole("heading", { level: 1, name: "Image generator" })).toBeVisible();
   await expect(page.getByText("Image generation isn't set up yet.")).toBeVisible();
   // signupCredits in src/server/credits/config.ts
-  await expect(page.getByText("30 credits left")).toBeVisible();
+  await expect(page.getByText("75 credits left")).toBeVisible();
   await page.getByLabel("Prompt").fill("A red fox");
   await expect(page.getByRole("button", { name: "Generate (1 credit)" })).toBeDisabled();
   await expect(page.getByText("No images yet.")).toBeVisible();

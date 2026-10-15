@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { BASE_URL } from "../playwright.config";
 import { signIn } from "./support/auth";
 
-const SIGNUP_CREDITS = 30;
+const SIGNUP_CREDITS = 75;
 
 test("signed-out visitors are redirected to sign-in", async ({ request }) => {
   const response = await request.get("/en/chat", { maxRedirects: 0 });
@@ -184,18 +184,18 @@ test("visited generation and billing pages keep the balance after a chat spends 
   const generators = ["Image generator", "Video generator", "Rap duo"];
   for (const name of generators) {
     await sidebar.getByRole("link", { name, exact: true }).click();
-    await expect(page.getByText("30 credits left", { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(page.getByText(`${SIGNUP_CREDITS} credits left`, { exact: true }).filter({ visible: true })).toBeVisible();
   }
   await sidebar.getByRole("link", { name: "Credits & billing", exact: true }).click();
-  await expect(page.getByText("30 credits", { exact: true })).toBeVisible();
+  await expect(page.getByText(`${SIGNUP_CREDITS} credits`, { exact: true })).toBeVisible();
   await sidebar.getByRole("link", { name: "AI chat", exact: true }).click();
   await page.getByRole("textbox", { name: "Message" }).fill("balance regression");
   await page.getByRole("button", { name: "Send" }).click();
   await expect(page.getByRole("log", { name: "Conversation" }).getByText("Echo: balance regression")).toBeVisible();
   for (const name of generators) {
     await sidebar.getByRole("link", { name, exact: true }).click();
-    await expect(page.getByText("29 credits left", { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(page.getByText(`${SIGNUP_CREDITS - 1} credits left`, { exact: true }).filter({ visible: true })).toBeVisible();
   }
   await sidebar.getByRole("link", { name: "Credits & billing", exact: true }).click();
-  await expect(page.getByText("29 credits", { exact: true })).toBeVisible();
+  await expect(page.getByText(`${SIGNUP_CREDITS - 1} credits`, { exact: true })).toBeVisible();
 });
