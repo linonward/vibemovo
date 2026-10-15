@@ -453,7 +453,7 @@ The production setup: Vercel runs the app and the sweep, Neon hosts Postgres and
 ### 1. Database (Neon)
 
 1. Create a Neon project in the region closest to your Vercel functions.
-2. Copy two connection strings from **Connect**: the pooled one (host contains `-pooler`) and the direct one.
+2. Copy two connection strings from **Connect**: the pooled one (host contains `-pooler`) and the direct one. In both, change `sslmode=require` to `sslmode=verify-full`. `pg` 8 already treats `require` as `verify-full` and warns about it; `pg` 9 will make `require` skip the certificate check. Neon's certificates come from a public CA, so Node.js verifies them without extra setup.
 3. Apply the migrations from your machine with the direct string:
 
    ```sh
@@ -568,6 +568,7 @@ Pages then load `/_vercel/insights/script.js`. The app sends no custom events.
 | `/api/health` returns 503 `database: unreachable`         | Run `docker compose up -d --wait`. Check `DATABASE_URL`                                        |
 | `relation "user" does not exist`                          | Run `pnpm db:migrate`                                                                          |
 | `DATABASE_URL is not set`                                 | Create `.env` from `.env.example`                                                              |
+| `SECURITY WARNING: The SSL modes 'prefer', 'require', and 'verify-ca' are treated as aliases for 'verify-full'` | In `DATABASE_URL`, change `sslmode=require` to `sslmode=verify-full`, then redeploy ([Database (Neon)](#1-database-neon)) |
 | Port 3000, 5432, 9000 or 9001 in use                      | Find the process with `lsof -nP -iTCP:<port> -sTCP:LISTEN`. For Postgres, set `POSTGRES_PORT` and update `DATABASE_URL`. For MinIO, set `STORAGE_PORT` (and update `STORAGE_ENDPOINT`) or `STORAGE_CONSOLE_PORT` |
 | Magic link opens `?error=INVALID_TOKEN`                   | Links work once and expire after 5 minutes. Request a new one                                  |
 | Magic link points to the wrong host                       | Set `BETTER_AUTH_URL` to the URL you open the app on                                           |
