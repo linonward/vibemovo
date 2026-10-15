@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUp, BookOpen, Check } from "lucide-react";
+import { ArrowUp, BookOpen, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { cn } from "cn";
 import { Glow, SectionHeading } from "@/components/home/section-heading";
@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { ImageLimits } from "@/lib/image-limits";
 import { LandingTryout } from "./landing-tryout";
+import { MoreEffects } from "./more-effects";
 
 const POINTS = ["1", "2"] as const;
 const STEPS = ["1", "2", "3"] as const;
@@ -215,30 +216,7 @@ export function RapLanding({
         </dl>
       </section>
 
-      <section aria-labelledby="rap-more" className="flex flex-col gap-8 border-t py-20">
-        <SectionHeading eyebrow={t("more.eyebrow")} id="rap-more">
-          {t("more.title")}
-        </SectionHeading>
-        <ul className="grid gap-4 md:grid-cols-2">
-          {[
-            { href: "/ai-zombie-couple-video", title: t("more.zombie.title"), body: t("more.zombie.body") },
-            ...related.map((post) => ({ ...post, body: t("more.guide") })),
-          ].map((item) => (
-            <li key={item.href}>
-              <Link
-                href={item.href}
-                className="group flex h-full flex-col gap-2 rounded-xl border bg-card p-6 transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
-              >
-                <span className="flex items-center gap-2 font-display text-lg font-semibold">
-                  {item.title}
-                  <ArrowRight aria-hidden className="icon-nudge size-4" />
-                </span>
-                <span className="text-pretty text-muted-foreground">{item.body}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
+      <MoreEffects current="rap" related={related} />
 
       <section
         aria-labelledby="rap-cta"

@@ -401,15 +401,6 @@
         }
       }
     },
-    "more": {
-      "eyebrow": "Keep going",
-      "title": "More AI video effects",
-      "guide": "A guide with steps, costs and tips.",
-      "zombie": {
-        "title": "Zombie couple",
-        "body": "Two photos become a 15-second zombie love story: one of you turns zombie, the other drops the bat and hugs them."
-      }
-    },
     "cta": {
       "title": "Make your first rap video",
       "body": "Sign in with an email link or your Google account. No password.",
@@ -1388,5 +1379,26 @@
     "close": "Close",
     "credits": "Not enough credits for this video.",
     "buyCredits": "Buy credits"
+  },
+  "MoreEffects": {
+    "eyebrow": "Keep going",
+    "title": "More AI video effects",
+    "guide": "A guide with steps, costs and tips.",
+    "rap": {
+      "title": "Rap duo",
+      "body": "Two photos and two names become a 15-second rap video, with lyrics for their names, a beat and vocals."
+    },
+    "zombie": {
+      "title": "Zombie couple",
+      "body": "Two photos become a 15-second zombie love story: one of you turns zombie, the other drops the bat and hugs them."
+    },
+    "hug": {
+      "title": "Younger-self hug",
+      "body": "A photo of you and one of you as a child become a 15-second video of you hugging your younger self."
+    },
+    "vampire": {
+      "title": "Vampire transformation",
+      "body": "One photo becomes a 10-second video: lightning strikes, the cape and red eyes appear, then the fangs."
+    }
   }
 }

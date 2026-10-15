@@ -45,7 +45,7 @@ How to turn one search query into a page that ranks and converts. Use it for eve
 
 - [ ] `src/app/sitemap.ts`, `src/app/llms.txt/route.ts` and the footer.
 - [ ] The home page templates (`src/components/home/templates.tsx`).
-- [ ] The rap page's "More AI video effects" section (`src/components/landing/rap-landing.tsx`). `EffectLanding` has no such section yet.
+- [ ] `EFFECTS` in `src/components/landing/more-effects.tsx` and its copy under `MoreEffects`, so every landing page links the new one.
 - [ ] A blog guide for the same query in `content/blog/<locale>/`, linking to the landing page and back from its `guide` link.
 
 ### Check

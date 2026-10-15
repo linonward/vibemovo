@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { cleanup, screen } from "@testing-library/react";
+import { cleanup, screen, within } from "@testing-library/react";
 import { renderWithIntl } from "@/test/intl";
 
 // The form in the hero (landing-tryout.test.tsx covers it) reads the session.
@@ -105,4 +105,12 @@ test.each([
 
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />, "zh");
   expect(screen.getByRole("heading", { level: 2, name: zh })).toBeDefined();
+});
+
+test.each(["zombie", "hug", "vampire"] as const)("the %s page links the other effects", (kind) => {
+  renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
+
+  const more = screen.getByRole("region", { name: "More AI video effects" });
+  expect(within(more).getAllByRole("link")).toHaveLength(3);
+  expect(within(more).getByRole("link", { name: /Rap duo/ }).getAttribute("href")).toBe("/en/ai-rap-video-generator");
 });
