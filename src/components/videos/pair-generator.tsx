@@ -14,9 +14,15 @@ import { VideoList } from "./video-list";
 
 type Video = GeneratedVideo;
 
-export type ZombieGeneratorProps = {
+// The two-photo effects without words, by their route.
+const ENDPOINTS = { zombie: "/api/videos/zombie", hug: "/api/videos/hug" } as const;
+
+export type PairKind = keyof typeof ENDPOINTS;
+
+export type PairGeneratorProps = {
+  kind: PairKind;
   balance: number;
-  // The fixed price of one zombie couple video.
+  // The fixed price of one video.
   credits: number;
   // Per photo.
   maxImageBytes: number;
@@ -44,8 +50,12 @@ const ERRORS = {
 
 const parse = (video: Serialized<Video>): Video => ({ ...video, createdAt: new Date(video.createdAt) });
 
-export function ZombieGenerator(props: ZombieGeneratorProps) {
-  const t = useTranslations("ZombieVideos");
+export function PairGenerator(props: PairGeneratorProps) {
+  const endpoint = ENDPOINTS[props.kind];
+  // Both namespaces have the same keys. Literal names, so the client
+  // messages test can check that the browser gets them.
+  const messages = { zombie: useTranslations("ZombieVideos"), hug: useTranslations("HugVideos") };
+  const t = messages[props.kind];
   const [photos, setPhotos] = useState<Record<Side, File | null>>({ left: null, right: null });
   const [previews, setPreviews] = useState<Record<Side, string | null>>({ left: null, right: null });
   // The latest pick per side, so a slow size check for an earlier file changes nothing.
@@ -111,7 +121,7 @@ export function ZombieGenerator(props: ZombieGeneratorProps) {
     const form = new FormData();
     form.set("image1", photos.left);
     form.set("image2", photos.right);
-    const response = await fetch("/api/videos/zombie", { method: "POST", body: form }).catch(() => null);
+    const response = await fetch(endpoint, { method: "POST", body: form }).catch(() => null);
     const body: ApiBody<VideoResponse> = response ? await response.json().catch(() => ({})) : {};
     setSubmitting(false);
 
@@ -131,13 +141,13 @@ export function ZombieGenerator(props: ZombieGeneratorProps) {
         <div className="grid gap-5 sm:grid-cols-2">
           {SIDES.map((side) => (
             <div key={side} className="flex flex-col gap-2">
-              <Label htmlFor={`zombie-${side}-photo`}>{t(`${side}.photo`)}</Label>
+              <Label htmlFor={`${props.kind}-${side}-photo`}>{t(`${side}.photo`)}</Label>
               <input
-                id={`zombie-${side}-photo`}
+                id={`${props.kind}-${side}-photo`}
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={(event) => pick(side, event)}
-                aria-describedby="zombie-photo-hint"
+                aria-describedby={`${props.kind}-photo-hint`}
                 className="w-full min-w-0 rounded-lg border border-input bg-card px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-muted file:px-3 file:py-1 file:text-sm file:font-medium focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input/30"
               />
               {previews[side] && (
@@ -152,7 +162,7 @@ export function ZombieGenerator(props: ZombieGeneratorProps) {
             </div>
           ))}
         </div>
-        <p id="zombie-photo-hint" className="text-sm text-muted-foreground">
+        <p id={`${props.kind}-photo-hint`} className="text-sm text-muted-foreground">
           {t("photoHint", { size })}
         </p>
 
@@ -177,7 +187,7 @@ export function ZombieGenerator(props: ZombieGeneratorProps) {
 
       <section className="flex flex-col gap-4">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 id="zombie-videos-title" className="font-display text-lg font-semibold">
+          <h2 id={`${props.kind}-videos-title`} className="font-display text-lg font-semibold">
             {t("historyTitle")}
           </h2>
           {videos.length > 0 && (
@@ -189,7 +199,7 @@ export function ZombieGenerator(props: ZombieGeneratorProps) {
         {videos.length === 0 ? (
           <p className="text-muted-foreground">{t("empty")}</p>
         ) : (
-          <VideoList videos={videos} aria-labelledby="zombie-videos-title" />
+          <VideoList videos={videos} aria-labelledby={`${props.kind}-videos-title`} />
         )}
       </section>
     </div>

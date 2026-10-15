@@ -30,6 +30,9 @@ import {
   ZOMBIE_CREDITS,
   ZOMBIE_RATIO,
   ZOMBIE_TITLE,
+  HUG_CREDITS,
+  HUG_RATIO,
+  HUG_TITLE,
   UPLOAD_EXPIRY_BATCH,
   UPLOAD_RETENTION_MS,
   VIDEO_DURATIONS,
@@ -44,6 +47,7 @@ import {
 } from "./config";
 import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
 import { zombiePrompt } from "./zombie";
+import { hugPrompt } from "./hug";
 import { checkImageSize, type ImageLimits, imageSize } from "./image-size";
 import { video } from "./schema";
 
@@ -197,7 +201,7 @@ function blocked(error: unknown): unknown {
     : error;
 }
 
-// The rap duo and the zombie couple need Bailian and storage, whatever
+// The rap duo, the zombie couple and the younger-self hug need Bailian and storage, whatever
 // VIDEO_PROVIDER says.
 function duoEnabled() {
   return getReferenceVideoProvider() !== null && storageConfigured();
@@ -209,6 +213,10 @@ export function rapOptions(): { enabled: boolean; credits: number } {
 
 export function zombieOptions(): { enabled: boolean; credits: number } {
   return { enabled: duoEnabled(), credits: ZOMBIE_CREDITS };
+}
+
+export function hugOptions(): { enabled: boolean; credits: number } {
+  return { enabled: duoEnabled(), credits: HUG_CREDITS };
 }
 
 // Two photos and two names become a 15-second video where each person raps
@@ -246,6 +254,18 @@ export function createZombieVideo(input: { userId: string; images: [Uint8Array, 
     credits: ZOMBIE_CREDITS,
     ratio: ZOMBIE_RATIO,
     prompt: async () => ({ title: ZOMBIE_TITLE, prompt: zombiePrompt() }),
+  });
+}
+
+// Two photos become a 15-second vertical video: the person today (the
+// first photo) hugs themselves as a child (the second).
+export function createHugVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
+  return createDuoVideo({
+    ...input,
+    text: null,
+    credits: HUG_CREDITS,
+    ratio: HUG_RATIO,
+    prompt: async () => ({ title: HUG_TITLE, prompt: hugPrompt() }),
   });
 }
 
@@ -406,8 +426,8 @@ export function sweepStaleVideos(now = new Date()): Promise<{ failed: number; ch
   return videos.sweep(now);
 }
 
-// The extensions imageType gives, for the second photo of a rap duo or a
-// zombie couple, whose key isn't stored. Deleting a key that doesn't exist succeeds.
+// The extensions imageType gives, for the second photo of a two-photo
+// video, whose key isn't stored. Deleting a key that doesn't exist succeeds.
 const IMAGE_EXTS = ["jpg", "png", "webp"];
 
 // Deletes uploaded photos older than UPLOAD_RETENTION_MS, oldest first, and

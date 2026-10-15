@@ -150,20 +150,28 @@ test("the sidebar opens the rap duo, off while Bailian is not set up", async ({ 
   await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
 });
 
-test("the sidebar opens the zombie couple, off while Bailian is not set up", async ({ page }) => {
-  await signIn(page);
-  await page.goto("/en/videos");
+// The two-photo effects without words.
+const PAIRS = [
+  { route: "zombie", title: "Zombie couple", off: "The zombie couple isn't set up yet." },
+  { route: "hug", title: "Hug your younger self", off: "Hug your younger self isn't set up yet." },
+] as const;
 
-  await page
-    .getByRole("navigation", { name: "Dashboard navigation" })
-    .getByRole("link", { name: "Zombie couple", exact: true })
-    .click();
+for (const { route, title, off } of PAIRS) {
+  test(`the sidebar opens ${title}, off while Bailian is not set up`, async ({ page }) => {
+    await signIn(page);
+    await page.goto("/en/videos");
 
-  await expect(page).toHaveURL("/en/videos/zombie");
-  await expect(page.getByRole("heading", { level: 1, name: "Zombie couple" })).toBeVisible();
-  await expect(page.getByText("The zombie couple isn't set up yet.")).toBeVisible();
-  await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
-});
+    await page
+      .getByRole("navigation", { name: "Dashboard navigation" })
+      .getByRole("link", { name: title, exact: true })
+      .click();
+
+    await expect(page).toHaveURL(`/en/videos/${route}`);
+    await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
+    await expect(page.getByText(off)).toBeVisible();
+    await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
+  });
+}
 
 test("a photo too small for Bailian is turned away as soon as it is picked", async ({ page }) => {
   await signIn(page);
@@ -210,22 +218,25 @@ test("a rap video needs a session, two photos and two names, then reports videos
   expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
 });
 
-test("a zombie couple video needs a session and two photos, then reports videos off", async ({ page, request }) => {
-  const photo = (buffer: Buffer) => ({ name: "photo.png", mimeType: "image/png", buffer });
-  const anonymous = await request.post("/api/videos/zombie", { multipart: { image1: photo(png), image2: photo(png) } });
-  expect(anonymous.status()).toBe(401);
+for (const { route, title } of PAIRS) {
+  test(`a ${title} video needs a session and two photos, then reports videos off`, async ({ page, request }) => {
+    const photo = (buffer: Buffer) => ({ name: "photo.png", mimeType: "image/png", buffer });
+    const endpoint = `/api/videos/${route}`;
+    const anonymous = await request.post(endpoint, { multipart: { image1: photo(png), image2: photo(png) } });
+    expect(anonymous.status()).toBe(401);
 
-  await signIn(page);
-  const post = (body: object) =>
-    page.request.post("/api/videos/zombie", { multipart: body as never, headers: { origin: BASE_URL } });
+    await signIn(page);
+    const post = (body: object) =>
+      page.request.post(endpoint, { multipart: body as never, headers: { origin: BASE_URL } });
 
-  const missing = await post({ image1: photo(png) });
-  expect(missing.status()).toBe(400);
-  const invalid = await post({ image1: photo(png), image2: photo(Buffer.from("<html>")) });
-  expect(invalid.status()).toBe(400);
-  expect(await invalid.json()).toEqual({ error: "INVALID_REQUEST" });
+    const missing = await post({ image1: photo(png) });
+    expect(missing.status()).toBe(400);
+    const invalid = await post({ image1: photo(png), image2: photo(Buffer.from("<html>")) });
+    expect(invalid.status()).toBe(400);
+    expect(await invalid.json()).toEqual({ error: "INVALID_REQUEST" });
 
-  const off = await post({ image1: photo(png), image2: photo(png) });
-  expect(off.status()).toBe(503);
-  expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
-});
+    const off = await post({ image1: photo(png), image2: photo(png) });
+    expect(off.status()).toBe(503);
+    expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
+  });
+}

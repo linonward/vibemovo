@@ -83,6 +83,8 @@ const {
   rapOptions,
   createZombieVideo,
   zombieOptions,
+  createHugVideo,
+  hugOptions,
   countVideos,
   refreshVideo,
   sweepStaleVideos,
@@ -821,6 +823,41 @@ test("a zombie couple's second photo is deleted with the first after a day", asy
   const deleted = storage.deleteObject.mock.calls.map(([key]) => key);
   expect(deleted).toContain(`videos/${userId}/${id}-2.png`);
   expect(await imageKeyOf(id)).toBeNull();
+});
+
+const hug = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createHugVideo({ userId, images });
+
+test("the younger-self hug is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
+  ai.state.active = null;
+  expect(hugOptions()).toEqual({ enabled: true, credits: 75 });
+  ai.state.reference = false;
+  expect(hugOptions().enabled).toBe(false);
+});
+
+test("a younger-self hug stores both photos, queues one vertical Wan 3.0 job and spends 75 credits", async () => {
+  const before = await getBalance(userId);
+
+  const result = await hug();
+
+  const first = `videos/${userId}/${result.id}.jpg`;
+  const second = `videos/${userId}/${result.id}-2.png`;
+  expect(storage.putObject).toHaveBeenCalledWith(first, jpeg, "image/jpeg");
+  expect(storage.putObject).toHaveBeenCalledWith(second, png, "image/png");
+  expect(writeLyrics).not.toHaveBeenCalled();
+  const job = ai.reference.submit.mock.calls[0][0];
+  expect(job).toMatchObject({ duration: 15, resolution: "720p", ratio: "9:16" });
+  expect(job.prompt).toContain("hug");
+  expect(result).toMatchObject({ prompt: "Hug your younger self", duration: 15, credits: 75, status: "pending" });
+  expect(await getBalance(userId)).toBe(before - 75);
+});
+
+test("a younger-self hug with a photo that isn't an image spends nothing", async () => {
+  const before = await getBalance(userId);
+
+  await expect(hug([jpeg, new Uint8Array([1, 2, 3])])).rejects.toThrow();
+
+  expect(storage.putObject).not.toHaveBeenCalled();
+  expect(await getBalance(userId)).toBe(before);
 });
 
 // A video whose uploads were stored `hoursAgo`. The database is shared, so

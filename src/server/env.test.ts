@@ -138,7 +138,7 @@ test("catches Stripe values pasted into the wrong variable", () => {
 });
 
 test("Waffo needs its merchant ID and private key", () => {
-  const { WAFFO_MERCHANT_ID, WAFFO_PRIVATE_KEY, ...products } = waffo;
+  const products = { ...waffo, WAFFO_MERCHANT_ID: undefined, WAFFO_PRIVATE_KEY: undefined };
   expect(validateEnv({ ...base, ...products })).toEqual([
     "WAFFO_MERCHANT_ID: required when PAYMENT_PROVIDER is waffo",
     "WAFFO_PRIVATE_KEY: required when PAYMENT_PROVIDER is waffo",

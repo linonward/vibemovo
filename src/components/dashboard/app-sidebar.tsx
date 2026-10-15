@@ -55,6 +55,7 @@ const CREATE = [
     children: [
       { href: "/videos/rap", key: "videoRap" },
       { href: "/videos/zombie", key: "videoZombie" },
+      { href: "/videos/hug", key: "videoHug" },
       { href: "/videos/library", key: "videoLibrary" },
     ],
   },
