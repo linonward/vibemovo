@@ -9,7 +9,9 @@ type Offer = { id: string; credits: number; amount: number; currency: string };
 type Plan = Offer & { interval: Interval };
 
 // Credits each feature costs, so visitors can judge a pack.
-export type Costs = { image: number; chat: number; videoPerSecond: number; signup: number };
+export type Costs = { image: number; chat: number; videoPerSecond: number; signup: number; rap: number };
+
+const QUESTIONS = ["expire", "failed", "refund", "cancel", "rap"] as const;
 
 // The public price list. Buying happens on /billing, which asks a signed-out
 // visitor to sign in first. Each link names the pack or plan, which billing
@@ -111,6 +113,33 @@ export function Pricing({ plans, packs, costs }: { plans: readonly Plan[]; packs
           ))}
         </ul>
       </section>
+
+      <section aria-labelledby="pricing-faq" className="flex flex-col gap-4">
+        <h2 id="pricing-faq" className="font-display text-lg font-semibold">{t("faqTitle")}</h2>
+        <dl className="border-b">
+          {QUESTIONS.map((key) => (
+            <div key={key} className="flex flex-col gap-2 border-t py-5">
+              <dt className="font-semibold">{t(`faq.${key}.title`)}</dt>
+              <dd className="max-w-[65ch] leading-7 text-pretty text-muted-foreground">
+                {t.rich(`faq.${key}.body`, {
+                  credits: costs.rap,
+                  refund: (chunks) => <BodyLink href="/refund">{chunks}</BodyLink>,
+                  terms: (chunks) => <BodyLink href="/terms">{chunks}</BodyLink>,
+                  rap: (chunks) => <BodyLink href="/ai-rap-video-generator">{chunks}</BodyLink>,
+                })}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
     </main>
+  );
+}
+
+function BodyLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link href={href} className="font-medium text-primary-text underline underline-offset-4">
+      {children}
+    </Link>
   );
 }

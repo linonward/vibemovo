@@ -7,7 +7,7 @@ import { signupCredits } from "@/server/credits/config";
 import { imageCost } from "@/server/images/config";
 import { CREDIT_PACKS } from "@/server/payment/packs";
 import { offeredPlans } from "@/server/payment/subscriptions";
-import { VIDEO_RESOLUTIONS } from "@/server/videos/config";
+import { RAP_CREDITS, VIDEO_RESOLUTIONS } from "@/server/videos/config";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/pricing">): Promise<Metadata> {
   const { locale } = await params;
@@ -26,7 +26,7 @@ export default function Page() {
     <Pricing
       plans={offeredPlans()}
       packs={CREDIT_PACKS}
-      costs={{ image: imageCost, chat: CHAT_CREDIT_COST, videoPerSecond, signup: signupCredits }}
+      costs={{ image: imageCost, chat: CHAT_CREDIT_COST, videoPerSecond, signup: signupCredits, rap: RAP_CREDITS }}
     />
   );
 }
