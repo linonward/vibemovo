@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { renderWithIntl } from "@/test/intl";
-import { ZombieGenerator, type ZombieGeneratorProps } from "./zombie-generator";
+import { PairGenerator, type PairGeneratorProps } from "./pair-generator";
 
 const fetchMock = vi.fn();
 
@@ -19,7 +19,8 @@ afterEach(() => {
   fetchMock.mockReset();
 });
 
-const props: ZombieGeneratorProps = {
+const props: PairGeneratorProps = {
+  kind: "zombie",
   balance: 100,
   credits: 75,
   maxImageBytes: 2 * 1024 * 1024,
@@ -48,7 +49,7 @@ function pick(label: string, size = 10) {
 }
 
 test("needs both photos before it generates", () => {
-  renderWithIntl(<ZombieGenerator {...props} />);
+  renderWithIntl(<PairGenerator {...props} />);
   const button = screen.getByRole("button", { name: "Generate (75 credits)" });
 
   pick("Your photo");
@@ -65,7 +66,7 @@ test("sends both photos, then polls until the video is ready", async () => {
     .mockResolvedValueOnce(
       reply(200, { video: { ...pending, status: "succeeded", url: "https://storage.test/new.mp4" } }),
     );
-  renderWithIntl(<ZombieGenerator {...props} />);
+  renderWithIntl(<PairGenerator {...props} />);
 
   const left = pick("Your photo");
   const right = pick("Your partner's photo");
@@ -83,8 +84,24 @@ test("sends both photos, then polls until the video is ready", async () => {
   await waitFor(() => expect(within(history).getByLabelText(pending.prompt).tagName).toBe("VIDEO"));
 });
 
+test("the younger-self hug asks for today's and a childhood photo and sends them to its own route", async () => {
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { ...pending, prompt: "Hug your younger self" } }));
+  renderWithIntl(<PairGenerator {...props} kind="hug" />);
+
+  expect(screen.getByRole("heading", { level: 2, name: "Your videos" })).toBeTruthy();
+  const today = pick("Your photo today");
+  const child = pick("Your childhood photo");
+  fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
+
+  await waitFor(() => expect(screen.getByText("25 credits left")).toBeTruthy());
+  const [url, init] = fetchMock.mock.calls[0];
+  expect(url).toBe("/api/videos/hug");
+  expect((init.body as FormData).get("image1")).toBe(today);
+  expect((init.body as FormData).get("image2")).toBe(child);
+});
+
 test("refuses a photo over the size limit", () => {
-  renderWithIntl(<ZombieGenerator {...props} />);
+  renderWithIntl(<PairGenerator {...props} />);
 
   pick("Your photo", 2 * 1024 * 1024 + 1);
 
@@ -99,7 +116,7 @@ test.each([
   [503, "VIDEOS_DISABLED", "isn't set up yet"],
 ])("explains a %s reply", async (status, error, text) => {
   fetchMock.mockResolvedValueOnce(reply(status, { error }));
-  renderWithIntl(<ZombieGenerator {...props} />);
+  renderWithIntl(<PairGenerator {...props} />);
 
   pick("Your photo");
   pick("Your partner's photo");
@@ -110,7 +127,7 @@ test.each([
 });
 
 test("links to billing when the balance is short, and says when it is off", () => {
-  renderWithIntl(<ZombieGenerator {...props} balance={10} enabled={false} />);
+  renderWithIntl(<PairGenerator {...props} balance={10} enabled={false} />);
 
   expect(screen.getByText("The zombie couple isn't set up yet.")).toBeTruthy();
   expect(screen.getByRole("link", { name: "Buy credits" }).getAttribute("href")).toBe("/en/billing");

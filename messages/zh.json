@@ -476,6 +476,7 @@
     "next": "下一页",
     "videoRap": "双人说唱",
     "videoZombie": "僵尸情侣",
+    "videoHug": "拥抱童年的自己",
     "videoLibrary": "全部视频",
     "adminOrders": "订单",
     "adminBroadcasts": "群发通知",
@@ -900,6 +901,35 @@
     "balance": "剩余 {count} 积分",
     "buyCredits": "购买积分",
     "disabled": "僵尸情侣尚未配置。",
+    "historyTitle": "你的视频",
+    "empty": "还没有视频。",
+    "viewAll": "查看全部",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
+      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
+      "failed": "生成失败，积分已退回。请重试。",
+      "blocked": "照片未通过内容审核。请换一张。",
+      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    }
+  },
+  "HugVideos": {
+    "title": "拥抱童年的自己",
+    "description": "上传两张照片，生成一段 15 秒的竖屏视频：现在的你在阳光下的公园遇见童年的自己，蹲下来紧紧拥抱，然后童年的你化作金色的光点。",
+    "left": {
+      "photo": "你现在的照片",
+      "preview": "你现在的照片预览"
+    },
+    "right": {
+      "photo": "你小时候的照片",
+      "preview": "你小时候的照片预览"
+    },
+    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。请用你自己小时候的照片。",
+    "generate": "生成（{count} 积分）",
+    "generating": "正在提交…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "拥抱童年的自己尚未配置。",
     "historyTitle": "你的视频",
     "empty": "还没有视频。",
     "viewAll": "查看全部",

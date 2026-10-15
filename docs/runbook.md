@@ -85,7 +85,7 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `FAL_KEY`            | With fal          | fal API key                                                   |
 | `SEEAPI_API_KEY`     | With SeeAPI       | SeeAPI API key                                                |
 | `PROMPT_MODERATION` | No | `waffo` screens image/video prompts before spending credits; empty uses only the local blocklist. Requires `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY` |
-| `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and the photos of rap duos and zombie couples with SeeAPI's NSFW filter. Empty turns the check off |
+| `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and the photos of two-photo videos (rap duo, zombie couple, younger-self hug) with SeeAPI's NSFW filter. Empty turns the check off |
 | `STORAGE_ENDPOINT`   | No                | S3-compatible endpoint. Empty means AWS S3                    |
 | `STORAGE_REGION`     | No                | Region for request signing. Default `auto`                    |
 | `STORAGE_BUCKET`     | With images or videos | Private bucket for generated images and videos            |
@@ -282,6 +282,14 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 - The prompt template is `zombiePrompt` in `src/server/videos/zombie.ts`. It asks for film-makeup zombies with no blood or gore, so Bailian's moderation lets it through.
 - Keep it `RAP_DURATION` long: the upload cleanup finds the second photo of a two-photo video by that length.
 
+### Hug your younger self (Bailian Wan 3.0)
+
+`/videos/hug` turns two photos into a 15-second 720p vertical (9:16) video with sound, after the "hug your younger self" trend: the person today (first photo) finds themselves as a child (second photo) in a sunny park, kneels and hugs them, then the child fades into golden light. It needs the zombie couple's setup and costs `HUG_CREDITS` (75).
+
+- Photo limits are the rap duo's.
+- The prompt template is `hugPrompt` in `src/server/videos/hug.ts`. It keeps the scene a family moment, not a romantic one.
+- Keep it `RAP_DURATION` long, like the zombie couple.
+
 ## API keys
 
 Users call the image and video routes from scripts with an API key, and pay with their own credits as in the browser. They create, list and revoke keys on `/api-keys` (Account in the sidebar): a name, and an expiry of 30 days, 90 days (the default), 1 year or never. Scripts can also use Better Auth's endpoints (`POST /api/auth/api-key/create` with `{ name, expiresIn }` in seconds, or `null` for no expiry; `GET /api/auth/api-key/list`; `POST /api/auth/api-key/delete` with `{ keyId }`), signed in. The key (`sk_...`) is returned once; the database keeps a hash.
@@ -315,7 +323,7 @@ Image and video prompts are checked against a blocklist before they spend credit
 
 - Matching ignores case, full-width letters, extra spaces and zero-width characters. Latin terms match whole words (`csam` doesn't block `csamplitude`); Chinese terms match anywhere.
 - The template's list covers only content that is illegal everywhere. Add the terms your content policy forbids to `BLOCKED_TERMS` in `src/server/moderation/blocklist.ts`, in every language your users write in, then deploy.
-- With `IMAGE_MODERATION=seeapi`, each video start image (and both photos of a rap duo, before the lines are written, or a zombie couple) is stored, then checked with SeeAPI's [NSFW filter](https://www.seeapi.com/docs/nsfw-filter/image-moderation) before it spends credits. SeeAPI downloads it from a signed URL, so the bucket must be reachable from the internet (not the local MinIO). The check takes a few seconds and costs 0.01 SeeAPI credits.
+- With `IMAGE_MODERATION=seeapi`, each video start image (and both photos of a rap duo, before the lines are written, or a zombie couple or younger-self hug) is stored, then checked with SeeAPI's [NSFW filter](https://www.seeapi.com/docs/nsfw-filter/image-moderation) before it spends credits. SeeAPI downloads it from a signed URL, so the bucket must be reachable from the internet (not the local MinIO). The check takes a few seconds and costs 0.01 SeeAPI credits.
   - A flagged image returns 422 `CONTENT_BLOCKED` and logs `video.blocked` with the labels.
   - No verdict within 30 seconds, or an error from SeeAPI, returns 503 `MODERATION_UNAVAILABLE` and logs `video.moderation_failed`. The upload is refused (fail closed); nothing is spent.
   - Either way the stored image is deleted.
@@ -343,7 +351,7 @@ Each run fails at most 100 images and 100 videos, oldest first. A refund reuses 
 
 Each run also grants yearly plans every month that has begun in the current period and wasn't granted yet ([Payments](#payments)), keyed `subscription:<id>:<period end>:m<month>`. A yearly subscription still without a period end a day after it started logs `subscription.no_period_end`.
 
-Each run also deletes uploaded photos (video start images and both photos of a rap duo or zombie couple) more than a day old (`UPLOAD_RETENTION_MS` in `src/server/videos/config.ts`), 100 videos per run, oldest first, and clears the video's `image_key`. The video and its MP4 stay; the library shows it without a poster. An upload that can't be deleted logs `video.upload_not_deleted` and is retried next run. The privacy policy states this period: change both together.
+Each run also deletes uploaded photos (video start images and both photos of a two-photo video) more than a day old (`UPLOAD_RETENTION_MS` in `src/server/videos/config.ts`), 100 videos per run, oldest first, and clears the video's `image_key`. The video and its MP4 stay; the library shows it without a poster. An upload that can't be deleted logs `video.upload_not_deleted` and is retried next run. The privacy policy states this period: change both together.
 
 Images, videos, yearly grants and uploads run independently. If one throws, the others finish and stay committed; the sweep logs `cron.task_failed` and returns 500. Check the error and retry; the idempotency keys make retries safe.
 

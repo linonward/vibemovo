@@ -65,6 +65,13 @@ export const ZOMBIE_RATIO = "9:16";
 // What the video list shows in place of a prompt.
 export const ZOMBIE_TITLE = "Zombie couple";
 
+// The younger-self hug (/videos/hug): two photos, today and as a child, on
+// the zombie couple's model, length, size, photo limits and price.
+export const HUG_CREDITS = RAP_CREDITS;
+export const HUG_RATIO = ZOMBIE_RATIO;
+// What the video list shows in place of a prompt.
+export const HUG_TITLE = "Hug your younger self";
+
 // Each rap duo photo, as Bailian Wan 3.0 accepts it: at least 240 pixels a
 // side ("resolution must be at least 240x240"); the rest as for Wan 2.7.
 export const RAP_IMAGE_LIMITS: ImageLimits = VIDEO_IMAGE_LIMITS.dashscope;
