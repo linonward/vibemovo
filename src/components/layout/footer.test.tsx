@@ -20,6 +20,12 @@ test("the product links include the rap video and zombie couple pages", () => {
   expect(within(product).getByRole("link", { name: "AI zombie couple videos" }).getAttribute("href")).toBe(
     "/en/ai-zombie-couple-video",
   );
+  expect(within(product).getByRole("link", { name: "AI younger-self hug videos" }).getAttribute("href")).toBe(
+    "/en/hug-your-younger-self-ai",
+  );
+  expect(within(product).getByRole("link", { name: "AI vampire transformation videos" }).getAttribute("href")).toBe(
+    "/en/ai-vampire-transformation-video",
+  );
 });
 
 test("groups support and legal links under headings", () => {
