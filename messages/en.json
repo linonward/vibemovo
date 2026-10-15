@@ -569,7 +569,7 @@
         },
         "3": {
           "title": "How long does it take?",
-          "body": "Usually a few minutes. You can close the page: you get a notification when the video is ready."
+          "body": "A few minutes to about a quarter of an hour. You can close the page: you get a notification when the video is ready."
         },
         "4": {
           "title": "Which photo goes first?",
@@ -1203,7 +1203,7 @@
   },
   "HugVideos": {
     "title": "Hug your younger self",
-    "description": "Two photos become a 15-second vertical video: you today find yourself as a child in a sunny park, kneel and hug, then the child fades into golden light.",
+    "description": "Two photos become a 15-second vertical video: you today find yourself as a child in a sunny park, kneel and hug, then golden light surrounds the child.",
     "left": {
       "photo": "Your photo today",
       "preview": "Your photo today preview"
