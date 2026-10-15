@@ -9,8 +9,8 @@ test("the blog lists each locale's posts, newest first", async ({ page }) => {
   await expect(titles).toHaveText([
     "AI Vampire Transformation Video from One Photo",
     "AI Zombie Couple Video: Make a Zombie Love Story",
+    "Hotel Lobby Rap Duo: AI Song & Video from Photos",
     "Hug Your Younger Self AI: Make the Hug Video",
-    "Migos AI Song & Video Generator from Two Photos",
     "How to Make an AI Rap Video of Two People from Photos",
     "How to Turn a Photo into a Video with AI",
   ]);
@@ -18,6 +18,15 @@ test("the blog lists each locale's posts, newest first", async ({ page }) => {
   await page.goto("/zh/blog");
   await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveCount(0);
   await expect(page.getByRole("main")).toContainText("还没有文章。");
+});
+
+test("the post's old URL redirects to its new one", async ({ page }) => {
+  const response = await page.goto("/en/blog/migos-ai-song-video-generator");
+
+  expect(response?.request().redirectedFrom()?.response()).toBeTruthy();
+  expect((await response?.request().redirectedFrom()?.response())?.status()).toBe(308);
+  await expect(page).toHaveURL("/en/blog/hotel-lobby-rap-duo-video");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Hotel Lobby Rap Duo: AI Song & Video from Photos");
 });
 
 test("a post shows its title, date and body", async ({ page }) => {
@@ -54,8 +63,8 @@ test("a post's tags open a page of the posts with that tag", async ({ page }) =>
   await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
     "AI Vampire Transformation Video from One Photo",
     "AI Zombie Couple Video: Make a Zombie Love Story",
+    "Hotel Lobby Rap Duo: AI Song & Video from Photos",
     "Hug Your Younger Self AI: Make the Hug Video",
-    "Migos AI Song & Video Generator from Two Photos",
     "How to Make an AI Rap Video of Two People from Photos",
     "How to Turn a Photo into a Video with AI",
   ]);
