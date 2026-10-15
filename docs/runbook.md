@@ -67,7 +67,9 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `STRIPE_WEBHOOK_SECRET` | With Stripe    | Signing secret of the webhook endpoint (`whsec_...`)           |
 | `WAFFO_MERCHANT_ID`  | With Waffo        | Merchant ID (`MER_...`)                                        |
 | `WAFFO_PRIVATE_KEY`  | With Waffo        | RSA private key, PEM on one line with `\n`                     |
-| `WAFFO_PRODUCT_ID`   | With Waffo packs  | One-time product the packs are sold as (`PROD_...`)            |
+| `WAFFO_PACK_SMALL_PRODUCT_ID` | With Waffo packs | One-time product the `small` pack is sold as (`PROD_...`) |
+| `WAFFO_PACK_MEDIUM_PRODUCT_ID` | With Waffo packs | One-time product the `medium` pack is sold as (`PROD_...`) |
+| `WAFFO_PACK_LARGE_PRODUCT_ID` | With Waffo packs | One-time product the `large` pack is sold as (`PROD_...`) |
 | `WAFFO_SUBSCRIPTION_PRODUCT_ID` | With Waffo subscriptions | Monthly subscription product the plans are sold as (`PROD_...`) |
 | `WAFFO_STORE_ID`     | With Waffo subscriptions | Store ID (`STO_...`) for customer portal links          |
 | `WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID` | With Waffo yearly plans | Yearly subscription product the yearly plans are sold as (`PROD_...`). Empty hides the yearly plans |
@@ -94,7 +96,8 @@ The table lists every variable in `.env.example` and every `process.env` read in
 The server checks these variables when it starts (`src/server/env.ts`, run from `src/instrumentation.ts`). If any is missing or malformed, the log lists every problem as `- NAME: reason` (never the value), and every request returns 500 until you fix them and restart. Empty values count as unset. The check also enforces the pairs:
 
 - Both Google variables or neither.
-- The keys of the chosen `PAYMENT_PROVIDER`. Waffo needs `WAFFO_PRODUCT_ID`, or both subscription variables, or all three.
+- The keys of the chosen `PAYMENT_PROVIDER`. Waffo needs the three `WAFFO_PACK_*_PRODUCT_ID`, or both subscription variables, or all of them.
+- All three `WAFFO_PACK_*_PRODUCT_ID`, or none.
 - Both `WAFFO_SUBSCRIPTION_PRODUCT_ID` and `WAFFO_STORE_ID`, or neither.
 - `WAFFO_SUBSCRIPTION_PRODUCT_ID` with `WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID`.
 - The three storage keys when `DASHSCOPE_API_KEY`, `VIDEO_PROVIDER` or any of them is set.
@@ -199,7 +202,7 @@ stripe listen --forward-to localhost:3000/api/webhooks/payment/stripe
 
 Waffo Pancake is a merchant of record: it charges tax and handles invoices. It requires an `https://` return URL, so locally open the app through an HTTPS tunnel and set `BETTER_AUTH_URL` to the tunnel URL.
 
-1. In the Waffo dashboard, create a one-time product (for example "Credits"). Checkout overrides its price per pack. Copy its ID into `WAFFO_PRODUCT_ID`.
+1. In the Waffo dashboard, create one one-time product per credit pack in `src/server/payment/packs.ts`, named and priced like the pack (for example "100 credits", $5.00). Copy their IDs into `WAFFO_PACK_SMALL_PRODUCT_ID`, `WAFFO_PACK_MEDIUM_PRODUCT_ID` and `WAFFO_PACK_LARGE_PRODUCT_ID`. Checkout still sends each pack's price. A new pack needs its own product, variable and line in `packProductId` (`src/server/payment/providers/waffo.ts`).
 2. Under Settings → Developers, copy the merchant ID and API private key into `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY`.
 3. For subscriptions, create a monthly subscription product (for example "Pro"). Copy its ID into `WAFFO_SUBSCRIPTION_PRODUCT_ID`, and the store ID into `WAFFO_STORE_ID`. Without them, packs still work and subscribing is off.
 4. For yearly plans, create a second subscription product with a yearly billing period (for example "Pro yearly"). Copy its ID into `WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID`. Without it, the yearly plans are hidden. Waffo bills the period the product sets, so each product needs its own.

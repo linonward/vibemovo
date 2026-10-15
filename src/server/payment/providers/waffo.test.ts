@@ -20,6 +20,7 @@ vi.mock("@waffo/pancake-ts", async (importOriginal) => {
 });
 
 const { waffoProvider } = await import("./waffo");
+const { findPack } = await import("../packs");
 
 // Stands in for Waffo's webhook key pair; the SDK reads the public key from
 // WAFFO_WEBHOOK_PUBLIC_KEY before its built-in keys.
@@ -28,7 +29,9 @@ const { privateKey, publicKey } = generateKeyPairSync("rsa", { modulusLength: 20
 beforeEach(() => {
   vi.stubEnv("WAFFO_MERCHANT_ID", "MER_test");
   vi.stubEnv("WAFFO_PRIVATE_KEY", "-----BEGIN PRIVATE KEY-----\\nunused\\n-----END PRIVATE KEY-----");
-  vi.stubEnv("WAFFO_PRODUCT_ID", "PROD_credits");
+  vi.stubEnv("WAFFO_PACK_SMALL_PRODUCT_ID", "PROD_small");
+  vi.stubEnv("WAFFO_PACK_MEDIUM_PRODUCT_ID", "PROD_medium");
+  vi.stubEnv("WAFFO_PACK_LARGE_PRODUCT_ID", "PROD_large");
   vi.stubEnv("WAFFO_SUBSCRIPTION_PRODUCT_ID", "PROD_pro");
   vi.stubEnv("WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID", "PROD_pro_yearly");
   vi.stubEnv("WAFFO_STORE_ID", "STO_1");
@@ -62,7 +65,7 @@ function signed(eventType: string, data: object, mode = "test") {
   return [payload, new Headers({ "x-waffo-signature": `t=${t},v1=${v1}` })] as const;
 }
 
-test("creates a checkout session priced from the pack", async () => {
+test("creates a checkout session for the pack's own product, priced from the pack", async () => {
   createSession.mockResolvedValue({
     sessionId: "cs_1",
     checkoutUrl: "https://pancake.waffo.ai/store/s/checkout/cs_1",
@@ -82,7 +85,7 @@ test("creates a checkout session priced from the pack", async () => {
   expect(session).toEqual({ sessionId: "cs_1", url: "https://pancake.waffo.ai/store/s/checkout/cs_1" });
   expect(createSession).toHaveBeenCalledWith(
     expect.objectContaining({
-      productId: "PROD_credits",
+      productId: "PROD_small",
       currency: "USD",
       priceSnapshot: expect.objectContaining({ amount: "5.00" }),
       buyerEmail: "ada@example.com",
@@ -94,9 +97,29 @@ test("creates a checkout session priced from the pack", async () => {
   );
 });
 
-test("packs need merchant ID, private key and product ID", () => {
+test("each pack sells as its own product", async () => {
+  createSession.mockResolvedValue({ sessionId: "cs_1", checkoutUrl: "https://pancake.waffo.ai/c", expiresAt: "" });
+
+  for (const [pack, productId] of [["medium", "PROD_medium"], ["large", "PROD_large"]] as const) {
+    await waffoProvider.createCheckout({
+      userId: "user-1",
+      orderId: `order-${pack}`,
+      pack: { ...findPack(pack)! },
+      email: "ada@example.com",
+      locale: "en",
+      successUrl: "https://app.test/en/billing?checkout=success",
+      cancelUrl: "https://app.test/en/billing?checkout=cancel",
+    });
+
+    expect(createSession).toHaveBeenLastCalledWith(expect.objectContaining({ productId }), {
+      idempotencyKey: `order-${pack}`,
+    });
+  }
+});
+
+test("packs need merchant ID, private key and every pack's product ID", () => {
   expect(waffoProvider.configured("packs")).toBe(true);
-  vi.stubEnv("WAFFO_PRODUCT_ID", "");
+  vi.stubEnv("WAFFO_PACK_LARGE_PRODUCT_ID", "");
   expect(waffoProvider.configured("packs")).toBe(false);
   expect(waffoProvider.configured("subscriptions")).toBe(true);
 });
