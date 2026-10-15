@@ -29,6 +29,7 @@ const videos: GeneratedVideo[] = [
     createdAt: new Date("2026-10-01"),
     url: "https://storage.test/done.mp4",
     imageUrl: "https://storage.test/done.png",
+    posterUrl: null,
   },
   {
     id: "bad",
@@ -40,6 +41,7 @@ const videos: GeneratedVideo[] = [
     createdAt: new Date("2026-10-01"),
     url: null,
     imageUrl: null,
+    posterUrl: null,
   },
 ];
 
@@ -77,4 +79,12 @@ test("renders in Chinese", () => {
   renderWithIntl(<VideoLibrary videos={videos} page={1} pageCount={2} />, "zh");
 
   expect(screen.getByRole("list", { name: "全部视频" })).toBeTruthy();
+});
+
+test("a card shows the video's own poster frame over the first photo", () => {
+  const withPoster = { ...videos[0], posterUrl: "https://storage.test/done-poster.jpg" };
+  renderWithIntl(<VideoLibrary videos={[withPoster, videos[0]]} page={1} pageCount={1} />);
+
+  const posters = [...document.querySelectorAll("video")].map((video) => video.getAttribute("poster"));
+  expect(posters).toEqual(["https://storage.test/done-poster.jpg", "https://storage.test/done.png"]);
 });

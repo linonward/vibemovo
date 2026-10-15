@@ -37,6 +37,9 @@ export type GenerationKind<T extends Table, N extends string> = {
   poll(row: Row<T>, jobId: string): Promise<GenerationResult>;
   // The finished file, stored as `${name}s/<userId>/<id>.<ext>`.
   output: { ext: string; mime: string; timeoutMs: number; error: (message: string) => Error };
+  // Called with the finished file once it is stored, before the job is
+  // marked succeeded, to derive more from it. It must not throw.
+  stored?(row: Row<T>, file: Uint8Array): Promise<void>;
   notification: {
     succeeded(row: Row<T>): NotificationContent;
     failed(row: Row<T>, credits: number): NotificationContent;
@@ -137,7 +140,9 @@ export function lifecycle<T extends Table, N extends string>(kind: GenerationKin
     if (result.status === "failed") return fail(userId, id, kind.credits(job), result.error, { unwatched });
 
     const storageKey = fileKey(userId, id, kind.output.ext);
-    await putObject(storageKey, await download(result.url), kind.output.mime);
+    const file = await download(result.url);
+    await putObject(storageKey, file, kind.output.mime);
+    await kind.stored?.(job, file);
     // Two refreshes can race here; both store the same file and either update wins.
     const [updated] = await getDb()
       .update(table)

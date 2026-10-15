@@ -62,6 +62,9 @@ export const RAP_MAX_NAME_LENGTH = 30;
 // two-photo video's second photo by it.
 export const ZOMBIE_CREDITS = RAP_CREDITS;
 export const ZOMBIE_RATIO = "9:16";
+// The poster is cut from the hug (6 to 11 s in the prompt; 9 to 12 s in
+// tests), not taken from the survivor's photo.
+export const ZOMBIE_POSTER_MS = 10_000;
 // What the video list shows in place of a prompt.
 export const ZOMBIE_TITLE = "Zombie couple";
 

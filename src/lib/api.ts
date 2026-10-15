@@ -70,6 +70,8 @@ export type GeneratedVideo = {
   // Signed and short-lived. url is null until the video is stored.
   url: string | null;
   imageUrl: string | null;
+  // A frame cut from the video for its poster; null shows imageUrl instead.
+  posterUrl: string | null;
 };
 
 // An in-app notification. The page writes the text from `type` and `data`.

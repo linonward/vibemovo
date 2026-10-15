@@ -38,7 +38,7 @@ export function VideoDetail({ video }: { video: GeneratedVideo }) {
             // metadata loads, so no strip of background shows beside it.
             <video
               src={video.url}
-              poster={video.imageUrl ?? undefined}
+              poster={video.posterUrl ?? video.imageUrl ?? undefined}
               aria-label={video.prompt}
               controls
               playsInline
