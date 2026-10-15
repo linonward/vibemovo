@@ -74,9 +74,8 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `WAFFO_STORE_ID`     | With Waffo subscriptions | Store ID (`STO_...`) for customer portal links          |
 | `WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID` | With Waffo yearly plans | Yearly subscription product the yearly plans are sold as (`PROD_...`). Empty hides the yearly plans |
 | `WAFFO_ENVIRONMENT`  | No                | `test` or `prod` (default). Webhooks from the other environment are rejected |
-| `DEEPSEEK_API_KEY`   | No                | DeepSeek API key (`sk-...`). Empty turns AI chat off           |
-| `DEEPSEEK_MODEL`     | No                | DeepSeek model ID. Default `deepseek-flash`                    |
-| `AI_MOCK`            | No                | Replies with an echo model when no DeepSeek key is set. Used by E2E only; refused in production unless `BETTER_AUTH_URL` is localhost |
+| `DASHSCOPE_CHAT_MODEL` | No              | Bailian model for AI chat and rap lyrics. Default `deepseek-v4.1-flash` |
+| `AI_MOCK`            | No                | Replies with an echo model when no `DASHSCOPE_API_KEY` is set. Used by E2E only; refused in production unless `BETTER_AUTH_URL` is localhost |
 | `DASHSCOPE_API_KEY`  | No                | Alibaba Cloud Model Studio (Bailian) API key. Empty turns image generation off |
 | `DASHSCOPE_BASE_URL` | No                | API host for the key's region. Default `https://dashscope.aliyuncs.com` (Beijing) |
 | `DASHSCOPE_IMAGE_MODEL` | No             | Text-to-image model. Default `wan2.6-t2i`                     |
@@ -211,12 +210,12 @@ Waffo Pancake is a merchant of record: it charges tax and handles invoices. It r
 
 Waffo sends no event when a checkout is abandoned, so those orders stay "Pending".
 
-## AI chat (DeepSeek)
+## AI chat (DeepSeek on Bailian)
 
-Signed-in users chat on `/chat`. Each message costs `CHAT_CREDIT_COST` (1) credit (`src/server/ai/chat.ts`); a failed reply refunds it.
+Signed-in users chat on `/chat`. Each message costs `CHAT_CREDIT_COST` (1) credit (`src/server/ai/chat.ts`); a failed reply refunds it. Replies come from DeepSeek on Bailian, through DashScope's OpenAI-compatible API (`src/server/ai/bailian-chat.ts`), with thinking off (`enable_thinking: false`) so replies are fast and bill no thinking tokens.
 
-1. In the [DeepSeek platform](https://platform.deepseek.com/api_keys), create an API key. Copy it into `DEEPSEEK_API_KEY`.
-2. Optional: set `DEEPSEEK_MODEL` to another model ID. The default is `deepseek-flash`.
+1. Set `DASHSCOPE_API_KEY` (and `DASHSCOPE_BASE_URL` outside Beijing), as for [image generation](#image-generation-bailian). The production check then also needs the `STORAGE_*` variables.
+2. Optional: set `DASHSCOPE_CHAT_MODEL` to another model ID available in the key's region. The default is `deepseek-v4.1-flash`.
 3. Restart the app.
 
 Without a key, `/chat` says chat is off and `POST /api/chat` returns `503 CHAT_DISABLED`. Chats are deleted with the account.
@@ -274,7 +273,7 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 `/videos/rap` turns two photos and two names into a 15-second 720p rap video with sound: the left person raps one line, then the right person raps the next. It costs `RAP_CREDITS` (75) and is refunded on failure, like any video.
 
 1. Set `DASHSCOPE_API_KEY` (and `DASHSCOPE_BASE_URL` outside Beijing) and the `STORAGE_*` variables. `VIDEO_PROVIDER` doesn't matter: the rap duo always uses Bailian `wan3.0-video`.
-2. Optional: set `DEEPSEEK_API_KEY`. DeepSeek then writes two lines from the names, in the page's language. Without it, or if its reply is unusable or blocked, fixed lines name both people.
+2. DeepSeek on Bailian (the [chat model](#ai-chat-deepseek-on-bailian)) writes two lines from the names, in the page's language. If its reply is unusable or blocked, fixed lines name both people.
 3. Restart the app.
 
 - Each photo is at most 2 MB, so both fit under Vercel's 4.5 MB body cap, and 240 to 8,000 pixels a side (`RAP_IMAGE_LIMITS`). Wan 3.0 fails smaller photos (`InvalidParameter … resolution must be at least 240x240`), so the form and the server turn them away first.
@@ -639,7 +638,7 @@ Pages then load `/_vercel/speed-insights/script.js`.
 | E2E fails broadly, even `/api/health`, or uses a stale or another worktree's server | Each worktree has its own port (3100-3899, from its path), and Playwright reuses a server already on it. Find it with `lsof -nP -iTCP:<port> -sTCP:LISTEN`, stop it, or set `E2E_PORT`. Also check `BETTER_AUTH_SECRET` is set in `.env` |
 | `pnpm typecheck` can't find `LayoutProps`                 | Use `pnpm typecheck`, not bare `tsc`; it runs `next typegen` first                             |
 | Playwright: `Executable doesn't exist`                    | Run `pnpm exec playwright install chromium`                                                    |
-| "Chat is not set up yet." on `/chat`                     | Set `DEEPSEEK_API_KEY`, then restart                                                           |
+| "Chat is not set up yet." on `/chat`                     | Set `DASHSCOPE_API_KEY`, then restart                                                          |
 | "Image generation isn't set up yet." on `/images`        | Set `DASHSCOPE_API_KEY` and the `STORAGE_*` variables, then restart                             |
 | Images or videos fail; the log says `Bailian 401 InvalidApiKey` | The key is wrong or from another region. Match `DASHSCOPE_BASE_URL` to the key's region |
 | "Video generation isn't set up yet." on `/videos`        | Set `VIDEO_PROVIDER`, its key and the `STORAGE_*` variables, then restart                       |

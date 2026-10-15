@@ -32,7 +32,6 @@ const schema = z.object({
     z.string().regex(/-----BEGIN (RSA )?PRIVATE KEY-----/, "must be a PEM private key"),
   ),
   WAFFO_ENVIRONMENT: z.enum(["test", "prod"], "must be test or prod, or empty").optional(),
-  DEEPSEEK_API_KEY: optional(z.string().startsWith("sk-", "must start with sk-")),
   DASHSCOPE_BASE_URL: optional(z.string().pipe(httpUrl)),
   VIDEO_PROVIDER: z.enum(VIDEO_PROVIDER_IDS, `must be ${choices(VIDEO_PROVIDER_IDS)}, or empty`).optional(),
   PROMPT_MODERATION: z.enum(["waffo"], "must be waffo, or empty").optional(),

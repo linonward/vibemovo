@@ -67,7 +67,7 @@ A module that owns tables keeps them in its `schema.ts`; `db/schema.ts` re-expor
 | `auth`   | `index.ts` (Better Auth; production rate limits per IP in `rate_limit`), `client-ip.ts` (the one trusted IP header, `CLIENT_IP_HEADER`), `schema.ts`, `session.ts`, `social-providers.ts`, `api-keys.ts` (hashed `sk_` keys sent as `x-api-key`; `getSession` returns the owner's session; 60 requests a minute per key; at most `MAX_API_KEYS` (10) per user) |
 | `account` | `index.ts`: `beforeDeleteUser` throws `LiveSubscriptionError` while a subscription is live; `afterDeleteUser` deletes the user's API keys (no foreign key) and stored files. A new module that stores a user's files adds itself here, not to `auth` |
 | `admin`  | `access.ts` (`isAdmin`, `ADMIN_EMAILS`), `users.ts`, `credits.ts` (`addCredits`, idempotent per request ID), `orders.ts`, `metrics.ts` (users, credits, orders, revenue, and per generation kind the outcomes, median and p95 time and top failures, over a window) |
-| `ai`     | `chat.ts`, `config.ts` (`CHAT_CREDIT_COST`, model, limits), `chats.ts`, `schema.ts` (`chat`, `chat_message`): DeepSeek through the Vercel AI SDK. `dashscope.ts`: Bailian text-to-image (async task). `video/`: image-to-video providers behind `VideoProvider` (`types.ts`): `fal.ts` (Kling 2.6 Pro), `seeapi.ts` (Seedance 2.0), `dashscope.ts` (Wan 2.7); `video/index.ts` registers them and reads `VIDEO_PROVIDER` |
+| `ai`     | `chat.ts`, `config.ts` (`CHAT_CREDIT_COST`, model, limits), `chats.ts`, `schema.ts` (`chat`, `chat_message`): DeepSeek on Bailian through the Vercel AI SDK (`bailian-chat.ts`: the DeepSeek client pointed at DashScope's OpenAI-compatible API, thinking off). `dashscope.ts`: Bailian text-to-image (async task). `video/`: image-to-video providers behind `VideoProvider` (`types.ts`): `fal.ts` (Kling 2.6 Pro), `seeapi.ts` (Seedance 2.0), `dashscope.ts` (Wan 2.7); `video/index.ts` registers them and reads `VIDEO_PROVIDER` |
 | `credits` | `index.ts` (`getBalance`, `listTransactions`, `usedIdempotencyKeys`, `grantCredits`, `spendCredits`, `spendUpTo` (spends at most the balance); the last three take an optional `tx`), `schema.ts` (balance + ledger), `config.ts` (`signupCredits`) |
 | `feedback` | `index.ts` (validate, submit idempotently, paginate for admins), `schema.ts`, `config.ts` |
 | `email`  | `client.ts` (Resend or console), `templates/` (magic link; failed charge and ended subscription, linking to `/billing`; video ready or failed, sent only when the sweep settles it) |
@@ -170,7 +170,7 @@ To add a provider, implement `PaymentProvider` in `src/server/payment/providers/
 5. The reply is saved before the response ends, or on disconnect. If the model fails, `onError` refunds with `chat-refund:<id>`; the question stays.
 6. After the first reply, `history.replaceState` switches the URL to `/chat/<id>` without a reload.
 
-`DELETE /api/chat/<id>` deletes a chat. `DEEPSEEK_API_KEY` turns chat on and `DEEPSEEK_MODEL` picks the model (default `deepseek-flash`); without a key the API returns `503 CHAT_DISABLED`. E2E sets `AI_MOCK=1` for an echo model.
+`DELETE /api/chat/<id>` deletes a chat. `DASHSCOPE_API_KEY` turns chat on and `DASHSCOPE_CHAT_MODEL` picks the model (default `deepseek-v4.1-flash`); without a key the API returns `503 CHAT_DISABLED`. E2E sets `AI_MOCK=1` for an echo model.
 
 ## Target structure
 

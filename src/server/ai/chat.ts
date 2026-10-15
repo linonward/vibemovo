@@ -1,5 +1,4 @@
 import { randomUUID } from "node:crypto";
-import { createDeepSeek } from "@ai-sdk/deepseek";
 import {
   convertToModelMessages,
   createUIMessageStreamResponse,
@@ -14,6 +13,7 @@ import { MockLanguageModelV4 } from "ai/test";
 import { grantCredits, spendCredits } from "@/server/credits";
 import { getDb } from "@/server/db";
 import { log } from "@/server/log";
+import { bailianChatModel } from "./bailian-chat";
 import { ChatNotFoundError, chatHistory, saveMessage } from "./chats";
 import {
   CHAT_CREDIT_COST,
@@ -30,7 +30,7 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export class ChatDisabledError extends Error {
   constructor() {
-    super("Chat is off: DEEPSEEK_API_KEY is not set");
+    super("Chat is off: DASHSCOPE_API_KEY is not set");
     this.name = "ChatDisabledError";
   }
 }
@@ -43,14 +43,14 @@ export class InvalidChatError extends Error {
 }
 
 export function chatEnabled(): boolean {
-  return Boolean(process.env.DEEPSEEK_API_KEY || process.env.AI_MOCK);
+  return Boolean(process.env.DASHSCOPE_API_KEY || process.env.AI_MOCK);
 }
 
-// DeepSeek when DEEPSEEK_API_KEY is set. Otherwise, with AI_MOCK set (E2E),
-// a model that echoes the last message, so tests never call DeepSeek.
+// DeepSeek on Bailian when DASHSCOPE_API_KEY is set. Otherwise, with AI_MOCK
+// set (E2E), a model that echoes the last message, so tests never call it.
 export function chatModel(): LanguageModel {
-  const apiKey = process.env.DEEPSEEK_API_KEY;
-  if (apiKey) return createDeepSeek({ apiKey })(process.env.DEEPSEEK_MODEL || DEFAULT_CHAT_MODEL);
+  const apiKey = process.env.DASHSCOPE_API_KEY;
+  if (apiKey) return bailianChatModel(apiKey, process.env.DASHSCOPE_CHAT_MODEL || DEFAULT_CHAT_MODEL);
   if (process.env.AI_MOCK) return echoModel();
   throw new ChatDisabledError();
 }

@@ -60,7 +60,7 @@ export function parseLyrics(text: string): RapLines | null {
 }
 
 function lyricsModel(): LanguageModel | null {
-  return process.env.DEEPSEEK_API_KEY ? chatModel() : null;
+  return process.env.DASHSCOPE_API_KEY ? chatModel() : null;
 }
 
 // One line for each name, in the language. Never throws.

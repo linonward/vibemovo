@@ -40,7 +40,7 @@ test("accepts the minimal local setup from .env.example", () => {
 test("accepts a full production setup", () => {
   expect(validateEnv({ ...production, ...stripe, CRON_SECRET: "c".repeat(32) })).toEqual([]);
   expect(validateEnv({ ...production, ...waffo, WAFFO_ENVIRONMENT: "prod" })).toEqual([]);
-  expect(validateEnv({ ...production, DEEPSEEK_API_KEY: "sk-1", DEEPSEEK_MODEL: "deepseek-v4-pro" })).toEqual([]);
+  expect(validateEnv({ ...production, DASHSCOPE_CHAT_MODEL: "deepseek-v4-pro" })).toEqual([]);
 });
 
 test("treats empty values as unset, like the blank lines in .env.example", () => {
@@ -86,12 +86,6 @@ test("production needs Resend and a sender, unless emails go to an outbox", () =
   expect(
     validateEnv({ ...noEmail, BETTER_AUTH_URL: "http://localhost:3100", EMAIL_OUTBOX_DIR: "/tmp/outbox" }),
   ).toEqual([]);
-});
-
-test("catches a DeepSeek key that isn't one", () => {
-  expect(validateEnv({ ...base, DEEPSEEK_API_KEY: "sk_test_1" })).toEqual([
-    "DEEPSEEK_API_KEY: must start with sk-",
-  ]);
 });
 
 test("catches an ADMIN_EMAILS entry that isn't an email", () => {
