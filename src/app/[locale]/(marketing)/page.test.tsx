@@ -5,13 +5,16 @@ import Page from "./page";
 
 afterEach(cleanup);
 
-test("hero headline is the page's only h1", () => {
+// The h1 names the query the home page targets; the tagline stays the
+// largest text, but isn't a heading.
+test("the only h1 names the AI image and video generator, above the tagline", () => {
   renderWithIntl(<Page />);
 
   expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   expect(
-    screen.getByRole("heading", { level: 1, name: "Write a line. Watch it move." }),
+    screen.getByRole("heading", { level: 1, name: "vibemovo AI image and video generator" }),
   ).toBeDefined();
+  expect(screen.getByText("Write a line. Watch it move.").tagName).toBe("P");
 });
 
 test("both calls to action lead to sign-in", () => {
@@ -28,7 +31,7 @@ test("renders in Chinese", () => {
   renderWithIntl(<Page />, "zh");
 
   expect(
-    screen.getByRole("heading", { level: 1, name: "写一句话，看它动起来。" }),
+    screen.getByRole("heading", { level: 1, name: "vibemovo AI 图像与视频生成器" }),
   ).toBeDefined();
 });
 

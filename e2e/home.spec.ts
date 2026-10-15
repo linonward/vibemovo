@@ -12,7 +12,7 @@ test("hero states the value and leads to sign-in", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Write a line. Watch it move.",
+      name: "vibemovo AI image and video generator",
     }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Start creating free" }).first().click();
@@ -86,7 +86,7 @@ test("landing is translated", async ({ page }) => {
   await page.goto("/zh");
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "写一句话，看它动起来。" }),
+    page.getByRole("heading", { level: 1, name: "vibemovo AI 图像与视频生成器" }),
   ).toBeVisible();
 });
 
