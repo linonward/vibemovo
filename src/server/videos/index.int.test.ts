@@ -764,7 +764,7 @@ test("the zombie couple is on with a Bailian key and storage, whatever VIDEO_PRO
   expect(zombieOptions().enabled).toBe(false);
 });
 
-test("a zombie couple video stores both photos, queues one Wan 3.0 job and spends 75 credits", async () => {
+test("a zombie couple video stores both photos, queues one vertical Wan 3.0 job and spends 75 credits", async () => {
   const before = await getBalance(userId);
 
   const result = await zombie();
@@ -782,7 +782,7 @@ test("a zombie couple video stores both photos, queues one Wan 3.0 job and spend
     ],
     duration: 15,
     resolution: "720p",
-    ratio: "16:9",
+    ratio: "9:16",
   });
   expect(job.prompt).toContain("zombie");
   expect(result).toMatchObject({ prompt: "Zombie couple", duration: 15, credits: 75, status: "pending" });

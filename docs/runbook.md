@@ -273,7 +273,7 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 
 ### Zombie couple (Bailian Wan 3.0)
 
-`/videos/zombie` turns two photos into a 15-second 720p video with sound: the couple slow-dances, turns into zombies together and keeps dancing. It needs the same setup as the [rap duo](#rap-duo-bailian-wan-30), without DeepSeek, and costs `ZOMBIE_CREDITS` (75, the rap duo's price).
+`/videos/zombie` turns two photos into a 15-second 720p vertical (9:16) video with sound, after the "zombie love story" trend: the survivor (first photo) finds their partner (second photo) turned zombie, drops the bat and hugs them, then it cuts to a happy memory. It needs the same setup as the [rap duo](#rap-duo-bailian-wan-30), without DeepSeek, and costs `ZOMBIE_CREDITS` (75, the rap duo's price).
 
 - Photo limits are the rap duo's.
 - The prompt template is `zombiePrompt` in `src/server/videos/zombie.ts`. It asks for film-makeup zombies with no blood or gore, so Bailian's moderation lets it through.

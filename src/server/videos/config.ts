@@ -57,9 +57,11 @@ export const RAP_MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 export const RAP_MAX_NAME_LENGTH = 30;
 
 // The zombie couple (/videos/zombie): two photos on the rap duo's model,
-// length, size and photo limits, at the same price. Keep RAP_DURATION:
-// expireUploads finds a two-photo video's second photo by it.
+// length, size and photo limits, at the same price, but vertical for
+// TikTok, Reels and Shorts. Keep RAP_DURATION: expireUploads finds a
+// two-photo video's second photo by it.
 export const ZOMBIE_CREDITS = RAP_CREDITS;
+export const ZOMBIE_RATIO = "9:16";
 // What the video list shows in place of a prompt.
 export const ZOMBIE_TITLE = "Zombie couple";
 

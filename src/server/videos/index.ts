@@ -28,6 +28,7 @@ import {
   RAP_RATIO,
   RAP_RESOLUTION,
   ZOMBIE_CREDITS,
+  ZOMBIE_RATIO,
   ZOMBIE_TITLE,
   UPLOAD_EXPIRY_BATCH,
   UPLOAD_RETENTION_MS,
@@ -227,6 +228,7 @@ export async function createRapVideo(input: {
     images: input.images,
     text: names.join("\n"),
     credits: RAP_CREDITS,
+    ratio: RAP_RATIO,
     // The model can take seconds, and never throws.
     prompt: async () => {
       const lines = await writeLyrics(names, input.language);
@@ -235,12 +237,14 @@ export async function createRapVideo(input: {
   });
 }
 
-// Two photos become a 15-second video where the couple turns into zombies.
+// Two photos become a 15-second vertical video: the survivor (the first
+// photo) hugs their partner (the second), now a zombie.
 export function createZombieVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
   return createDuoVideo({
     ...input,
     text: null,
     credits: ZOMBIE_CREDITS,
+    ratio: ZOMBIE_RATIO,
     prompt: async () => ({ title: ZOMBIE_TITLE, prompt: zombiePrompt() }),
   });
 }
@@ -255,6 +259,7 @@ async function createDuoVideo(input: {
   images: [Uint8Array, Uint8Array];
   text: string | null;
   credits: number;
+  ratio: string;
   prompt: () => Promise<{ title: string; prompt: string }>;
 }): Promise<Video> {
   const images = input.images.map((bytes) => {
@@ -305,7 +310,7 @@ async function createDuoVideo(input: {
           ),
           duration: RAP_DURATION,
           resolution: RAP_RESOLUTION,
-          ratio: RAP_RATIO,
+          ratio: input.ratio,
         });
         const [submitted] = await db
           .update(video)

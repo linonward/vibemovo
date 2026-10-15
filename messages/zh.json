@@ -801,16 +801,16 @@
   },
   "ZombieVideos": {
     "title": "僵尸情侣",
-    "description": "上传两张照片，生成一段 15 秒的视频：两人跳着慢舞，一起变成僵尸，然后继续跳舞。",
+    "description": "上传两张照片，生成一段 15 秒的竖屏视频：你发现伴侣变成了僵尸，放下球棒抱住对方，然后切回你们的幸福回忆。",
     "left": {
-      "photo": "左侧照片",
-      "preview": "左侧照片预览"
+      "photo": "你的照片",
+      "preview": "你的照片预览"
     },
     "right": {
-      "photo": "右侧照片",
-      "preview": "右侧照片预览"
+      "photo": "伴侣的照片",
+      "preview": "伴侣的照片预览"
     },
-    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。",
+    "photoHint": "JPEG、PNG 或 WebP，每张不超过 {size} MB。每张照片一个人，正脸，光线充足。伴侣的照片会变成僵尸。",
     "generate": "生成（{count} 积分）",
     "generating": "正在提交…",
     "balance": "剩余 {count} 积分",

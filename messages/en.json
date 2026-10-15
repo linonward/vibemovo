@@ -801,16 +801,16 @@
   },
   "ZombieVideos": {
     "title": "Zombie couple",
-    "description": "Two photos become a 15-second video: the couple slow-dances, turns into zombies together and keeps dancing.",
+    "description": "Two photos become a 15-second vertical video: you find your partner turned zombie, drop the bat and hug them, then it cuts to a happy memory.",
     "left": {
-      "photo": "Left photo",
-      "preview": "Left photo preview"
+      "photo": "Your photo",
+      "preview": "Your photo preview"
     },
     "right": {
-      "photo": "Right photo",
-      "preview": "Right photo preview"
+      "photo": "Your partner's photo",
+      "preview": "Your partner's photo preview"
     },
-    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light.",
+    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light. Your partner's photo becomes the zombie.",
     "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
     "generating": "Sending…",
     "balance": "{count, plural, one {# credit left} other {# credits left}}",
