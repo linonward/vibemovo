@@ -28,7 +28,7 @@ test("every offer leads with its credits, and each kind's terms follow its list"
   const plans = main.getByRole("region", { name: "Subscription" });
   const packs = main.getByRole("region", { name: "Credit packs" });
   // Packs first; the subscription follows them.
-  await expect(main.getByRole("heading", { level: 2 })).toHaveText(["Credit packs", "Subscription", "What credits buy"]);
+  await expect(main.getByRole("heading", { level: 2 })).toHaveText(["Credit packs", "Subscription", "What credits buy", "Questions"]);
 
   await expect(plans.getByRole("heading", { level: 3 })).toHaveText(["300 credits every month"]);
   await expect(packs.getByRole("heading", { level: 3 })).toHaveText(["100 credits", "450 credits", "1,000 credits"]);
@@ -106,4 +106,19 @@ test("renders in Chinese, linked from the header", async ({ page }) => {
 
   await expect(page).toHaveURL("/zh/pricing");
   await expect(page.getByRole("heading", { level: 1, name: "价格" })).toBeVisible();
+});
+
+// Crawlers and readers reach the policies and the rap video page from the
+// page body, not only from the footer.
+test("the questions link the refund policy, the terms and the rap video page from the page body", async ({ page }) => {
+  await page.goto("/en/pricing");
+  const faq = page.getByRole("main").getByRole("region", { name: "Questions" });
+
+  await expect(faq.getByRole("link", { name: "refund policy" })).toHaveAttribute("href", "/en/refund");
+  await expect(faq.getByRole("link", { name: "Terms of Service" })).toHaveAttribute("href", "/en/terms");
+  await expect(faq.getByRole("link", { name: "AI rap video generator" })).toHaveAttribute("href", "/en/ai-rap-video-generator");
+  await expect(faq).toContainText("75 credits");
+
+  await faq.getByRole("link", { name: "refund policy" }).click();
+  await expect(page).toHaveURL("/en/refund");
 });

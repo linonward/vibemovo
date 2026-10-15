@@ -236,6 +236,29 @@
       "chat": "{count, plural, one {# credit} other {# credits}} per chat message",
       "video": "From {count, plural, one {# credit} other {# credits}} per second of video",
       "signup": "Every new account starts with {count} free credits"
+    },
+    "faqTitle": "Questions",
+    "faq": {
+      "expire": {
+        "title": "Do credits expire?",
+        "body": "No. Credits from packs and subscriptions never expire, and unused subscription credits carry over to the next month."
+      },
+      "failed": {
+        "title": "What if a generation fails?",
+        "body": "The credits come back to your balance automatically. You don't need to contact us."
+      },
+      "refund": {
+        "title": "Can I get a refund?",
+        "body": "Yes, within 14 days of a purchase if you haven't used any of its credits. Read the <refund>refund policy</refund> for the details and how to ask."
+      },
+      "cancel": {
+        "title": "Can I cancel my subscription?",
+        "body": "Yes, at any time on the Credits & billing page. Your plan stays active until the end of the period you paid for, and you keep your credits. See the <terms>Terms of Service</terms>."
+      },
+      "rap": {
+        "title": "How many credits does a rap video take?",
+        "body": "{credits} credits for one 15-second video with lyrics, a beat and vocals, made with the <rap>AI rap video generator</rap>."
+      }
     }
   },
   "RapLanding": {
