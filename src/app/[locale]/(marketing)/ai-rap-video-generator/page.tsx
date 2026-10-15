@@ -11,7 +11,7 @@ const PATH = "/ai-rap-video-generator";
 // The step-by-step guide to the rap duo, linked where the locale has it.
 const GUIDE = "ai-rap-video-two-people";
 // Other guides the page links, where the locale has them.
-const RELATED = ["hotel-lobby-rap-duo-video", "ai-zombie-couple-video"];
+const RELATED = ["hotel-lobby-rap-duo-video", "ai-zombie-couple-video", "raindance-ai-trend"];
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/ai-rap-video-generator">): Promise<Metadata> {
   const { locale } = await params;
