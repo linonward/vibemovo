@@ -13,7 +13,7 @@ it("sends only explicit properties without profiles or geo enrichment", async ()
   vi.stubEnv("NEXT_PUBLIC_POSTHOG_HOST", "https://us.i.posthog.com");
   const fetcher = vi.fn().mockResolvedValue(new Response("{}")); vi.stubGlobal("fetch", fetcher);
   await capture("generation_succeeded", "account-1", { kind: "image", credits: 5 });
-  expect(fetcher.mock.calls[0][0]).toBe("https://us.i.posthog.com/capture/");
+  expect(fetcher.mock.calls[0][0]).toBe("https://us.i.posthog.com/i/v0/e/");
   expect(JSON.parse(fetcher.mock.calls[0][1].body)).toMatchObject({
     api_key: "phc_test", event: "generation_succeeded", distinct_id: "vibemovo:account-1",
     properties: { app: "vibemovo", kind: "image", credits: 5, $process_person_profile: false, $geoip_disable: true },

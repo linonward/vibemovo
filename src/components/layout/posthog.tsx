@@ -36,7 +36,7 @@ export function PostHogPageviews() {
     visitor.current ??= `vibemovo:anonymous:${crypto.randomUUID()}`;
     const path = routeName(pathname);
     // text/plain avoids a CORS preflight; PostHog accepts JSON in this body.
-    void fetch(`${host.replace(/\/$/, "")}/capture/`, {
+    void fetch(`${host.replace(/\/$/, "")}/i/v0/e/`, {
       method: "POST", credentials: "omit", referrerPolicy: "no-referrer", keepalive: true,
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({

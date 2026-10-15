@@ -19,7 +19,7 @@ export async function capture(event: Event, userId: string, properties: Properti
   const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
   if (!token || !host) return;
   try {
-    const response = await fetch(`${host.replace(/\/$/, "")}/capture/`, {
+    const response = await fetch(`${host.replace(/\/$/, "")}/i/v0/e/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       signal: AbortSignal.timeout(1500),
