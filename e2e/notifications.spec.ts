@@ -69,3 +69,21 @@ test("a new user has no notifications", async ({ page }) => {
 
   await expect(page.getByText("No notifications yet.")).toBeVisible();
 });
+
+test.describe("in Shanghai", () => {
+  test.use({ timezoneId: "Asia/Shanghai" });
+
+  test("times show in the reader's time zone, not the server's UTC", async ({ page }) => {
+    await signIn(page);
+    const { user } = await getSession(page);
+    await addFailedImageNotifications(user.id, 1);
+    await page.goto("/en/notifications");
+
+    const time = page.getByRole("main").locator("time").first();
+    const at = new Date((await time.getAttribute("datetime")) as string);
+    const local = (timeZone: string) =>
+      new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short", timeZone }).format(at);
+    await expect(time).toHaveText(local("Asia/Shanghai"));
+    expect(local("Asia/Shanghai")).not.toBe(local("UTC"));
+  });
+});

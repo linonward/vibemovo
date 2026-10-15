@@ -4,6 +4,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Geist, Geist_Mono, Martian_Mono } from "next/font/google";
 import { SidebarStateScript } from "@/components/dashboard/sidebar-state-script";
 import { Analytics } from "@/components/layout/analytics";
+import { LocalTimeZone } from "@/components/layout/local-time-zone";
 import { ThemeScript } from "@/components/layout/theme-script";
 import { clientMessages } from "@/i18n/client-messages";
 import { routing } from "@/i18n/routing";
@@ -62,13 +63,15 @@ export default async function LocaleLayout({
       <body className="min-h-full flex flex-col">
         {/* Only what client components read: the rest renders on the server. */}
         <NextIntlClientProvider messages={clientMessages(messages)}>
-          <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
-          >
-            {t("skip")}
-          </a>
-          {children}
+          <LocalTimeZone>
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"
+            >
+              {t("skip")}
+            </a>
+            {children}
+          </LocalTimeZone>
         </NextIntlClientProvider>
         <Analytics />
       </body>
