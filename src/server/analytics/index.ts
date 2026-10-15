@@ -1,6 +1,6 @@
 import { log } from "@/server/log";
 
-type Event = "signup_completed" | "generation_started" | "generation_succeeded" | "generation_failed" | "payment_succeeded";
+type Event = "checkout_started" | "signup_completed" | "generation_started" | "generation_succeeded" | "generation_failed" | "payment_succeeded";
 type Properties = {
   kind?: string;
   credits?: number;
@@ -28,7 +28,7 @@ export async function capture(event: Event, userId: string, properties: Properti
         event,
         distinct_id: `vibemovo:${userId}`,
         timestamp: new Date().toISOString(),
-        properties: { ...properties, app: "vibemovo", $process_person_profile: false, $geoip_disable: true },
+        properties: { ...properties, app: "vibemovo", $process_person_profile: true, $geoip_disable: true },
       }),
     });
     if (!response.ok) log.warn("analytics.capture_failed", { event, status: response.status });

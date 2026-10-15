@@ -389,6 +389,7 @@ test("records the subscription before it asks the provider, and a refused checko
   });
 
   await expect(subscribe()).rejects.toThrow("Stripe 500");
+  expect(vi.mocked(capture).mock.calls.filter(([event]) => event === "checkout_started")).toHaveLength(0);
   expect(recorded).toMatchObject([{ status: "pending", providerSessionId: null }]);
   expect((await onlySubscription()).status).toBe("expired");
 
@@ -600,4 +601,15 @@ test("without a period end, a yearly subscription waits, and is logged once a da
 
   expect(await earned()).toBe(300);
   expect(error).toHaveBeenCalledWith("subscription.no_period_end", { subscriptionId: id });
+});
+
+test.each([
+  { planId: "pro", interval: "month", amount: 1000 },
+  { planId: "pro-yearly", interval: "year", amount: 10800 },
+])("captures a $interval subscription checkout after the provider creates it", async ({ planId, interval, amount }) => {
+  await subscribe(planId);
+  expect(capture).toHaveBeenCalledWith("checkout_started", userId, {
+    payment_kind: "subscription", provider: "stripe", product_id: planId, interval,
+    credits: 300, catalogue_amount_minor: amount, currency: "usd",
+  });
 });

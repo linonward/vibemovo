@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { authClient } from "@/lib/auth-client";
 // Analytics needs the locale-prefixed URL, not the locale-stripped navigation helper.
 // eslint-disable-next-line no-restricted-imports
 import { usePathname } from "next/navigation";
@@ -24,30 +25,66 @@ function routeName(pathname: string) {
   return `/${locale}/:other`;
 }
 
+const STORAGE_KEY = "vibemovo:analytics";
+const MAX_AGE = 30 * 24 * 60 * 60 * 1000;
+type Identity = { anonymous: string; userId: string | null; expires: number };
+
+function readIdentity(): Identity | null {
+  try {
+    const value = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
+    if (value && /^vibemovo:anonymous:[0-9a-f-]{36}$/.test(value.anonymous)
+      && (value.userId === null || typeof value.userId === "string")
+      && value.expires > Date.now() && value.expires <= Date.now() + MAX_AGE) return value;
+  } catch { /* Storage may be blocked. Keep this visit in memory instead. */ }
+  return null;
+}
+
 export function PostHogPageviews() {
+  if (!process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN || !process.env.NEXT_PUBLIC_POSTHOG_HOST) return null;
+  return <TrackedPageviews />;
+}
+
+function TrackedPageviews() {
   const pathname = usePathname();
-  const visitor = useRef<string | null>(null);
+  const { data: session, isPending, error } = authClient.useSession();
+  const userId = session?.user.id ?? null;
+  const identity = useRef<Identity | null>(null);
+  const linked = useRef<string | null>(null);
   const previous = useRef<string | null>(null);
   useEffect(() => {
     const token = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN;
     const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
-    if (!token || !host || !pathname || previous.current === pathname) return;
-    previous.current = pathname;
-    visitor.current ??= `vibemovo:anonymous:${crypto.randomUUID()}`;
-    const path = routeName(pathname);
-    // text/plain avoids a CORS preflight; PostHog accepts JSON in this body.
-    void fetch(`${host.replace(/\/$/, "")}/i/v0/e/`, {
+    if (!token || !host || !pathname || isPending || error) return;
+    // Re-read shared storage so another tab's logout/account switch is seen.
+    let current = readIdentity() ?? identity.current;
+    if (!current || current.expires <= Date.now() || (current.userId !== null && current.userId !== userId)) {
+      current = { anonymous: `vibemovo:anonymous:${crypto.randomUUID()}`, userId: null, expires: Date.now() + MAX_AGE };
+    }
+    const distinctId = userId ? `vibemovo:${userId}` : current.anonymous;
+    current.userId = userId;
+    identity.current = current;
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(current)); } catch { /* In-memory fallback. */ }
+    const send = (event: string, properties: Record<string, unknown>) => fetch(`${host.replace(/\/$/, "")}/i/v0/e/`, {
       method: "POST", credentials: "omit", referrerPolicy: "no-referrer", keepalive: true,
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
-        api_key: token, event: "$pageview", distinct_id: visitor.current,
-        timestamp: new Date().toISOString(),
-        properties: {
-          app: "vibemovo", $pathname: path, $current_url: `${window.location.origin}${path}`,
-          $host: window.location.host, $process_person_profile: false, $geoip_disable: true,
-        },
+        api_key: token, event, distinct_id: distinctId, timestamp: new Date().toISOString(),
+        properties: { app: "vibemovo", $process_person_profile: Boolean(userId), $geoip_disable: true, ...properties },
       }),
-    }).catch(() => {});
-  }, [pathname]);
+    });
+    const link = `${current.anonymous}:${distinctId}`;
+    if (userId && linked.current !== link) {
+      linked.current = link;
+      void send("$identify", { $anon_distinct_id: current.anonymous }).then((response) => {
+        if (!response.ok && linked.current === link) linked.current = null;
+      }).catch(() => { if (linked.current === link) linked.current = null; });
+    }
+    const page = `${distinctId}:${pathname}`;
+    if (previous.current === page) return;
+    previous.current = page;
+    const path = routeName(pathname);
+    void send("$pageview", { $pathname: path, $current_url: `${window.location.origin}${path}`,
+      $host: window.location.host }).catch(() => {});
+  }, [pathname, userId, isPending, error]);
   return null;
 }

@@ -13,6 +13,8 @@ export const GOOGLE_CLIENT_ID = "e2e-google-client-id";
 export const STRIPE_WEBHOOK_SECRET = "whsec_e2e";
 export const ADMIN_EMAIL = "admin@example.com";
 export const CRON_SECRET = "e2e-cron-secret-0123456789abcdef0123";
+// Browser tests intercept this URL; server captures fail harmlessly without sending data externally.
+export const POSTHOG_HOST = "http://127.0.0.1:9";
 export const INDEXNOW_KEY = "e2e0123456789abcdef";
 
 export default defineConfig({
@@ -32,6 +34,8 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     env: {
       BETTER_AUTH_URL: BASE_URL,
+      NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: "phc_e2e",
+      NEXT_PUBLIC_POSTHOG_HOST: POSTHOG_HOST,
       // Fixed, so E2E doesn't depend on the local .env.
       BETTER_AUTH_SECRET: "e2e-better-auth-secret-0123456789abcdef",
       ADMIN_EMAILS: ADMIN_EMAIL,

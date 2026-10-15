@@ -135,6 +135,10 @@ export async function createSubscriptionCheckout(input: {
       ...input,
     });
     await db.update(subscription).set({ providerSessionId: sessionId }).where(eq(subscription.id, id));
+    await capture("checkout_started", input.userId, {
+      payment_kind: "subscription", provider: provider.id, product_id: plan.id, credits: plan.credits,
+      catalogue_amount_minor: plan.amount, currency: plan.currency, interval: plan.interval,
+    });
     return url;
   } catch (error) {
     // The user never got a link, so the checkout mustn't block a retry.
