@@ -51,11 +51,11 @@ test("needs both photos before it generates", () => {
   renderWithIntl(<ZombieGenerator {...props} />);
   const button = screen.getByRole("button", { name: "Generate (75 credits)" });
 
-  pick("Left photo");
+  pick("Your photo");
   expect(button.hasAttribute("disabled")).toBe(true);
-  pick("Right photo");
+  pick("Your partner's photo");
   expect(button.hasAttribute("disabled")).toBe(false);
-  expect(screen.getByRole("img", { name: "Right photo preview" }).getAttribute("src")).toBe("blob:preview");
+  expect(screen.getByRole("img", { name: "Your partner's photo preview" }).getAttribute("src")).toBe("blob:preview");
 });
 
 test("sends both photos, then polls until the video is ready", async () => {
@@ -67,8 +67,8 @@ test("sends both photos, then polls until the video is ready", async () => {
     );
   renderWithIntl(<ZombieGenerator {...props} />);
 
-  const left = pick("Left photo");
-  const right = pick("Right photo");
+  const left = pick("Your photo");
+  const right = pick("Your partner's photo");
   fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
 
   await waitFor(() => expect(screen.getByText("25 credits left")).toBeTruthy());
@@ -86,10 +86,10 @@ test("sends both photos, then polls until the video is ready", async () => {
 test("refuses a photo over the size limit", () => {
   renderWithIntl(<ZombieGenerator {...props} />);
 
-  pick("Left photo", 2 * 1024 * 1024 + 1);
+  pick("Your photo", 2 * 1024 * 1024 + 1);
 
   expect(screen.getByRole("alert").textContent).toContain("2 MB");
-  expect(screen.queryByRole("img", { name: "Left photo preview" })).toBeNull();
+  expect(screen.queryByRole("img", { name: "Your photo preview" })).toBeNull();
 });
 
 test.each([
@@ -101,8 +101,8 @@ test.each([
   fetchMock.mockResolvedValueOnce(reply(status, { error }));
   renderWithIntl(<ZombieGenerator {...props} />);
 
-  pick("Left photo");
-  pick("Right photo");
+  pick("Your photo");
+  pick("Your partner's photo");
   fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
 
   await waitFor(() => expect(screen.getByRole("alert").textContent).toContain(text));

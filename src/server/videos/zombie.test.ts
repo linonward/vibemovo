@@ -1,11 +1,10 @@
 import { expect, test } from "vitest";
 import { zombiePrompt } from "./zombie";
 
-test("the prompt places 图1 left and 图2 right and turns both into zombies without gore", () => {
+test("the prompt makes 图1 the survivor and 图2 the infected partner, without gore", () => {
   const prompt = zombiePrompt();
 
-  expect(prompt).toContain("图1 stands on the LEFT");
-  expect(prompt).toContain("图2 stands on the RIGHT");
-  expect(prompt).toMatch(/zombie/i);
+  expect(prompt).toContain("图1 is the survivor");
+  expect(prompt).toContain("图2 is the infected partner");
   expect(prompt).toMatch(/no blood/i);
 });
