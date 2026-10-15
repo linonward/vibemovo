@@ -28,7 +28,9 @@ const waffo = {
   PAYMENT_PROVIDER: "waffo",
   WAFFO_MERCHANT_ID: "MER_1",
   WAFFO_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\\nabc\\n-----END PRIVATE KEY-----",
-  WAFFO_PRODUCT_ID: "PROD_1",
+  WAFFO_PACK_SMALL_PRODUCT_ID: "PROD_1",
+  WAFFO_PACK_MEDIUM_PRODUCT_ID: "PROD_2",
+  WAFFO_PACK_LARGE_PRODUCT_ID: "PROD_3",
 };
 
 test("accepts the minimal local setup from .env.example", () => {
@@ -136,21 +138,33 @@ test("catches Stripe values pasted into the wrong variable", () => {
 });
 
 test("Waffo needs its merchant ID and private key", () => {
-  expect(validateEnv({ ...base, PAYMENT_PROVIDER: "waffo", WAFFO_PRODUCT_ID: "PROD_1" })).toEqual([
+  const { WAFFO_MERCHANT_ID, WAFFO_PRIVATE_KEY, ...products } = waffo;
+  expect(validateEnv({ ...base, ...products })).toEqual([
     "WAFFO_MERCHANT_ID: required when PAYMENT_PROVIDER is waffo",
     "WAFFO_PRIVATE_KEY: required when PAYMENT_PROVIDER is waffo",
   ]);
 });
 
 test("Waffo needs something to sell", () => {
-  const nothing = { ...waffo, WAFFO_PRODUCT_ID: undefined };
+  const nothing = {
+    ...waffo,
+    WAFFO_PACK_SMALL_PRODUCT_ID: undefined,
+    WAFFO_PACK_MEDIUM_PRODUCT_ID: undefined,
+    WAFFO_PACK_LARGE_PRODUCT_ID: undefined,
+  };
 
   expect(validateEnv({ ...base, ...nothing })).toEqual([
-    "WAFFO_PRODUCT_ID: set it, or WAFFO_SUBSCRIPTION_PRODUCT_ID and WAFFO_STORE_ID, when PAYMENT_PROVIDER is waffo",
+    "WAFFO_PACK_SMALL_PRODUCT_ID, WAFFO_PACK_MEDIUM_PRODUCT_ID and WAFFO_PACK_LARGE_PRODUCT_ID: set them, or WAFFO_SUBSCRIPTION_PRODUCT_ID and WAFFO_STORE_ID, when PAYMENT_PROVIDER is waffo",
   ]);
   expect(
     validateEnv({ ...base, ...nothing, WAFFO_SUBSCRIPTION_PRODUCT_ID: "PROD_2", WAFFO_STORE_ID: "STO_1" }),
   ).toEqual([]);
+});
+
+test("Waffo packs need a product for every pack", () => {
+  expect(validateEnv({ ...base, ...waffo, WAFFO_PACK_MEDIUM_PRODUCT_ID: undefined })).toEqual([
+    "WAFFO_PACK_MEDIUM_PRODUCT_ID: required when another WAFFO_PACK_*_PRODUCT_ID is set",
+  ]);
 });
 
 test("Waffo subscriptions need both the product and the store", () => {

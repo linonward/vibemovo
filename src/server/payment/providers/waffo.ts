@@ -7,6 +7,7 @@ import {
   WebhookEventType,
 } from "@waffo/pancake-ts";
 import { requireEnv } from "@/server/env";
+import { CREDIT_PACKS, type CreditPack } from "../packs";
 import {
   type PaymentEvent,
   type PaymentProvider,
@@ -70,20 +71,37 @@ function refundOf(refundId: string, data: WebhookEventData): RefundEvent | null 
     : { kind: "refund", refundId, target, refunded: 1, charged: 1 };
 }
 
+// Each credit pack sells as its own dashboard product, so Waffo's orders and
+// receipts name the pack. A new pack in CREDIT_PACKS needs a product here.
+function packProductId(pack: CreditPack["id"]): string | undefined {
+  const ids: Record<CreditPack["id"], string | undefined> = {
+    small: process.env.WAFFO_PACK_SMALL_PRODUCT_ID,
+    medium: process.env.WAFFO_PACK_MEDIUM_PRODUCT_ID,
+    large: process.env.WAFFO_PACK_LARGE_PRODUCT_ID,
+  };
+  return ids[pack];
+}
+
 // Waffo Pancake is a merchant of record: it collects tax and pays out.
-// Checkout uses dashboard products (WAFFO_PRODUCT_ID for packs, the monthly
-// WAFFO_SUBSCRIPTION_PRODUCT_ID and yearly WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID
-// for plans) and overrides their price. A product sets its billing period.
+// Checkout uses dashboard products (one per pack, see packProductId; the
+// monthly WAFFO_SUBSCRIPTION_PRODUCT_ID and yearly
+// WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID for plans) and overrides their price. A product sets its billing period.
 // Waffo sends no event when a session expires, so abandoned checkouts stay
 // pending. Subscriptions carry our ID in the order metadata, which every
 // subscription event repeats.
+function requirePackProduct(pack: CreditPack["id"]): string {
+  const id = packProductId(pack);
+  if (!id) throw new Error(`WAFFO_PACK_${pack.toUpperCase()}_PRODUCT_ID is not set`);
+  return id;
+}
+
 export const waffoProvider: PaymentProvider = {
   id: "waffo",
 
   configured(feature) {
     const env = process.env;
     if (!env.WAFFO_MERCHANT_ID || !env.WAFFO_PRIVATE_KEY) return false;
-    if (feature === "packs") return !!env.WAFFO_PRODUCT_ID;
+    if (feature === "packs") return CREDIT_PACKS.every((pack) => !!packProductId(pack.id));
     const subscriptions = !!(env.WAFFO_SUBSCRIPTION_PRODUCT_ID && env.WAFFO_STORE_ID);
     return feature === "yearly" ? subscriptions && !!env.WAFFO_SUBSCRIPTION_YEARLY_PRODUCT_ID : subscriptions;
   },
@@ -91,7 +109,7 @@ export const waffoProvider: PaymentProvider = {
   async createCheckout({ orderId, pack, email, locale, successUrl }) {
     const session = await client().checkout.createSession(
       {
-        productId: requireEnv("WAFFO_PRODUCT_ID"),
+        productId: requirePackProduct(pack.id),
         currency: pack.currency.toUpperCase(),
         priceSnapshot: price(pack.amount),
         buyerEmail: email,

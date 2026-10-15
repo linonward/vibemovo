@@ -48,6 +48,9 @@ const schema = z.object({
   LOG_FORMAT: z.enum(["json", "pretty"], "must be json or pretty, or empty").optional(),
 });
 
+// One Waffo product per credit pack (packProductId in payment/providers/waffo.ts).
+const WAFFO_PACK_PRODUCTS = ["WAFFO_PACK_SMALL_PRODUCT_ID", "WAFFO_PACK_MEDIUM_PRODUCT_ID", "WAFFO_PACK_LARGE_PRODUCT_ID"];
+
 const LOCAL_HOSTS = ["localhost", "127.0.0.1", "[::1]"];
 
 // Rules that span several variables.
@@ -106,10 +109,16 @@ function crossChecks(env: Env): string[] {
   if (env.PAYMENT_PROVIDER === "waffo") {
     requireFor("waffo", ["WAFFO_MERCHANT_ID", "WAFFO_PRIVATE_KEY"]);
     const subscriptions = env.WAFFO_SUBSCRIPTION_PRODUCT_ID && env.WAFFO_STORE_ID;
-    if (!env.WAFFO_PRODUCT_ID && !subscriptions) {
+    if (!WAFFO_PACK_PRODUCTS.some((name) => env[name]) && !subscriptions) {
       problems.push(
-        "WAFFO_PRODUCT_ID: set it, or WAFFO_SUBSCRIPTION_PRODUCT_ID and WAFFO_STORE_ID, when PAYMENT_PROVIDER is waffo",
+        "WAFFO_PACK_SMALL_PRODUCT_ID, WAFFO_PACK_MEDIUM_PRODUCT_ID and WAFFO_PACK_LARGE_PRODUCT_ID: set them, or WAFFO_SUBSCRIPTION_PRODUCT_ID and WAFFO_STORE_ID, when PAYMENT_PROVIDER is waffo",
       );
+    }
+  }
+  // A pack without its product couldn't be bought.
+  if (WAFFO_PACK_PRODUCTS.some((name) => env[name])) {
+    for (const name of WAFFO_PACK_PRODUCTS) {
+      if (!env[name]) problems.push(`${name}: required when another WAFFO_PACK_*_PRODUCT_ID is set`);
     }
   }
   bothOrNeither("WAFFO_SUBSCRIPTION_PRODUCT_ID", "WAFFO_STORE_ID");
