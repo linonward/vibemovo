@@ -35,13 +35,14 @@ test("the header offers sign-in to visitors and the dashboard once signed in", a
   await expect(page).toHaveURL("/en/dashboard");
 });
 
-test("landing has prompt ideas, tools, steps, FAQ and a closing call to action", async ({
+test("landing has templates, prompt ideas, tools, steps, FAQ and a closing call to action", async ({
   page,
 }) => {
   await page.goto("/en");
 
   await expect(page.getByRole("figure", { name: "Example generation" })).toBeVisible();
   for (const name of [
+    "Pick a template, add your photos",
     "Start from a prompt like these",
     "Three ways to create",
     "From words to motion in three steps",
@@ -52,12 +53,12 @@ test("landing has prompt ideas, tools, steps, FAQ and a closing call to action",
   }
 });
 
-test("the hero's second link scrolls to the prompt ideas", async ({ page }) => {
+test("the hero's second link scrolls to the templates", async ({ page }) => {
   await page.goto("/en");
 
-  await page.getByRole("link", { name: "See prompt ideas" }).click();
-  await expect(page).toHaveURL("/en#ideas");
-  await expect(page.getByRole("heading", { level: 2, name: "Start from a prompt like these" })).toBeInViewport();
+  await page.getByRole("link", { name: "Browse templates" }).click();
+  await expect(page).toHaveURL("/en#templates");
+  await expect(page.getByRole("heading", { level: 2, name: "Pick a template, add your photos" })).toBeInViewport();
 });
 
 test("the console stops moving for reduced motion", async ({ browser }) => {

@@ -178,12 +178,13 @@ A `rounded-full bg-muted p-1` group of three icon buttons: Sun (light), Moon (da
 
 ### Home (`home/`)
 
-1. **Hero:** two columns on large screens. Left: badge, H1, lead, `PrimaryLink`, the secondary pill (to the prompt ideas) and two check items. Right: the generation console. Stacked on phones.
-2. **Prompt ideas** (`ideas.tsx`): six sample prompts as tiles over scenes, in a dense 4 × 3 grid of uneven sizes on large screens and two columns on phones. Each tile has a kind chip (`bg-black/45`) and the prompt over a `from-black/75` scrim, white in both themes. The scene scales to 1.03 on hover.
-3. **Tools** (`features.tsx`): text to image leads with a large panel holding a scene; image to video and rap duo stack beside it. Each card has an icon tile, a mono meta label and a pine link to the tool.
-4. **Steps** (`how-it-works.tsx`): three columns under a 2px top rule, with a large mono number. The first step's rule and number are `--primary-text`.
-5. **FAQ accordion:** `<details>` rows. When a row is open, its number circle and plus button fill with `--foreground`, and the plus turns 45° (`.icon-turn`).
-6. **Final CTA:** a `rounded-2xl` card with a glow, a badge, a title, `PrimaryLink` and three `--primary-text` check items.
+1. **Hero:** two columns on large screens. Left: badge, H1, lead, `PrimaryLink`, the secondary pill (to the templates) and two check items. Right: the generation console. Stacked on phones.
+2. **Templates** (`templates.tsx`): the video templates the H1 names, as four 3:4 tiles over each template's real result poster, four columns on large screens and two on phones. Each tile has a template chip (`bg-black/45`), the template name as a link that covers the tile, and its length over a `from-black/75` scrim. The poster scales to 1.03 on hover.
+3. **Prompt ideas** (`ideas.tsx`): six sample prompts as tiles over scenes, in a dense 4 × 3 grid of uneven sizes on large screens and two columns on phones. Each tile has a kind chip (`bg-black/45`) and the prompt over a `from-black/75` scrim, white in both themes. The scene scales to 1.03 on hover.
+4. **Tools** (`features.tsx`): text to image leads with a large panel holding a scene; image to video and rap duo stack beside it. Each card has an icon tile, a mono meta label and a pine link to the tool.
+5. **Steps** (`how-it-works.tsx`): three columns under a 2px top rule, with a large mono number. The first step's rule and number are `--primary-text`.
+6. **FAQ accordion:** `<details>` rows. When a row is open, its number circle and plus button fill with `--foreground`, and the plus turns 45° (`.icon-turn`).
+7. **Final CTA:** a `rounded-2xl` card with a glow, a badge, a title, `PrimaryLink` and three `--primary-text` check items.
 
 `home/generation-console.tsx` is an HTML stand-in for the product: a prompt, a finished image and a video still rendering. `home/scene.tsx` draws the images with CSS gradients and clipped shapes; replace them with real work made with the product.
 
