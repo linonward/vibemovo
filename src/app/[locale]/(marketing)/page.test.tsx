@@ -19,6 +19,14 @@ test("the only h1 is the large headline: the query, then the tagline", () => {
   ).toBeDefined();
 });
 
+test("the badge above the h1 names the brand and the templates", () => {
+  renderWithIntl(<Page />);
+
+  const badge = screen.getByText("AI video templates").parentElement;
+  expect(badge?.tagName).toBe("P");
+  expect(badge?.textContent).toBe("vibemovo AI video templates");
+});
+
 test("both calls to action lead to sign-in", () => {
   renderWithIntl(<Page />);
 
@@ -35,6 +43,7 @@ test("renders in Chinese", () => {
   expect(
     screen.getByRole("heading", { level: 1, name: "AI 爆款视频模板 用你的照片，拍一条爆款视频。" }),
   ).toBeDefined();
+  expect(screen.getByText("AI 视频模板")).toBeDefined();
 });
 
 // The hero plays a real template result and lists every template.
