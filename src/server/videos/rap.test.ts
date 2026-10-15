@@ -1,6 +1,9 @@
 import { MockLanguageModelV4 } from "ai/test";
-import { expect, test } from "vitest";
+import { expect, test, vi } from "vitest";
+import { recordUsage } from "@/server/ai/usage";
 import { defaultLyrics, parseLyrics, rapPrompt, writeLyrics } from "./rap";
+
+vi.mock("@/server/ai/usage", () => ({ recordUsage: vi.fn() }));
 
 const usage = {
   inputTokens: { total: 0, noCache: 0, cacheRead: undefined, cacheWrite: undefined },
@@ -62,6 +65,7 @@ test("writes the lines with the model, naming both performers in the language", 
   expect(prompts[0]).toContain("Ada");
   expect(prompts[0]).toContain("Bo");
   expect(prompts[0]).toContain("Chinese");
+  expect(recordUsage).toHaveBeenCalledWith(mock, "lyrics", expect.objectContaining({ inputTokens: 0 }));
 });
 
 test.each([

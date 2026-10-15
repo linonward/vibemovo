@@ -1,6 +1,10 @@
 // Credits spent per generated image. Refunded if generation fails.
 export const imageCost = 1;
 
+// What Bailian charges per image of the default model (wan2.6-t2i, Beijing),
+// in yuan. Update it with the model or when Bailian changes the price.
+export const IMAGE_PRICE_CNY = 0.2;
+
 // Bailian finishes an image within a minute, so one still pending after this
 // was never submitted (a crash) or nobody polled for it.
 export const IMAGE_STALE_AFTER_MS = 15 * 60_000;

@@ -31,6 +31,14 @@ const metrics: MetricsData = {
     },
     { kind: "video", total: 0, succeeded: 0, failed: 0, pending: 0, medianMs: null, p95Ms: null, errors: [] },
   ],
+  costs: {
+    rows: [
+      { kind: "video", model: "dashscope 720p", jobs: 3, usage: 35, credits: 175, costUsd: 3.5 },
+      { kind: "chat", model: "deepseek-v4.1-flash", jobs: 2, usage: 400, credits: 2, costUsd: 0.0031 },
+      { kind: "chat", model: "mock-model-id", jobs: 1, usage: 10, credits: 1, costUsd: null },
+    ],
+    totalUsd: 3.5031,
+  },
 };
 
 const slow = { ...metrics.generations[0], medianMs: 2 * 3600_000, p95Ms: 5_400_000 };
@@ -97,4 +105,27 @@ test("says when no orders were paid", () => {
   );
 
   expect(screen.getByRole("group", { name: "Paid orders" }).textContent).toContain("No revenue");
+});
+
+test("lists each model's jobs, usage, credits and estimated cost, with a total", () => {
+  renderWithIntl(<MetricsView metrics={metrics} days={7} ranges={[1, 7, 30]} />);
+
+  const table = screen.getByRole("table", { name: "Model costs" });
+  const rows = within(table)
+    .getAllByRole("row")
+    .slice(1)
+    .map((row) => [...row.querySelectorAll("th, td")].map((cell) => cell.textContent));
+  expect(rows).toEqual([
+    ["Videos", "dashscope 720p", "3", "35 seconds", "175", "$3.50"],
+    ["Chat", "deepseek-v4.1-flash", "2", "400 tokens", "2", "$0.0031"],
+    ["Chat", "mock-model-id", "1", "10 tokens", "1", "—"],
+    ["Total", "$3.50"],
+  ]);
+});
+
+test("says when no model use was billed", () => {
+  renderWithIntl(<MetricsView metrics={{ ...metrics, costs: { rows: [], totalUsd: 0 } }} days={7} ranges={[1, 7, 30]} />);
+
+  expect(screen.queryByRole("table", { name: "Model costs" })).toBeNull();
+  expect(screen.getByText("No billed model use in this range.")).toBeTruthy();
 });

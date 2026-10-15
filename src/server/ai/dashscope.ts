@@ -23,6 +23,11 @@ export function dashscopeConfigured() {
 }
 
 // The API host for the key's region. Image and video generation share it.
+// The text-to-image model new images use.
+export function imageModel(): string {
+  return process.env.DASHSCOPE_IMAGE_MODEL || DEFAULT_MODEL;
+}
+
 export function dashscopeBaseUrl() {
   return (process.env.DASHSCOPE_BASE_URL || DEFAULT_BASE_URL).replace(/\/+$/, "");
 }
@@ -70,7 +75,7 @@ export async function submitImage(input: { prompt: string; size: string }): Prom
     method: "POST",
     headers: { "content-type": "application/json", "x-dashscope-async": "enable" },
     body: JSON.stringify({
-      model: process.env.DASHSCOPE_IMAGE_MODEL || DEFAULT_MODEL,
+      model: imageModel(),
       input: { messages: [{ role: "user", content: [{ text: input.prompt }] }] },
       // n defaults to 4 and each image is billed.
       parameters: { n: 1, size: input.size, watermark: false, prompt_extend: true },

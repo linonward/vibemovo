@@ -670,6 +670,31 @@
       "noFailures": {
         "image": "No image failures.",
         "video": "No video failures."
+      },
+      "costs": {
+        "title": "Model costs",
+        "empty": "No billed model use in this range.",
+        "model": "Model",
+        "columns": {
+          "jobs": "Jobs",
+          "usage": "Usage",
+          "credits": "Credits",
+          "cost": "Est. cost"
+        },
+        "kinds": {
+          "video": "Videos",
+          "image": "Images",
+          "chat": "Chat",
+          "lyrics": "Rap lyrics"
+        },
+        "units": {
+          "video": "{count, plural, one {# second} other {# seconds}}",
+          "image": "{count, plural, one {# image} other {# images}}",
+          "chat": "{count, plural, one {# token} other {# tokens}}",
+          "lyrics": "{count, plural, one {# token} other {# tokens}}"
+        },
+        "total": "Total",
+        "note": "Estimated from list prices in the code, in US dollars: videos and images that succeeded, and every chat-model call recorded since cost tracking began. A dash means the model has no price set."
       }
     },
     "feedback": {

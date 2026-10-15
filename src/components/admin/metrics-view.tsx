@@ -20,6 +20,19 @@ export type MetricsData = {
     p95Ms: number | null;
     errors: { error: string; count: number }[];
   }[];
+  // Estimated from list prices. usage is seconds of video, images, or
+  // tokens in and out; costUsd is null for a model without a price.
+  costs: {
+    rows: {
+      kind: "video" | "image" | "chat" | "lyrics";
+      model: string;
+      jobs: number;
+      usage: number;
+      credits: number;
+      costUsd: number | null;
+    }[];
+    totalUsd: number;
+  };
 };
 
 const DASH = "—";
@@ -49,7 +62,12 @@ export function MetricsView({
   const rate = (succeeded: number, failed: number) =>
     succeeded + failed === 0 ? DASH : format.number(succeeded / (succeeded + failed), { style: "percent" });
 
-  const { users, credits, orders, generations } = metrics;
+  const { users, credits, orders, generations, costs } = metrics;
+  // Cents hide what a chat call costs, so small amounts get more digits.
+  const usd = (value: number | null) =>
+    value === null
+      ? DASH
+      : format.number(value, { style: "currency", currency: "USD", maximumFractionDigits: value > 0 && value < 1 ? 4 : 2 });
   const cards = [
     { key: "newUsers", value: users.new, note: t("usersTotal", { count: users.total }) },
     { key: "spent", value: credits.spent, note: t("refunded", { count: credits.refunded }) },
@@ -142,6 +160,60 @@ export function MetricsView({
           </table>
         </div>
         <p className="text-sm text-muted-foreground">{t("timingNote")}</p>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 id="model-costs" className="font-display text-base font-semibold">
+          {t("costs.title")}
+        </h2>
+        {costs.rows.length === 0 ? (
+          <p className="text-sm text-muted-foreground">{t("costs.empty")}</p>
+        ) : (
+          <div className="overflow-x-auto rounded-xl border bg-background">
+            <table aria-labelledby="model-costs" className="w-full text-left text-sm">
+              <thead className="border-b text-xs text-muted-foreground">
+                <tr>
+                  <th scope="col" className="px-4 py-2.5 font-medium">{t("kind")}</th>
+                  <th scope="col" className="px-4 py-2.5 font-medium">{t("costs.model")}</th>
+                  {(["jobs", "usage", "credits", "cost"] as const).map((key) => (
+                    <th key={key} scope="col" className="px-4 py-2.5 text-right font-medium whitespace-nowrap">
+                      {t(`costs.columns.${key}`)}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {costs.rows.map((row) => (
+                  <tr key={`${row.kind} ${row.model}`}>
+                    <th scope="row" className="px-4 py-3 font-medium whitespace-nowrap">
+                      {t(`costs.kinds.${row.kind}`)}
+                    </th>
+                    <td className="px-4 py-3 font-mono text-xs whitespace-nowrap">{row.model}</td>
+                    {[
+                      format.number(row.jobs),
+                      t(`costs.units.${row.kind}`, { count: row.usage }),
+                      format.number(row.credits),
+                      usd(row.costUsd),
+                    ].map((cell, index) => (
+                      <td key={index} className="px-4 py-3 text-right whitespace-nowrap tabular-nums">
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot className="border-t font-medium">
+                <tr>
+                  <th scope="row" colSpan={5} className="px-4 py-3">
+                    {t("costs.total")}
+                  </th>
+                  <td className="px-4 py-3 text-right whitespace-nowrap tabular-nums">{usd(costs.totalUsd)}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        )}
+        <p className="text-sm text-muted-foreground">{t("costs.note")}</p>
       </section>
 
       <div className="grid gap-4 md:grid-cols-2">

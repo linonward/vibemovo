@@ -1,4 +1,4 @@
-import { bigint, index, jsonb, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
+import { bigint, doublePrecision, index, integer, jsonb, pgTable, primaryKey, text, timestamp } from "drizzle-orm/pg-core";
 import type { UIMessage } from "ai";
 import { user } from "@/server/auth/schema";
 
@@ -39,4 +39,24 @@ export const chatMessage = pgTable(
     primaryKey({ name: "chat_message_pk", columns: [table.chatId, table.id] }),
     index("chat_message_chatId_seq_idx").on(table.chatId, table.seq),
   ],
+);
+
+export const AI_USAGE_PURPOSES = ["chat", "lyrics"] as const;
+
+// One row per call to a chat model (chat replies, rap lyrics), for cost
+// metrics. No user: costs are totals, and nothing here outlives an account.
+export const aiUsage = pgTable(
+  "ai_usage",
+  {
+    id: bigint("id", { mode: "number" }).primaryKey().generatedAlwaysAsIdentity(),
+    model: text("model").notNull(),
+    purpose: text("purpose", { enum: AI_USAGE_PURPOSES }).notNull(),
+    inputTokens: integer("input_tokens").notNull(),
+    outputTokens: integer("output_tokens").notNull(),
+    // US dollars at the list price when the call ran; null for a model
+    // without a price in CHAT_MODEL_PRICES.
+    costUsd: doublePrecision("cost_usd"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [index("ai_usage_createdAt_idx").on(table.createdAt)],
 );
