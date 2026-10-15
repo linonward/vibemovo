@@ -47,6 +47,8 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `ADMIN_EMAILS`       | No                | Emails that can open `/admin`, separated by commas. Empty means no admins |
 | `LOG_LEVEL`          | No                | `debug`, `info` (default), `warn` or `error`. Drops server log events below it |
 | `LOG_FORMAT`         | No                | `json` (one object per line) or `pretty`. Default `json` in production, else `pretty` |
+| `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` | No | Public PostHog project token (`phc_`). Set with host; empty disables analytics. Browser value is baked at build time |
+| `NEXT_PUBLIC_POSTHOG_HOST` | No | Ingestion origin: `https://us.i.posthog.com` or `https://eu.i.posthog.com`. Set with project token |
 | `NEXT_PUBLIC_SENTRY_DSN` | No            | Sentry project DSN. Empty turns error tracking off. Read at build time for the browser |
 | `SENTRY_AUTH_TOKEN`  | No                | Build time only. Sentry auth token; with it, the build uploads source maps |
 | `SENTRY_ORG`         | With `SENTRY_AUTH_TOKEN` | Sentry organization slug                              |
@@ -506,6 +508,8 @@ The `Dockerfile` builds a single image that runs the app with Node.js on any hos
    docker build -t starter \
      --build-arg BETTER_AUTH_URL=https://your-domain.com \
      --build-arg NEXT_PUBLIC_TURNSTILE_SITE_KEY= \
+     --build-arg NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN= \
+     --build-arg NEXT_PUBLIC_POSTHOG_HOST= \
      --build-arg NEXT_PUBLIC_SENTRY_DSN= \
      .
    ```
@@ -615,3 +619,27 @@ Pages then load `/_vercel/speed-insights/script.js`.
 | Waffo checkout fails right away                           | Waffo needs an `https://` return URL. Set `BETTER_AUTH_URL` to an HTTPS URL                    |
 | `ERR_PNPM_IGNORED_BUILDS`                                 | Add the package to `allowBuilds` in `pnpm-workspace.yaml` (`false` unless it needs its script) |
 | `AGENTS.md` changes after `pnpm dev`                      | `next dev` re-adds its agent rules block. Commit it                                            |
+
+
+## PostHog
+
+Set `NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN` and `NEXT_PUBLIC_POSTHOG_HOST` in the deployment environment, then rebuild. Use the public project token, never a personal API key. Leave both empty in local development and previews to keep test traffic out of production reporting. To disable collection, clear both and redeploy.
+
+All events carry `app=vibemovo`; filter by it in a shared PostHog project. The implementation uses the capture HTTP API without an additional SDK dependency.
+
+| Event | Source and meaning |
+| --- | --- |
+| `$pageview` | Initial page and client pathname changes; query, hash, referrer and resource IDs are excluded |
+| `signup_completed` | Better Auth creates a new account, including accounts without signup credits |
+| `generation_started` | An image or video job and its credit debit have committed |
+| `generation_succeeded` | The result has been stored and the job changed to succeeded |
+| `generation_failed` | A pending job failed and its refund committed |
+| `payment_succeeded` | Verified payment webhook fulfills a pack or a subscription charge |
+
+Generation properties include `kind` and `credits`. Rap duo uses the video lifecycle. Payment properties include `payment_kind`, `provider`, `product_id`, `credits`, `catalogue_amount_minor`, `currency` and subscription `interval`. The catalogue amount is not net revenue or the actual tax-adjusted charge. Refunds are not revenue adjustments in PostHog.
+
+Browser identifiers exist only in memory and reset on reload. Server events use a namespaced account ID. These streams are not linked into a visitor-to-signup funnel. No analytics cookies, browser storage, autocapture, person profiles or session replay are enabled. Prompts, files, names, emails, raw errors, payment credentials and provider payment IDs are excluded. GeoIP enrichment is disabled; the ingestion service still receives browser network requests.
+
+Delivery is best effort, not a financial ledger. Server calls wait at most 1.5 seconds, log a generic failure and let the business operation succeed. Committed state transitions and unique notification records suppress repeated completion/payment events. A crash, failed notification insert or capture failure can lose an event; there is no durable retry queue. Use the payment database for accounting.
+
+Verify with PostHog Activity filtered by `app=vibemovo`: visit a page, then follow a normal signup/generation/payment flow. For ingestion-only tests use a separate `analytics_connection_test` event with `is_test=true`; do not fabricate business success events. Unit and integration tests exercise capture failures, private route redaction, lifecycle transitions and repeated webhooks without production charges.

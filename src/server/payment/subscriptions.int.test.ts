@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { eq, sql } from "drizzle-orm";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { capture } from "@/server/analytics";
 import { auth } from "@/server/auth";
 import { log } from "@/server/log";
 import { getBalance } from "@/server/credits";
@@ -51,11 +52,14 @@ const {
 const { PaymentsDisabledError } = await import("./orders");
 const { handleWebhook } = await import("./webhook");
 
+vi.mock("@/server/analytics", () => ({ capture: vi.fn(async () => {}) }));
+
 let userId: string;
 let userEmail: string;
 let startBalance: number;
 
 beforeEach(async () => {
+  vi.mocked(capture).mockClear();
   vi.stubEnv("PAYMENT_PROVIDER", "stripe");
   // Email links need the site URL, and CI has no .env.
   vi.stubEnv("BETTER_AUTH_URL", "https://app.example.com");
@@ -156,6 +160,7 @@ test("each paid month grants credits once, and they carry over", async () => {
   await webhook("stripe", { subscriptionId: id, paymentId: first }); // Repeated event.
   await webhook("stripe", { subscriptionId: id, paymentId: payment("in") }); // Next month.
 
+  expect(vi.mocked(capture).mock.calls.filter(([event]) => event === "payment_succeeded")).toHaveLength(2);
   expect(await earned()).toBe(600);
   expect((await pageNotifications(userId)).notifications).toMatchObject([
     { type: "subscription_paid", data: { planId: "pro", credits: 300 } },

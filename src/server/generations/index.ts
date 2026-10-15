@@ -1,4 +1,5 @@
 import { and, asc, count, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql } from "drizzle-orm";
+import { capture } from "@/server/analytics";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { grantCredits, spendCredits } from "@/server/credits";
 import { getDb, type Tx } from "@/server/db";
@@ -112,6 +113,7 @@ export function lifecycle<T extends Table, N extends string>(kind: GenerationKin
       return updated;
     });
     if (!failed) return current(id);
+    await capture("generation_failed", userId, { kind: name, credits });
     log.warn(`${name}.failed`, { id, userId, credits, error });
     const fresh = await notify(userId, `${name}:${id}`, kind.notification.failed(row(failed), credits));
     if (fresh && unwatched) await kind.unwatched?.failed(row(failed), credits);
@@ -144,6 +146,7 @@ export function lifecycle<T extends Table, N extends string>(kind: GenerationKin
       .returning();
     if (updated) {
       const ms = updated.completedAt && updated.completedAt.getTime() - updated.createdAt.getTime();
+      await capture("generation_succeeded", userId, { kind: name, credits: kind.credits(row(updated)) });
       log.info(`${name}.succeeded`, { id, userId, ms });
       const fresh = await notify(userId, `${name}:${id}`, kind.notification.succeeded(row(updated)));
       if (fresh && unwatched) await kind.unwatched?.succeeded(row(updated));
@@ -251,6 +254,7 @@ export function lifecycle<T extends Table, N extends string>(kind: GenerationKin
         await insert(tx);
         await spendCredits({ userId, amount: credits, reason: name, idempotencyKey: `${name}:${id}`, tx });
       });
+      await capture("generation_started", userId, { kind: name, credits });
       try {
         const submitted = await submit();
         log.info(`${name}.submitted`, { id, userId, credits });

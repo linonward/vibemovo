@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { capture } from "@/server/analytics";
 import { auth } from "@/server/auth";
 import { getBalance, grantCredits } from "@/server/credits";
 import { getDb } from "@/server/db";
@@ -29,10 +30,13 @@ const { createCheckout, listOrders, PaymentsDisabledError, UnknownPackError } =
   await import("./orders");
 const { handleWebhook, UnknownOrderError, UnknownProviderError } = await import("./webhook");
 
+vi.mock("@/server/analytics", () => ({ capture: vi.fn(async () => {}) }));
+
 let userId: string;
 let startBalance: number;
 
 beforeEach(async () => {
+  vi.mocked(capture).mockClear();
   vi.stubEnv("PAYMENT_PROVIDER", "stripe");
   const ctx = await auth.$context;
   const user = await ctx.internalAdapter.createUser(
@@ -109,6 +113,8 @@ test("a paid event marks the order paid and grants its credits once", async () =
   await webhook("stripe", { orderId: id, outcome: "paid" });
   await webhook("stripe", { orderId: id, outcome: "paid" }); // Providers may repeat events.
 
+  expect(vi.mocked(capture).mock.calls.filter(([event]) => event === "payment_succeeded")).toHaveLength(1);
+  expect(capture).toHaveBeenCalledWith("signup_completed", userId);
   expect(await earned()).toBe(100);
   const row = await onlyOrder();
   expect(row.status).toBe("paid");

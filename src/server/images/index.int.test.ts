@@ -1,6 +1,7 @@
 import { generateKeyPairSync, randomUUID } from "node:crypto";
 import { asc, eq, like } from "drizzle-orm";
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
+import { capture } from "@/server/analytics";
 import { auth } from "@/server/auth";
 import { getBalance, grantCredits, InsufficientCreditsError, spendCredits } from "@/server/credits";
 import { getDb } from "@/server/db";
@@ -67,9 +68,12 @@ const {
 } = await import("./index");
 
 const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
+vi.mock("@/server/analytics", () => ({ capture: vi.fn(async () => {}) }));
+
 let userId: string;
 
 beforeEach(async () => {
+  vi.mocked(capture).mockClear();
   const ctx = await auth.$context;
   const user = await ctx.internalAdapter.createUser(
     { email: `user-${randomUUID()}@example.com`, name: "Artist" },
@@ -148,6 +152,8 @@ test("a refresh stores a finished image, then answers from the database", async 
 
   await refreshImage(userId, id);
   expect(ai.imageResult).toHaveBeenCalledTimes(1);
+  expect(capture).toHaveBeenCalledWith("generation_started", userId, { kind: "image", credits: imageCost });
+  expect(vi.mocked(capture).mock.calls.filter(([event]) => event === "generation_succeeded")).toHaveLength(1);
   expect((await pageNotifications(userId)).notifications).toMatchObject([
     { type: "image_succeeded", data: { imageId: id, prompt: "x" } },
   ]);
@@ -167,6 +173,7 @@ test("a refresh fails and refunds an image Bailian failed, once", async () => {
 
   expect(await getBalance(userId)).toBe(before);
   expect(await rows()).toMatchObject([{ status: "failed", error: "blocked" }]);
+  expect(vi.mocked(capture).mock.calls.filter(([event]) => event === "generation_failed")).toHaveLength(1);
 });
 
 test("logs each image's submission and outcome, once", async () => {

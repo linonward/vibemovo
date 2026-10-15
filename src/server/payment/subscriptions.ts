@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, desc, eq, gt, inArray, sql } from "drizzle-orm";
+import { capture } from "@/server/analytics";
 import { grantCredits, usedIdempotencyKeys } from "@/server/credits";
 import { type Db, getDb, type Tx } from "@/server/db";
 import { log } from "@/server/log";
@@ -208,9 +209,13 @@ export async function applySubscriptionEvent(
       reason: "subscription",
       idempotencyKey: key,
     });
-    await notify(current.userId, key, {
+    const fresh = await notify(current.userId, key, {
       type: "subscription_paid",
       data: { planId: current.planId, credits: current.credits },
+    });
+    if (fresh) await capture("payment_succeeded", current.userId, {
+      payment_kind: "subscription", provider, product_id: current.planId, credits: current.credits,
+      catalogue_amount_minor: current.amount, currency: current.currency, interval: current.interval,
     });
   }
 

@@ -39,6 +39,8 @@ const schema = z.object({
   IMAGE_MODERATION: z.enum(["seeapi"], "must be seeapi, or empty").optional(),
   STORAGE_ENDPOINT: optional(z.string().pipe(httpUrl)),
   STORAGE_FORCE_PATH_STYLE: z.enum(["true", "false"], "must be true or false, or empty").optional(),
+  NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN: optional(z.string().startsWith("phc_", "must start with phc_")),
+  NEXT_PUBLIC_POSTHOG_HOST: optional(z.string().pipe(httpUrl)),
   NEXT_PUBLIC_SENTRY_DSN: optional(z.string().pipe(httpUrl)),
   NEXT_PUBLIC_VERCEL_ANALYTICS: z.enum(["1"], "must be 1, or empty").optional(),
   NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS: z.enum(["1"], "must be 1, or empty").optional(),
@@ -61,6 +63,7 @@ function crossChecks(env: Env): string[] {
     }
   };
 
+  bothOrNeither("NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN", "NEXT_PUBLIC_POSTHOG_HOST");
   bothOrNeither("GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET");
   // A secret without the site key would reject every magic link.
   bothOrNeither("TURNSTILE_SECRET_KEY", "NEXT_PUBLIC_TURNSTILE_SITE_KEY");

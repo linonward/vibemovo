@@ -194,3 +194,7 @@ src/
   types/
   proxy.ts
 ```
+
+### Product analytics
+
+`src/server/analytics` sends explicit signup, generation and verified payment events to PostHog with bounded, best-effort HTTP calls. `src/components/layout/posthog.tsx` records sanitized page routes with in-memory anonymous IDs. Both attach `app=vibemovo`. See [PostHog operations](runbook.md#posthog) for the event contract and delivery limits.
