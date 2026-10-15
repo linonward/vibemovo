@@ -73,6 +73,7 @@ test("renders in Chinese", () => {
 test.each([
   ["hug", "Hug your younger self with AI, from two photos", /Make a younger-self hug video/, "Your childhood photo", /Four frames from a 15-second AI younger-self hug video/, /A real 15-second AI younger-self hug video/],
   ["vampire", "AI vampire transformation video from one photo", /Make a vampire video/, "Your photo", /Four frames from a 10-second AI vampire transformation video/, /A real 10-second AI vampire transformation video/],
+  ["raindance", "Raindance AI trend video from two photos", /Make a Raindance video/, "Photo of the singer", /Four frames from a 15-second Raindance AI trend video/, /A real 15-second Raindance AI trend video/],
 ] as const)("the %s page names its query, shows a real result and its own form", (kind, h1, cta, photo, alt, video) => {
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
 
@@ -88,6 +89,7 @@ test.each([
 test.each([
   ["hug", "用 AI 拥抱童年的自己，两张照片就能做"],
   ["vampire", "AI 吸血鬼变身视频，一张照片就能做"],
+  ["raindance", "Raindance AI 热梗视频，两张照片就能做"],
 ] as const)("the %s page renders in Chinese", (kind, h1) => {
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />, "zh");
 
@@ -98,6 +100,7 @@ test.each([
   ["zombie", "AI zombie couple video questions", "AI 僵尸情侣视频常见问题"],
   ["hug", "AI younger-self hug video questions", "AI 拥抱童年视频常见问题"],
   ["vampire", "AI vampire transformation video questions", "AI 吸血鬼变身视频常见问题"],
+  ["raindance", "Raindance AI trend questions", "Raindance AI 热梗常见问题"],
 ] as const)("the %s FAQ heading names the query", (kind, en, zh) => {
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
   expect(screen.getByRole("heading", { level: 2, name: en })).toBeDefined();
@@ -107,11 +110,11 @@ test.each([
   expect(screen.getByRole("heading", { level: 2, name: zh })).toBeDefined();
 });
 
-test.each(["zombie", "hug", "vampire"] as const)("the %s page links the other effects", (kind) => {
+test.each(["zombie", "hug", "vampire", "raindance"] as const)("the %s page links the other effects", (kind) => {
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
 
   const more = screen.getByRole("region", { name: "More AI video effects" });
-  expect(within(more).getAllByRole("link")).toHaveLength(3);
+  expect(within(more).getAllByRole("link")).toHaveLength(4);
   expect(within(more).getByRole("link", { name: /Rap duo/ }).getAttribute("href")).toBe("/en/ai-rap-video-generator");
 });
 
@@ -121,6 +124,13 @@ test("lists the locale's related guides after the other effects", () => {
 
   const more = screen.getByRole("region", { name: "More AI video effects" });
   const links = within(more).getAllByRole("link");
-  expect(links).toHaveLength(4);
+  expect(links).toHaveLength(5);
   expect(links.at(-1)?.getAttribute("href")).toBe("/en/blog/hug-your-younger-self-ai");
+});
+
+test("the raindance page says the song is added when posting", () => {
+  renderWithIntl(<EffectLanding kind="raindance" facts={facts} />);
+
+  expect(screen.getByText("Does the video include the Raindance song?")).toBeDefined();
+  expect(screen.getByText(/add the song from the TikTok or Instagram sound library/)).toBeDefined();
 });

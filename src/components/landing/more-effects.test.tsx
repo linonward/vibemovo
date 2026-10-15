@@ -6,10 +6,11 @@ import { MoreEffects } from "./more-effects";
 afterEach(cleanup);
 
 test.each([
-  ["rap", ["/en/ai-zombie-couple-video", "/en/hug-your-younger-self-ai", "/en/ai-vampire-transformation-video"]],
-  ["zombie", ["/en/ai-rap-video-generator", "/en/hug-your-younger-self-ai", "/en/ai-vampire-transformation-video"]],
-  ["hug", ["/en/ai-rap-video-generator", "/en/ai-zombie-couple-video", "/en/ai-vampire-transformation-video"]],
-  ["vampire", ["/en/ai-rap-video-generator", "/en/ai-zombie-couple-video", "/en/hug-your-younger-self-ai"]],
+  ["rap", ["/en/ai-zombie-couple-video", "/en/hug-your-younger-self-ai", "/en/ai-vampire-transformation-video", "/en/raindance-ai-trend"]],
+  ["zombie", ["/en/ai-rap-video-generator", "/en/hug-your-younger-self-ai", "/en/ai-vampire-transformation-video", "/en/raindance-ai-trend"]],
+  ["hug", ["/en/ai-rap-video-generator", "/en/ai-zombie-couple-video", "/en/ai-vampire-transformation-video", "/en/raindance-ai-trend"]],
+  ["vampire", ["/en/ai-rap-video-generator", "/en/ai-zombie-couple-video", "/en/hug-your-younger-self-ai", "/en/raindance-ai-trend"]],
+  ["raindance", ["/en/ai-rap-video-generator", "/en/ai-zombie-couple-video", "/en/hug-your-younger-self-ai", "/en/ai-vampire-transformation-video"]],
 ] as const)("the %s page links every other effect's landing page", (current, hrefs) => {
   renderWithIntl(<MoreEffects current={current} />);
 
@@ -24,6 +25,7 @@ test("names each effect and lists the related guides after them", () => {
   expect(within(more).getByRole("link", { name: /Rap duo/ })).toBeDefined();
   expect(within(more).getByRole("link", { name: /Younger-self hug/ })).toBeDefined();
   expect(within(more).getByRole("link", { name: /Vampire transformation/ })).toBeDefined();
+  expect(within(more).getByRole("link", { name: /Raindance trend/ })).toBeDefined();
   expect(within(more).getAllByRole("link").at(-1)?.getAttribute("href")).toBe("/en/blog/some-guide");
 });
 
@@ -34,4 +36,5 @@ test("renders in Chinese", () => {
   expect(within(more).getByRole("link", { name: /僵尸情侣/ })).toBeDefined();
   expect(within(more).getByRole("link", { name: /拥抱童年的自己/ })).toBeDefined();
   expect(within(more).getByRole("link", { name: /吸血鬼变身/ })).toBeDefined();
+  expect(within(more).getByRole("link", { name: /Raindance 热梗/ })).toBeDefined();
 });

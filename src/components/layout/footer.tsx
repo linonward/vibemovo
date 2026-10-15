@@ -16,6 +16,7 @@ export function Footer() {
   const zombie = useTranslations("ZombieLanding");
   const hug = useTranslations("HugLanding");
   const vampire = useTranslations("VampireLanding");
+  const raindance = useTranslations("RaindanceLanding");
 
   return (
     <footer className="border-t">
@@ -52,6 +53,11 @@ export function Footer() {
             <li>
               <Link href="/ai-vampire-transformation-video" className={LINK}>
                 {vampire("nav")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/raindance-ai-trend" className={LINK}>
+                {raindance("nav")}
               </Link>
             </li>
             <li>

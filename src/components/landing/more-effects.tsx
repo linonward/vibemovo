@@ -9,6 +9,7 @@ const EFFECTS = [
   { kind: "zombie", href: "/ai-zombie-couple-video" },
   { kind: "hug", href: "/hug-your-younger-self-ai" },
   { kind: "vampire", href: "/ai-vampire-transformation-video" },
+  { kind: "raindance", href: "/raindance-ai-trend" },
 ] as const;
 
 export type EffectKind = (typeof EFFECTS)[number]["kind"];

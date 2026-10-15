@@ -60,6 +60,7 @@ test("the hero plays a real template video and links each template", () => {
     "/en/ai-rap-video-generator",
     "/en/hug-your-younger-self-ai",
     "/en/ai-vampire-transformation-video",
+    "/en/raindance-ai-trend",
   ]);
   expect(within(showcase).getByText("Playing")).toBeDefined();
 });
@@ -76,6 +77,7 @@ test("the templates link each template's page, right after the hero", () => {
     "AI zombie couple videos",
     "AI younger-self hug videos",
     "AI vampire transformation videos",
+    "Raindance AI trend videos",
   ]);
   expect(
     within(templates).getAllByRole("link").map((link) => link.getAttribute("href")),
@@ -84,6 +86,7 @@ test("the templates link each template's page, right after the hero", () => {
     "/en/ai-zombie-couple-video",
     "/en/hug-your-younger-self-ai",
     "/en/ai-vampire-transformation-video",
+    "/en/raindance-ai-trend",
   ]);
   expect(within(templates).getByText("10 seconds, 9:16 vertical")).toBeDefined();
   const sections = screen.getAllByRole("region").map((r) => r.getAttribute("aria-labelledby"));

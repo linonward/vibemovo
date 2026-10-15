@@ -23,6 +23,7 @@ const LANDINGS = {
   zombie: { frames: "/blog/ai-zombie-couple-video/frames.jpg", sample: "/landing/zombie" },
   hug: { frames: "/landing/hug/frames.jpg", sample: "/landing/hug" },
   vampire: { frames: "/landing/vampire/frames.jpg", sample: "/landing/vampire" },
+  raindance: { frames: "/landing/raindance/frames.jpg", sample: "/landing/raindance" },
 } as const;
 
 export type EffectLandingKind = keyof typeof LANDINGS;
@@ -47,6 +48,7 @@ export function EffectLanding({
     zombie: useTranslations("ZombieLanding"),
     hug: useTranslations("HugLanding"),
     vampire: useTranslations("VampireLanding"),
+    raindance: useTranslations("RaindanceLanding"),
   };
   const t = messages[kind] as typeof messages.zombie;
   const { frames, sample } = LANDINGS[kind];

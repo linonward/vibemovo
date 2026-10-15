@@ -12,6 +12,7 @@ const TEMPLATES = [
   ["RapLanding", "/ai-rap-video-generator", "/landing/rap/poster.jpg"],
   ["HugLanding", "/hug-your-younger-self-ai", "/landing/hug/poster.jpg"],
   ["VampireLanding", "/ai-vampire-transformation-video", "/landing/vampire/poster.jpg"],
+  ["RaindanceLanding", "/raindance-ai-trend", "/landing/raindance/poster.jpg"],
 ] as const;
 
 // The hero's showcase (docs/DESIGN.md, Home): a real zombie couple result

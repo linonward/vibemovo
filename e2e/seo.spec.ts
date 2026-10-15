@@ -9,7 +9,7 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
   expect(response.status()).toBe(200);
   const xml = await response.text();
   const locs = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/hug-your-younger-self-ai", "/ai-vampire-transformation-video", "/blog"];
+  const pages = ["", "/privacy", "/terms", "/refund", "/pricing", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/hug-your-younger-self-ai", "/ai-vampire-transformation-video", "/raindance-ai-trend", "/blog"];
   expect(locs.sort()).toEqual(
     [
       ...pages.flatMap((page) => [`${baseURL}/en${page}`, `${baseURL}/zh${page}`]),
@@ -89,7 +89,7 @@ test("the blog index names its canonical URL and every locale", async ({ page, b
 });
 
 test("the home, legal and rap video pages name their canonical URL and every locale", async ({ page, baseURL }) => {
-  for (const path of ["", "/privacy", "/terms", "/refund", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/hug-your-younger-self-ai", "/ai-vampire-transformation-video"]) {
+  for (const path of ["", "/privacy", "/terms", "/refund", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/hug-your-younger-self-ai", "/ai-vampire-transformation-video", "/raindance-ai-trend"]) {
     await page.goto(`/zh${path}`);
 
     const head = page.locator("head");
@@ -116,6 +116,8 @@ test("marketing pages carry keyword-first titles", async ({ page }) => {
     "/zh/hug-your-younger-self-ai": "AI 拥抱童年的自己：两张照片生成拥抱视频 | vibemovo",
     "/en/ai-vampire-transformation-video": "AI Vampire Transformation: One Photo to Video | vibemovo",
     "/zh/ai-vampire-transformation-video": "AI 吸血鬼变身：一张照片生成万圣节视频 | vibemovo",
+    "/en/raindance-ai-trend": "Raindance AI Trend: Two Photos to the Dock Video | vibemovo",
+    "/zh/raindance-ai-trend": "Raindance AI 热梗：两张照片生成码头唱歌视频 | vibemovo",
   };
   for (const [path, title] of Object.entries(titles)) {
     await page.goto(path);
@@ -204,6 +206,7 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   expect(text).toContain(`- [AI Zombie Couple Video Generator](${baseURL}/en/ai-zombie-couple-video): Turn two photos`);
   expect(text).toContain(`- [Hug Your Younger Self AI Video Generator](${baseURL}/en/hug-your-younger-self-ai): Turn a photo`);
   expect(text).toContain(`- [AI Vampire Transformation Video Generator](${baseURL}/en/ai-vampire-transformation-video): Turn one photo`);
+  expect(text).toContain(`- [Raindance AI Trend Video Generator](${baseURL}/en/raindance-ai-trend): Turn two photos`);
   expect(text).toContain(`- [Blog](${baseURL}/en/blog): `);
   expect(text).toContain(`](${baseURL}/en/blog/photo-to-video-ai): `);
   expect(text).not.toContain(`${baseURL}/zh/blog/photo-to-video-ai`);
@@ -222,6 +225,7 @@ test("the rap video and zombie couple pages share preview images of their own", 
     ["/zh/ai-zombie-couple-video", "AI 僵尸情侣视频生成器"],
     ["/en/hug-your-younger-self-ai", "Hug Your Younger Self AI Video Generator"],
     ["/en/ai-vampire-transformation-video", "AI Vampire Transformation Video Generator"],
+    ["/en/raindance-ai-trend", "Raindance AI Trend Video Generator"],
   ]) {
     await page.goto(path);
 
