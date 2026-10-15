@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 import { eq } from "drizzle-orm";
 import { afterEach, expect, test } from "vitest";
+import { CNY_TO_USD } from "@/server/ai/config";
+import { aiUsage } from "@/server/ai/schema";
 import { auth } from "@/server/auth";
 import { user } from "@/server/auth/schema";
 import { creditTransaction } from "@/server/credits/schema";
@@ -163,6 +165,57 @@ test("reports each kind's outcomes, timings and most common failures", async () 
   ]);
 });
 
+test("estimates each model's cost from the jobs that succeeded and the calls made", async () => {
+  const { since, until, at } = window();
+  const userId = await createUser(at(-10));
+  const clip = (status: "succeeded" | "failed", resolution: string, duration: number, minutes: number) => ({
+    userId,
+    prompt: "x",
+    duration,
+    provider: "dashscope" as const,
+    resolution,
+    credits: (resolution === "720p" ? 5 : 8) * duration,
+    status,
+    createdAt: at(minutes),
+  });
+  await getDb()
+    .insert(video)
+    .values([
+      clip("succeeded", "720p", 15, 1),
+      clip("succeeded", "720p", 5, 2),
+      clip("succeeded", "1080p", 10, 3),
+      clip("failed", "720p", 15, 4),
+      clip("succeeded", "720p", 5, 90),
+    ]);
+  await getDb()
+    .insert(image)
+    .values([
+      { userId, prompt: "x", aspect: "1:1", status: "succeeded", createdAt: at(5) },
+      { userId, prompt: "x", aspect: "1:1", status: "succeeded", createdAt: at(6) },
+      { userId, prompt: "x", aspect: "1:1", status: "failed", createdAt: at(7) },
+    ]);
+  await getDb()
+    .insert(aiUsage)
+    .values([
+      { model: "deepseek-v4.1-flash", purpose: "chat", inputTokens: 100, outputTokens: 50, costUsd: 0.001, createdAt: at(8) },
+      { model: "deepseek-v4.1-flash", purpose: "chat", inputTokens: 200, outputTokens: 50, costUsd: 0.002, createdAt: at(9) },
+      { model: "deepseek-v4.1-flash", purpose: "lyrics", inputTokens: 40, outputTokens: 20, costUsd: 0.0005, createdAt: at(10) },
+      { model: "deepseek-v4.1-flash", purpose: "chat", inputTokens: 999, outputTokens: 999, costUsd: 1, createdAt: at(90) },
+    ]);
+
+  const { costs } = await getMetrics({ since, until });
+
+  const rows = costs.rows.map(({ costUsd, ...row }) => ({ ...row, costUsd: costUsd === null ? null : Number(costUsd.toFixed(6)) }));
+  expect(rows).toEqual([
+    { kind: "video", model: "dashscope 1080p", jobs: 1, usage: 10, credits: 80, costUsd: 1.5 },
+    { kind: "video", model: "dashscope 720p", jobs: 2, usage: 20, credits: 100, costUsd: 2 },
+    { kind: "image", model: "wan2.6-t2i", jobs: 2, usage: 2, credits: 2, costUsd: Number((2 * 0.2 * CNY_TO_USD).toFixed(6)) },
+    { kind: "chat", model: "deepseek-v4.1-flash", jobs: 2, usage: 400, credits: 2, costUsd: 0.003 },
+    { kind: "lyrics", model: "deepseek-v4.1-flash", jobs: 1, usage: 60, credits: 0, costUsd: 0.0005 },
+  ]);
+  expect(costs.totalUsd).toBeCloseTo(1.5 + 2 + 2 * 0.2 * CNY_TO_USD + 0.003 + 0.0005);
+});
+
 test("reports zeros for an empty window", async () => {
   const { since, until } = window();
 
@@ -175,6 +228,7 @@ test("reports zeros for an empty window", async () => {
     { kind: "image", total: 0, succeeded: 0, failed: 0, pending: 0, medianMs: null, p95Ms: null, errors: [] },
     { kind: "video", total: 0, succeeded: 0, failed: 0, pending: 0, medianMs: null, p95Ms: null, errors: [] },
   ]);
+  expect(metrics.costs).toEqual({ rows: [], totalUsd: 0 });
 });
 
 // Counts only, as other test files create and delete users meanwhile: a
@@ -183,6 +237,7 @@ test("recent metrics count up to now", async () => {
   await createUser();
 
   expect((await recentMetrics(1)).users.new).toBeGreaterThanOrEqual(1);
-  const { users } = await recentMetrics(1);
-  expect(users.total).toBeGreaterThanOrEqual(users.new);
+  // Not total >= new: the two counts are separate queries, and other test
+  // files add and delete users between them.
+  expect((await recentMetrics(1)).users.total).toBeGreaterThanOrEqual(1);
 });

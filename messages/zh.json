@@ -670,6 +670,31 @@
       "noFailures": {
         "image": "没有失败的图片。",
         "video": "没有失败的视频。"
+      },
+      "costs": {
+        "title": "模型成本",
+        "empty": "这段时间没有产生费用的模型调用。",
+        "model": "模型",
+        "columns": {
+          "jobs": "任务",
+          "usage": "用量",
+          "credits": "积分",
+          "cost": "估算成本"
+        },
+        "kinds": {
+          "video": "视频",
+          "image": "图片",
+          "chat": "对话",
+          "lyrics": "说唱歌词"
+        },
+        "units": {
+          "video": "{count} 秒",
+          "image": "{count} 张",
+          "chat": "{count} tokens",
+          "lyrics": "{count} tokens"
+        },
+        "total": "合计",
+        "note": "按代码里配置的官方价格估算，单位为美元：只计成功的视频和图片，以及开始记录用量之后的每次对话模型调用。“—” 表示这个模型没有配置价格。"
       }
     },
     "feedback": {

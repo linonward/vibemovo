@@ -1,5 +1,5 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, eq, isNotNull, lt } from "drizzle-orm";
+import { and, asc, count, eq, gte, isNotNull, lt, sql } from "drizzle-orm";
 import {
   getActiveVideoProvider,
   getReferenceVideoProvider,
@@ -45,6 +45,7 @@ import {
   VIDEO_DURATIONS,
   VIDEO_GIVE_UP_AFTER_MS,
   VIDEO_IMAGE_LIMITS,
+  VIDEO_COST_PER_SECOND,
   VIDEO_RESOLUTIONS,
   VIDEO_STALE_AFTER_MS,
   VIDEO_SWEEP_BATCH,
@@ -581,6 +582,29 @@ export async function pageVideos(
 // How videos created between `since` and `until` went, for /admin/metrics.
 export function videoMetrics(window: { since: Date; until: Date }) {
   return videos.metrics(window);
+}
+
+// Videos that succeeded between `since` and `until` (failed ones aren't
+// billed), per provider and resolution: their seconds, the credits they
+// spent and their cost at VIDEO_COST_PER_SECOND (null without a price).
+export async function videoCosts({ since, until }: { since: Date; until: Date }) {
+  const rows = await getDb()
+    .select({
+      provider: video.provider,
+      resolution: video.resolution,
+      videos: count(),
+      seconds: sql<number>`coalesce(sum(${video.duration}), 0)`.mapWith(Number),
+      credits: sql<number>`coalesce(sum(${video.credits}), 0)`.mapWith(Number),
+    })
+    .from(video)
+    .where(and(eq(video.status, "succeeded"), gte(video.createdAt, since), lt(video.createdAt, until)))
+    .groupBy(video.provider, video.resolution)
+    .orderBy(video.provider, video.resolution);
+  return rows.map((row) => {
+    const prices = VIDEO_COST_PER_SECOND[row.provider];
+    const perSecond = Object.hasOwn(prices, row.resolution) ? prices[row.resolution] : null;
+    return { ...row, costUsd: perSecond === null ? null : perSecond * row.seconds };
+  });
 }
 
 async function withUrls(row: Row): Promise<Video> {

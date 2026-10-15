@@ -1,12 +1,14 @@
 import { and, count, desc, eq, gte, inArray, like, lt, ne, type SQL, sql } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
 import { user } from "@/server/auth/schema";
+import { CHAT_CREDIT_COST } from "@/server/ai/config";
+import { usageCosts } from "@/server/ai/usage";
 import { creditTransaction } from "@/server/credits/schema";
 import { getDb } from "@/server/db";
-import { imageMetrics } from "@/server/images";
+import { imageCosts, imageMetrics } from "@/server/images";
 import { REFUND_REASON } from "@/server/payment/refunds";
 import { order } from "@/server/payment/schema";
-import { videoMetrics } from "@/server/videos";
+import { videoCosts, videoMetrics } from "@/server/videos";
 
 export type Metrics = Awaited<ReturnType<typeof getMetrics>>;
 
@@ -24,7 +26,7 @@ export async function getMetrics({ since, until = new Date() }: { since: Date; u
   const db = getDb();
   const within: Within = (column) => and(gte(column, since), lt(column, until));
 
-  const [[users], [newUsers], [credits], [orders], revenue, generations] = await Promise.all([
+  const [[users], [newUsers], [credits], [orders], revenue, generations, costs] = await Promise.all([
     db.select({ total: count() }).from(user),
     db.select({ total: count() }).from(user).where(within(user.createdAt)),
     db
@@ -52,6 +54,7 @@ export async function getMetrics({ since, until = new Date() }: { since: Date; u
       .groupBy(order.currency)
       .orderBy(desc(sql`sum(${order.amount})`), order.currency),
     Promise.all([imageMetrics({ since, until }), videoMetrics({ since, until })]),
+    modelCosts({ since, until }),
   ]);
 
   return {
@@ -59,7 +62,40 @@ export async function getMetrics({ since, until = new Date() }: { since: Date; u
     credits,
     orders: { paid: orders.paid, revenue },
     generations,
+    costs,
   };
+}
+
+// What each model cost between `since` and `until`, estimated from list
+// prices: videos per provider and resolution (usage in seconds), images
+// (count) and chat-model calls (tokens in and out). Videos and images count
+// only jobs that succeeded. A row's costUsd is null without a price; the
+// total leaves those out.
+async function modelCosts(window: { since: Date; until: Date }) {
+  const [videoRows, images, calls] = await Promise.all([videoCosts(window), imageCosts(window), usageCosts(window)]);
+  const rows = [
+    ...videoRows.map((row) => ({
+      kind: "video" as const,
+      model: `${row.provider} ${row.resolution}`,
+      jobs: row.videos,
+      usage: row.seconds,
+      credits: row.credits,
+      costUsd: row.costUsd,
+    })),
+    ...(images.images > 0
+      ? [{ kind: "image" as const, model: images.model, jobs: images.images, usage: images.images, credits: images.credits, costUsd: images.costUsd }]
+      : []),
+    ...calls.map((row) => ({
+      kind: row.purpose,
+      model: row.model,
+      jobs: row.calls,
+      usage: row.inputTokens + row.outputTokens,
+      // Lyrics are part of a rap video, which spends the credits.
+      credits: row.purpose === "chat" ? row.calls * CHAT_CREDIT_COST : 0,
+      costUsd: row.costUsd,
+    })),
+  ];
+  return { rows, totalUsd: rows.reduce((sum, row) => sum + (row.costUsd ?? 0), 0) };
 }
 
 const DAY_MS = 24 * 60 * 60 * 1000;

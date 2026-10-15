@@ -15,6 +15,7 @@ import { getDb } from "@/server/db";
 import { log } from "@/server/log";
 import { bailianChatModel } from "./bailian-chat";
 import { ChatNotFoundError, chatHistory, saveMessage } from "./chats";
+import { recordUsage } from "./usage";
 import {
   CHAT_CREDIT_COST,
   DEFAULT_CHAT_MODEL,
@@ -99,6 +100,7 @@ export async function streamChat({
   const result = streamText({
     model: resolved,
     messages: await convertToModelMessages(recent(messages)),
+    onFinish: ({ totalUsage }) => recordUsage(resolved, "chat", totalUsage),
     onError: async ({ error }) => {
       log.error("chat.failed", { userId, chatId, error });
       await grantCredits({

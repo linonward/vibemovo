@@ -2,12 +2,15 @@ import { randomUUID } from "node:crypto";
 import { simulateReadableStream, type UIMessage } from "ai";
 import { MockLanguageModelV4 } from "ai/test";
 import { afterEach, expect, test, vi } from "vitest";
+import { eq } from "drizzle-orm";
 import { auth } from "@/server/auth";
 import { getBalance, InsufficientCreditsError, listTransactions, spendCredits } from "@/server/credits";
 import { signupCredits } from "@/server/credits/config";
 import { ChatDisabledError, ChatNotFoundError, InvalidChatError, streamChat } from "./chat";
 import { chatHistory, countChats, deleteChat, listChats, loadChat, saveMessage } from "./chats";
 import { CHAT_CREDIT_COST } from "./config";
+import { aiUsage } from "./schema";
+import { getDb } from "@/server/db";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -25,8 +28,9 @@ async function createUser() {
 const ask = (text: string) => ({ id: randomUUID(), role: "user", parts: [{ type: "text", text }] });
 
 // Replies with how many messages the model saw, and the last one.
-function countingModel() {
+function countingModel({ modelId = "mock-model-id", input = 0, output = 0 } = {}) {
   return new MockLanguageModelV4({
+    modelId,
     doStream: async ({ prompt }) => {
       const last = prompt.at(-1);
       const text = last?.role === "user" && last.content[0]?.type === "text" ? last.content[0].text : "";
@@ -40,8 +44,8 @@ function countingModel() {
               type: "finish",
               finishReason: { unified: "stop", raw: undefined },
               usage: {
-                inputTokens: { total: 0, noCache: 0, cacheRead: undefined, cacheWrite: undefined },
-                outputTokens: { total: 0, text: 0, reasoning: undefined },
+                inputTokens: { total: input, noCache: input, cacheRead: undefined, cacheWrite: undefined },
+                outputTokens: { total: output, text: output, reasoning: undefined },
               },
             },
           ],
@@ -77,6 +81,26 @@ test("charges a credit, streams the reply and saves both messages", async () => 
   const saved = await loadChat(userId, id);
   expect(saved?.title).toBe("hello there");
   expect(texts(saved!.messages)).toEqual(["user: hello there", "assistant: Echo: hello there"]);
+});
+
+// A model ID of the test's own, so rows other tests write don't count.
+const usageOf = (modelId: string) => getDb().select().from(aiUsage).where(eq(aiUsage.model, modelId));
+
+test("records each reply's tokens for the cost metrics, and nothing when the model fails", async () => {
+  const userId = await createUser();
+  const modelId = `test-${randomUUID()}`;
+
+  await send({ userId, chatId: randomUUID(), message: ask("hi"), model: countingModel({ modelId, input: 120, output: 30 }) });
+
+  await vi.waitFor(async () =>
+    expect(await usageOf(modelId)).toMatchObject([{ purpose: "chat", inputTokens: 120, outputTokens: 30, costUsd: null }]),
+  );
+
+  const failing = `test-${randomUUID()}`;
+  const model = failingModel();
+  Object.assign(model, { modelId: failing });
+  await send({ userId, chatId: randomUUID(), message: ask("hi"), model });
+  expect(await usageOf(failing)).toEqual([]);
 });
 
 test("continues a saved conversation with its history", async () => {

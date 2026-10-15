@@ -1,5 +1,6 @@
 import { generateText, type LanguageModel } from "ai";
 import { chatModel } from "@/server/ai/chat";
+import { recordUsage } from "@/server/ai/usage";
 import { log } from "@/server/log";
 import { blockedTerm } from "@/server/moderation";
 
@@ -71,7 +72,7 @@ export async function writeLyrics(
 ): Promise<RapLines> {
   if (!model) return defaultLyrics(names, language);
   try {
-    const { text } = await generateText({
+    const { text, usage } = await generateText({
       model,
       system:
         "You write short, original, upbeat rap lines for a fun video. Never quote real songs. " +
@@ -81,6 +82,7 @@ export async function writeLyrics(
         `Line 1 is rapped by ${names[0]}, line 2 by ${names[1]}. Each line mentions its rapper's name.`,
       abortSignal: AbortSignal.timeout(LYRICS_TIMEOUT_MS),
     });
+    await recordUsage(model, "lyrics", usage);
     const lines = parseLyrics(text);
     if (lines && !blockedTerm(lines.join("\n"))) return lines;
     log.warn("video.rap_lyrics_unusable", { reply: text.slice(0, 300) });

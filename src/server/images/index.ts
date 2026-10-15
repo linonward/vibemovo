@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
-import { dashscopeConfigured, ImageGenerationError, imageResult, submitImage } from "@/server/ai/dashscope";
+import { and, count, eq, gte, lt } from "drizzle-orm";
+import { CNY_TO_USD } from "@/server/ai/config";
+import { dashscopeConfigured, ImageGenerationError, imageModel, imageResult, submitImage } from "@/server/ai/dashscope";
 import { getDb } from "@/server/db";
 import { lifecycle } from "@/server/generations";
 import { ContentBlockedError } from "@/server/moderation";
@@ -13,6 +14,7 @@ import {
   IMAGE_SIZES,
   IMAGE_STALE_AFTER_MS,
   IMAGE_SWEEP_BATCH,
+  IMAGE_PRICE_CNY,
   type ImageAspect,
   imageCost,
   MAX_PROMPT_LENGTH,
@@ -153,6 +155,21 @@ export async function pageImages(
 // How images created between `since` and `until` went, for /admin/metrics.
 export function imageMetrics(window: { since: Date; until: Date }) {
   return images.metrics(window);
+}
+
+// Images that succeeded between `since` and `until` (failed ones aren't
+// billed), the credits they spent and their cost at IMAGE_PRICE_CNY.
+export async function imageCosts({ since, until }: { since: Date; until: Date }) {
+  const [{ images: total }] = await getDb()
+    .select({ images: count() })
+    .from(image)
+    .where(and(eq(image.status, "succeeded"), gte(image.createdAt, since), lt(image.createdAt, until)));
+  return {
+    model: imageModel(),
+    images: total,
+    credits: total * imageCost,
+    costUsd: total * IMAGE_PRICE_CNY * CNY_TO_USD,
+  };
 }
 
 function isAspect(value: string): value is ImageAspect {
