@@ -4,3 +4,5 @@ allowBuilds:
   esbuild: false
   "@parcel/watcher": false
   "@swc/core": false
+  # Downloads the ffmpeg binary that cuts video posters (src/server/videos/poster.ts).
+  ffmpeg-static: true

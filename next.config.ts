@@ -30,6 +30,18 @@ const nextConfig: NextConfig = {
   // server.js and only the node_modules files it needs.
   output: process.env.BUILD_STANDALONE ? "standalone" : undefined,
   headers: async () => [{ source: "/:path*", headers: securityHeaders }],
+  // ffmpeg-static finds its binary next to its own files, so it isn't
+  // bundled. File tracing adds the binary (about 75 MB on Linux) to every
+  // route that imports the videos module; the list below makes sure the
+  // routes that collect finished videos and cut their posters
+  // (src/server/videos/poster.ts) always have it.
+  serverExternalPackages: ["ffmpeg-static"],
+  outputFileTracingIncludes: Object.fromEntries(
+    ["/api/videos/\\[id\\]", "/api/cron/sweep", "/\\[locale\\]/videos/\\[id\\]"].map((route) => [
+      route,
+      ["./node_modules/ffmpeg-static/ffmpeg"],
+    ]),
+  ),
   // The credit history moved into /billing. Keeps old links and bookmarks working.
   redirects: async () => [
     {

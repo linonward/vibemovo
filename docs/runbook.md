@@ -281,6 +281,7 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 - Photo limits are the rap duo's.
 - The prompt template is `zombiePrompt` in `src/server/videos/zombie.ts`. It asks for film-makeup zombies with no blood or gore, so Bailian's moderation lets it through.
 - Keep it `RAP_DURATION` long: the upload cleanup finds the second photo of a two-photo video by that length.
+- Its poster is the frame at `ZOMBIE_POSTER_MS` (10 s, the hug), cut with the `ffmpeg-static` binary when the video finishes. `pnpm install` downloads the binary (`allowBuilds` in `pnpm-workspace.yaml`). If the prompt's timing changes, move `ZOMBIE_POSTER_MS` with it. Videos made before the poster existed keep the first photo.
 
 ### Hug your younger self (Bailian Wan 3.0)
 
@@ -459,6 +460,7 @@ The server writes one line per event to stdout, and warnings and errors to stder
 | `payment.unknown_order` | error | `provider`, `error` (names the order ID). The webhook answers 409, so the provider retries |
 | `admin.credits_added`, `admin.broadcast_sent` | info | `admin` (email) and what changed |
 | `cron.sweep` | info | the counts the route returns |
+| `video.poster_failed` | warn | `id`, `error`. ffmpeg couldn't cut or store the poster frame; the video finished and shows the first photo |
 | `video.upload_not_deleted` | error | `id`, `error`. The sweep couldn't delete an upload past its retention; it keeps the key and retries next run |
 | `cron.task_failed` | error | `task` (`images`, `videos`, `subscriptionMonths` or `uploads`), `error`. Other sweep tasks still finish; the route returns 500 |
 | `notification.not_stored`, `storage.user_files_not_deleted` | error | `userId`, `error` |

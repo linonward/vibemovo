@@ -42,6 +42,7 @@ const props: VideoGeneratorProps = {
       createdAt: new Date("2026-10-01"),
       url: "https://storage.test/old.mp4",
       imageUrl: "https://storage.test/old.png",
+      posterUrl: null,
     },
     {
       id: "bad",
@@ -53,6 +54,7 @@ const props: VideoGeneratorProps = {
       createdAt: new Date("2026-10-01"),
       url: null,
       imageUrl: null,
+      posterUrl: null,
     },
   ],
 };
@@ -68,6 +70,7 @@ const pending = {
   createdAt: "2026-10-12T00:00:00.000Z",
   url: null,
   imageUrl: "https://storage.test/new.png",
+  posterUrl: null,
 };
 
 function pickImage(size = 10, type = "image/png") {
