@@ -262,6 +262,13 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 - Videos finish while the page polls, so no public URL or webhook is needed. A video the sweep settles instead (the page was closed) also emails its owner, once: "ready" with a link to `/videos/<id>`, or "couldn't be made" with the refunded credits. A video the page collects sends no email. Emails are in English, like the billing emails. A failed send logs `video.email_failed`; the sweep goes on.
 - Deleting an account deletes its `video` rows and its files under `videos/<userId>/`, start images included. A storage failure is logged as for images.
 
+### Object effects
+
+`/videos/effects` turns one photo of a thing or a pet into a 5-second clip with a fixed motion: Squish (hands squeeze it like slime), Inflate (it swells and floats away) or It's a cake (a knife reveals cake inside). It runs on `VIDEO_PROVIDER` like any image-to-video job, at that provider's lowest resolution, so it costs 5 seconds of it: 25 credits on Bailian (720p), 20 on SeeAPI (480p) or fal.
+
+- The effects and their prompts are `OBJECT_EFFECTS` and `objectEffectPrompt` in `src/server/videos/effects.ts`; `OBJECT_EFFECT_TITLES` is what the video list shows. To add one, add it there and its name under `ObjectVideos.effects` in every `messages/*.json`.
+- Photo limits are the provider's, as for `/videos`.
+
 ### Rap duo (Bailian Wan 3.0)
 
 `/videos/rap` turns two photos and two names into a 15-second 720p rap video with sound: the left person raps one line, then the right person raps the next. It costs `RAP_CREDITS` (75) and is refunded on failure, like any video.

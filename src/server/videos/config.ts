@@ -88,6 +88,9 @@ export const VAMPIRE_TITLE = "Vampire transformation";
 // side ("resolution must be at least 240x240"); the rest as for Wan 2.7.
 export const RAP_IMAGE_LIMITS: ImageLimits = VIDEO_IMAGE_LIMITS.dashscope;
 
+// Object effects (/videos/effects): seconds, one of VIDEO_DURATIONS.
+export const OBJECT_EFFECT_DURATION = 5;
+
 // Videos per page of /videos/library.
 export const VIDEOS_PAGE_SIZE = 24;
 

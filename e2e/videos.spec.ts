@@ -155,10 +155,12 @@ const EFFECTS = [
   { route: "zombie", title: "Zombie couple", off: "The zombie couple isn't set up yet.", photos: 2, credits: 75 },
   { route: "hug", title: "Hug your younger self", off: "Hug your younger self isn't set up yet.", photos: 2, credits: 75 },
   { route: "vampire", title: "Vampire transformation", off: "The vampire transformation isn't set up yet.", photos: 1, credits: 50 },
+  // On the active provider; with none, fal's price as an example.
+  { route: "effects", title: "Object effects", off: "Object effects aren't set up yet.", photos: 1, credits: 20 },
 ] as const;
 
 for (const { route, title, off, credits } of EFFECTS) {
-  test(`the sidebar opens ${title}, off while Bailian is not set up`, async ({ page }) => {
+  test(`the sidebar opens ${title}, off while its provider is not set up`, async ({ page }) => {
     await signIn(page);
     await page.goto("/en/videos");
 
@@ -223,8 +225,9 @@ for (const { route, title, photos } of EFFECTS) {
   test(`a ${title} video needs a session and its photos, then reports videos off`, async ({ page, request }) => {
     const photo = (buffer: Buffer) => ({ name: "photo.png", mimeType: "image/png", buffer });
     // image1, and image2 for a two-photo effect; the last one as given.
+    const extra = route === "effects" ? { effect: "cake" } : {};
     const body = (last: Buffer) =>
-      photos === 2 ? { image1: photo(png), image2: photo(last) } : { image1: photo(last) };
+      photos === 2 ? { image1: photo(png), image2: photo(last) } : { image1: photo(last), ...extra };
     const endpoint = `/api/videos/${route}`;
     const anonymous = await request.post(endpoint, { multipart: body(png) as never });
     expect(anonymous.status()).toBe(401);
