@@ -47,6 +47,7 @@ How to turn one search query into a page that ranks and converts. Use it for eve
 - [ ] The home page templates (`src/components/home/templates.tsx`).
 - [ ] `EFFECTS` in `src/components/landing/more-effects.tsx` and its copy under `MoreEffects`, so every landing page links the new one.
 - [ ] A blog guide for the same query in `content/blog/<locale>/`, linking to the landing page and back from its `guide` link.
+- [ ] Two related guides in the page's `RELATED`, and the new guide in the `RELATED` of a related page.
 
 ### Check
 

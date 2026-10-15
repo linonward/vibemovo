@@ -65,6 +65,13 @@ export async function listPosts(locale: Locale): Promise<Post[]> {
     .sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug));
 }
 
+// The locale's posts among these slugs, as links, newest first.
+export async function relatedPosts(locale: Locale, slugs: string[]): Promise<{ href: string; title: string }[]> {
+  return (await listPosts(locale))
+    .filter((post) => slugs.includes(post.slug))
+    .map((post) => ({ href: `/blog/${post.slug}`, title: post.title }));
+}
+
 // The locales that have a post with this slug.
 export async function postLocales(slug: string): Promise<Locale[]> {
   const found = await Promise.all(

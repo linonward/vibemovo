@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { EffectLanding } from "@/components/landing/effect-landing";
 import type { Locale } from "@/i18n/routing";
-import { postLocales } from "@/lib/content";
+import { postLocales, relatedPosts } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 import { signupCredits } from "@/server/credits/config";
 import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES, ZOMBIE_CREDITS } from "@/server/videos/config";
@@ -10,6 +10,8 @@ import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES, ZOMBIE_CREDITS } from "@/server/
 const PATH = "/ai-zombie-couple-video";
 // The step-by-step guide to the zombie couple, linked where the locale has it.
 const GUIDE = "ai-zombie-couple-video";
+// Other guides the page links, where the locale has them.
+const RELATED = ["hug-your-younger-self-ai", "ai-vampire-transformation-video"];
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/ai-zombie-couple-video">): Promise<Metadata> {
   const { locale } = await params;
@@ -24,6 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/ai-zombi
 export default async function Page({ params }: PageProps<"/[locale]/ai-zombie-couple-video">) {
   const { locale } = await params;
   const guide = (await postLocales(GUIDE)).includes(locale as Locale) ? `/blog/${GUIDE}` : undefined;
+  const related = await relatedPosts(locale as Locale, RELATED);
   return (
     <EffectLanding
       kind="zombie"
@@ -34,6 +37,7 @@ export default async function Page({ params }: PageProps<"/[locale]/ai-zombie-co
         imageLimits: RAP_IMAGE_LIMITS,
       }}
       guide={guide}
+      related={related}
     />
   );
 }

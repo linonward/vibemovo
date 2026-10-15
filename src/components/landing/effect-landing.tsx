@@ -30,8 +30,19 @@ export type EffectLandingKind = keyof typeof LANDINGS;
 // The public page for one video effect's search query: the effect's form
 // right in the hero, a real result, the steps and the cost. Laid out like the rap duo's page
 // (rap-landing.tsx). The copy lives under the kind's own namespace, with
-// the same keys. `guide` is the locale's blog guide, if it has one.
-export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind; facts: EffectFacts; guide?: string }) {
+// the same keys. `guide` is the locale's blog guide, if it has one; `related`
+// are the locale's other guides worth a link.
+export function EffectLanding({
+  kind,
+  facts,
+  guide,
+  related = [],
+}: {
+  kind: EffectLandingKind;
+  facts: EffectFacts;
+  guide?: string;
+  related?: { href: string; title: string }[];
+}) {
   const messages = {
     zombie: useTranslations("ZombieLanding"),
     hug: useTranslations("HugLanding"),
@@ -173,7 +184,7 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
         </dl>
       </section>
 
-      <MoreEffects current={kind} />
+      <MoreEffects current={kind} related={related} />
 
       <section
         aria-labelledby={`${kind}-cta`}
