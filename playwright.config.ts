@@ -45,10 +45,9 @@ export default defineConfig({
       // still verify, so signed test events reach the handler.
       PAYMENT_PROVIDER: "",
       STRIPE_WEBHOOK_SECRET,
-      // Chat replies come from an echo model, never DeepSeek.
-      DEEPSEEK_API_KEY: "",
+      // Chat replies come from an echo model, and images stay off: E2E
+      // doesn't call Bailian.
       AI_MOCK: "1",
-      // Images stay off: E2E doesn't call Bailian.
       DASHSCOPE_API_KEY: "",
       // Videos stay off: E2E doesn't call fal or SeeAPI.
       VIDEO_PROVIDER: "",

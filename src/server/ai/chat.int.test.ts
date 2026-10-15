@@ -64,7 +64,7 @@ const texts = (messages: { role: string; parts: { type: string; text?: string }[
 const send = async (...args: Parameters<typeof streamChat>) => (await streamChat(...args)).text();
 
 test("charges a credit, streams the reply and saves both messages", async () => {
-  vi.stubEnv("DEEPSEEK_API_KEY", "");
+  vi.stubEnv("DASHSCOPE_API_KEY", "");
   vi.stubEnv("AI_MOCK", "1");
   const userId = await createUser();
   const id = randomUUID();
@@ -273,8 +273,8 @@ test("rejects malformed requests before charging", async () => {
   expect(model.doStreamCalls).toHaveLength(0);
 });
 
-test("is off without a DeepSeek key", async () => {
-  vi.stubEnv("DEEPSEEK_API_KEY", "");
+test("is off without a Bailian key", async () => {
+  vi.stubEnv("DASHSCOPE_API_KEY", "");
   vi.stubEnv("AI_MOCK", "");
   const userId = await createUser();
 
