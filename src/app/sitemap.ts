@@ -5,7 +5,7 @@ import { LEGAL_DOCS, listPosts, postLocales } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 
 // The public pages in every locale, without the locale prefix.
-const PAGES = ["", ...LEGAL_DOCS.map((doc) => `/${doc}`), "/pricing", "/ai-rap-video-generator", "/blog"];
+const PAGES = ["", ...LEGAL_DOCS.map((doc) => `/${doc}`), "/pricing", "/ai-rap-video-generator", "/ai-zombie-couple-video", "/blog"];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Read BETTER_AUTH_URL per request, so a build doesn't bake in its own URL.

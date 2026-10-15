@@ -322,6 +322,90 @@
       "button": "Make a rap video"
     }
   },
+  "ZombieLanding": {
+    "nav": "AI zombie couple videos",
+    "title": "AI Zombie Couple Video Generator",
+    "metaTitle": "AI Zombie Couple Video: Photos to a Love Story",
+    "description": "Turn two photos into a 15-second zombie love story: your partner turns zombie, you drop the bat and hug them. Vertical 9:16 video with music.",
+    "hero": {
+      "eyebrow": "Zombie couple",
+      "title": "AI zombie couple video from two photos",
+      "body": "Upload your photo and your partner's. You get a 15-second vertical video: you find your partner turned zombie, drop the bat and hug them, then it cuts to a happy memory of you two.",
+      "cta": "Make a zombie couple video",
+      "guide": "Read the guide",
+      "points": {
+        "1": "15 seconds, 9:16 vertical",
+        "2": "Music and sound included"
+      }
+    },
+    "result": {
+      "alt": "Four frames from a 15-second AI zombie couple video: a woman in a green suit holds a bat in a ruined street as a zombie in a blue suit walks out of the fog, she lowers the bat, hugs him in tears, then the two laugh in a sunny kitchen.",
+      "caption": "Four frames from a real result, made from two photos of AI-generated people. The survivor meets her partner, lowers the bat and hugs him; then it cuts to a happy memory."
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "title": "From two photos to one zombie love story",
+      "items": {
+        "1": {
+          "title": "Upload your photo",
+          "body": "You play the survivor. One person, facing the camera, in good light. JPEG, PNG or WebP, up to {size} MB."
+        },
+        "2": {
+          "title": "Upload your partner's photo",
+          "body": "Your partner turns zombie. Use a photo of someone who agreed to it."
+        },
+        "3": {
+          "title": "Generate",
+          "body": "One video costs {credits} credits. It is usually ready in a few minutes, and you can play or download it."
+        }
+      }
+    },
+    "features": {
+      "eyebrow": "The zombie love story trend",
+      "title": "What you get",
+      "items": {
+        "1": {
+          "title": "The whole story in 15 seconds",
+          "body": "The meeting in a ruined street, the dropped bat, the hug, and a match cut to a happy memory."
+        },
+        "2": {
+          "title": "Made for TikTok, Reels and Shorts",
+          "body": "The video is 9:16 and comes with its own music and sound. You don't add a song."
+        },
+        "3": {
+          "title": "Still your faces",
+          "body": "Each face stays recognisable, the zombie included. The zombie look is film makeup: no blood, no gore."
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions",
+      "items": {
+        "1": {
+          "title": "How much does a zombie couple video cost?",
+          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, which is not enough for one. Buy credits on the <pricing>pricing page</pricing>."
+        },
+        "2": {
+          "title": "What if a video fails?",
+          "body": "You get the credits back. Try again with the same photos or different ones."
+        },
+        "3": {
+          "title": "How long does it take?",
+          "body": "Usually a few minutes. You can close the page: you get a notification when the video is ready."
+        },
+        "4": {
+          "title": "Who turns into the zombie?",
+          "body": "The person in the second photo. The first photo is the survivor who finds them."
+        }
+      }
+    },
+    "cta": {
+      "title": "Make your zombie love story",
+      "body": "Sign in with an email link or your Google account. No password.",
+      "button": "Make a zombie couple video"
+    }
+  },
   "Footer": {
     "blurb": "Prompt to image, image to video. New accounts start with free credits.",
     "product": "Product",
