@@ -478,6 +478,7 @@
     "videoZombie": "僵尸情侣",
     "videoHug": "拥抱童年的自己",
     "videoVampire": "吸血鬼变身",
+    "videoObject": "物体特效",
     "videoLibrary": "全部视频",
     "adminOrders": "订单",
     "adminBroadcasts": "群发通知",
@@ -966,6 +967,37 @@
       "failed": "生成失败，积分已退回。请重试。",
       "blocked": "照片未通过内容审核。请换一张。",
       "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    }
+  },
+  "ObjectVideos": {
+    "title": "物体特效",
+    "description": "上传一张物品或宠物的照片，生成一段 5 秒的视频：双手像捏史莱姆一样捏扁它、它像气球一样鼓起飘走，或者一刀切开发现它是蛋糕。",
+    "left": {
+      "photo": "你的照片",
+      "preview": "你的照片预览"
+    },
+    "photoHint": "JPEG、PNG 或 WebP，不超过 {size} MB。照片中间放一个物品或宠物，效果最好。",
+    "generate": "生成（{count} 积分）",
+    "generating": "正在提交…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "物体特效尚未配置。",
+    "historyTitle": "你的视频",
+    "empty": "还没有视频。",
+    "viewAll": "查看全部",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "invalid": "请使用不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
+      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
+      "failed": "生成失败，积分已退回。请重试。",
+      "blocked": "照片未通过内容审核。请换一张。",
+      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    },
+    "effect": "特效",
+    "effects": {
+      "squish": "捏扁",
+      "inflate": "吹胀",
+      "cake": "原来是蛋糕"
     }
   },
   "Notifications": {

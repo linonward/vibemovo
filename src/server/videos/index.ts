@@ -5,6 +5,7 @@ import {
   getReferenceVideoProvider,
   getVideoProvider,
   VideoGenerationError,
+  type VideoProviderId,
 } from "@/server/ai/video";
 import { user } from "@/server/auth/schema";
 import { getBalance, InsufficientCreditsError } from "@/server/credits";
@@ -37,6 +38,7 @@ import {
   VAMPIRE_DURATION,
   VAMPIRE_RATIO,
   VAMPIRE_TITLE,
+  OBJECT_EFFECT_DURATION,
   UPLOAD_EXPIRY_BATCH,
   UPLOAD_RETENTION_MS,
   VIDEO_DURATIONS,
@@ -53,6 +55,7 @@ import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
 import { zombiePrompt } from "./zombie";
 import { hugPrompt } from "./hug";
 import { vampirePrompt } from "./vampire";
+import { isObjectEffect, OBJECT_EFFECT_TITLES, OBJECT_EFFECTS, objectEffectPrompt } from "./effects";
 import { checkImageSize, type ImageLimits, imageSize } from "./image-size";
 import { video } from "./schema";
 
@@ -132,6 +135,45 @@ export function videoOptions(): {
   };
 }
 
+// Object effects run on the active provider at its lowest resolution, for
+// OBJECT_EFFECT_DURATION seconds. While video generation is off, prices
+// fal's as an example, like videoOptions.
+export function objectEffectOptions(): {
+  enabled: boolean;
+  credits: number;
+  imageLimits: ImageLimits;
+  effects: typeof OBJECT_EFFECTS;
+} {
+  const provider = getActiveVideoProvider();
+  const id = provider?.id ?? "fal";
+  return {
+    enabled: provider !== null && storageConfigured(),
+    credits: videoCost(id, lowestResolution(id), OBJECT_EFFECT_DURATION) as number,
+    imageLimits: VIDEO_IMAGE_LIMITS[id],
+    effects: OBJECT_EFFECTS,
+  };
+}
+
+// VIDEO_RESOLUTIONS lists each provider's resolutions lowest first.
+function lowestResolution(provider: VideoProviderId): string {
+  return Object.keys(VIDEO_RESOLUTIONS[provider])[0];
+}
+
+// One photo becomes a short clip with one of the fixed object effects.
+export async function createObjectEffectVideo(input: { userId: string; image: Uint8Array; effect: string }): Promise<Video> {
+  const { effect } = input;
+  if (!isObjectEffect(effect)) throw new InvalidVideoRequestError(`Unknown effect: ${effect}`);
+  const provider = getActiveVideoProvider();
+  return createVideo({
+    userId: input.userId,
+    prompt: objectEffectPrompt(effect),
+    title: OBJECT_EFFECT_TITLES[effect],
+    duration: OBJECT_EFFECT_DURATION,
+    resolution: lowestResolution(provider?.id ?? "fal"),
+    image: input.image,
+  });
+}
+
 // Spends the cost, stores the start image and queues the video with the
 // active provider. With IMAGE_MODERATION on, the image is stored and
 // checked first; a flagged image, or a check that gives no verdict, spends
@@ -141,6 +183,8 @@ export function videoOptions(): {
 export async function createVideo(input: {
   userId: string;
   prompt: string;
+  // Stored and shown in place of the prompt, for a fixed prompt.
+  title?: string;
   duration: number;
   resolution: string;
   image: Uint8Array;
@@ -174,7 +218,10 @@ export async function createVideo(input: {
   try {
     const row = await videos.start(
       { userId, id, credits },
-      (tx) => tx.insert(video).values({ id, userId, prompt, duration, provider: provider.id, resolution, credits }),
+      (tx) =>
+        tx
+          .insert(video)
+          .values({ id, userId, prompt: input.title ?? prompt, duration, provider: provider.id, resolution, credits }),
       async () => {
         if (!moderated) await storeFiles(files);
         const requestId = await provider.submit({

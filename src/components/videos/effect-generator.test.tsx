@@ -116,6 +116,23 @@ test("the vampire transformation asks for one photo and sends it as image1", asy
   expect(form.has("image2")).toBe(false);
 });
 
+test("object effects let the user pick an effect and send it with the photo", async () => {
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { ...pending, prompt: "Cake", duration: 5, credits: 25 } }));
+  renderWithIntl(<EffectGenerator {...props} kind="object" credits={25} effects={["squish", "inflate", "cake"]} />);
+
+  expect((screen.getByRole("radio", { name: "Squish" }) as HTMLInputElement).checked).toBe(true);
+  fireEvent.click(screen.getByRole("radio", { name: "It's a cake" }));
+  const photo = pick("Your photo");
+  fireEvent.click(screen.getByRole("button", { name: "Generate (25 credits)" }));
+
+  await waitFor(() => expect(screen.getByText("75 credits left")).toBeTruthy());
+  const [url, init] = fetchMock.mock.calls[0];
+  expect(url).toBe("/api/videos/effects");
+  const form = init.body as FormData;
+  expect(form.get("image1")).toBe(photo);
+  expect(form.get("effect")).toBe("cake");
+});
+
 test("refuses a photo over the size limit", () => {
   renderWithIntl(<EffectGenerator {...props} />);
 

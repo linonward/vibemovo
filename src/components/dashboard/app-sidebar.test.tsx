@@ -168,7 +168,7 @@ test("groups the tools under Create, and billing and API keys under Account", ()
     within(within(nav).getByRole("list", { name: group }))
       .getAllByRole("link")
       .map((link) => link.textContent);
-  expect(names("Create")).toEqual(["AI chat", "Image generator", "All images", "Video generator", "Rap duo", "Zombie couple", "Hug your younger self", "Vampire transformation", "All videos"]);
+  expect(names("Create")).toEqual(["AI chat", "Image generator", "All images", "Video generator", "Rap duo", "Zombie couple", "Hug your younger self", "Vampire transformation", "Object effects", "All videos"]);
   expect(names("Account")).toEqual(["Credits & billing", "API keys"]);
   expect(within(nav).queryByRole("link", { name: "Feedback" })).toBeNull();
   // The dashboard home sits above the groups, without a label.

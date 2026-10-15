@@ -20,9 +20,14 @@ const KINDS = {
   zombie: { endpoint: "/api/videos/zombie", sides: ["left", "right"] },
   hug: { endpoint: "/api/videos/hug", sides: ["left", "right"] },
   vampire: { endpoint: "/api/videos/vampire", sides: ["left"] },
+  object: { endpoint: "/api/videos/effects", sides: ["left"] },
 } as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
 
 export type EffectKind = keyof typeof KINDS;
+
+// The object effects, as ObjectVideos.effects names them. The page passes
+// the server's list, so an effect without copy fails the typecheck.
+export type ObjectEffect = "squish" | "inflate" | "cake";
 
 export type EffectGeneratorProps = {
   kind: EffectKind;
@@ -35,6 +40,8 @@ export type EffectGeneratorProps = {
   imageLimits: ImageLimits;
   // False without Bailian or storage.
   enabled: boolean;
+  // For kind "object": the effects to choose from, sent as "effect".
+  effects?: readonly ObjectEffect[];
   videos: Video[];
 };
 
@@ -58,11 +65,13 @@ export function EffectGenerator(props: EffectGeneratorProps) {
   const { endpoint, sides } = KINDS[props.kind];
   // Literal names, so the client messages test can check that the browser
   // gets them. The namespaces share their keys, except that a one-photo
-  // effect has no "right"; it never reads them, since it has no right side.
+  // effect has no "right" (it never reads them, having no right side) and
+  // ObjectVideos adds the effect names.
   const messages = {
     zombie: useTranslations("ZombieVideos"),
     hug: useTranslations("HugVideos"),
     vampire: useTranslations("VampireVideos"),
+    object: useTranslations("ObjectVideos"),
   };
   const t = messages[props.kind] as typeof messages.zombie;
   const [photos, setPhotos] = useState<Record<Side, File | null>>({ left: null, right: null });
@@ -72,6 +81,7 @@ export function EffectGenerator(props: EffectGeneratorProps) {
   const { balance, adjust: adjustCredits } = useCreditBalance(props.balance);
   const [videos, setVideos] = useState(props.videos);
   const [submitting, setSubmitting] = useState(false);
+  const [effect, setEffect] = useState(props.effects?.[0]);
   const [error, setError] = useState<string | null>(null);
 
   const canAfford = balance >= props.credits;
@@ -129,6 +139,7 @@ export function EffectGenerator(props: EffectGeneratorProps) {
     setError(null);
     const form = new FormData();
     sides.forEach((side, index) => form.set(`image${index + 1}`, photos[side] as File));
+    if (effect) form.set("effect", effect);
     const response = await fetch(endpoint, { method: "POST", body: form }).catch(() => null);
     const body: ApiBody<VideoResponse> = response ? await response.json().catch(() => ({})) : {};
     setSubmitting(false);
@@ -173,6 +184,30 @@ export function EffectGenerator(props: EffectGeneratorProps) {
         <p id={`${props.kind}-photo-hint`} className="text-sm text-muted-foreground">
           {t("photoHint", { size })}
         </p>
+
+        {props.effects && (
+          <fieldset className="flex flex-col gap-2">
+            <legend className="mb-2 text-sm font-medium">{messages.object("effect")}</legend>
+            <div className="flex flex-wrap gap-2">
+              {props.effects.map((value) => (
+                <label
+                  key={value}
+                  className="cursor-pointer rounded-lg border px-3 py-1.5 text-sm transition-[background-color,border-color] duration-150 has-checked:border-foreground has-checked:bg-muted has-focus-visible:outline-2 has-focus-visible:outline-ring"
+                >
+                  <input
+                    type="radio"
+                    name="effect"
+                    value={value}
+                    checked={effect === value}
+                    onChange={() => setEffect(value)}
+                    className="sr-only"
+                  />
+                  {messages.object(`effects.${value}`)}
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        )}
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <Button type="submit" disabled={!props.enabled || !canAfford || submitting || !ready}>

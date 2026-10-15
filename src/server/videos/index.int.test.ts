@@ -87,6 +87,8 @@ const {
   hugOptions,
   createVampireVideo,
   vampireOptions,
+  createObjectEffectVideo,
+  objectEffectOptions,
   countVideos,
   refreshVideo,
   sweepStaleVideos,
@@ -913,6 +915,39 @@ test("a vampire transformation's photo is deleted after a day, without looking f
   expect(deleted).toContain(`videos/${userId}/${id}.jpg`);
   expect(deleted.filter((key) => key.includes(`${id}-2`))).toEqual([]);
   expect(await imageKeyOf(id)).toBeNull();
+});
+
+test("object effects follow the active provider: its lowest resolution, 5 seconds", () => {
+  ai.state.active = "dashscope";
+  expect(objectEffectOptions()).toMatchObject({ enabled: true, credits: 25, effects: ["squish", "inflate", "cake"] });
+  ai.state.active = "seeapi";
+  expect(objectEffectOptions().credits).toBe(20);
+  ai.state.active = null;
+  expect(objectEffectOptions().enabled).toBe(false);
+});
+
+test("an object effect queues a 5-second video at the lowest resolution, titled by the effect", async () => {
+  ai.state.active = "dashscope";
+  const before = await getBalance(userId);
+
+  const result = await createObjectEffectVideo({ userId, image: png, effect: "cake" });
+
+  const job = ai.providers.dashscope.submit.mock.calls[0][0];
+  expect(job).toMatchObject({ duration: 5, resolution: "720p" });
+  expect(job.prompt).toMatch(/cake/i);
+  expect(result).toMatchObject({ prompt: "Cake", duration: 5, resolution: "720p", credits: 25, status: "pending" });
+  expect(await getBalance(userId)).toBe(before - 25);
+});
+
+test("an unknown object effect spends nothing", async () => {
+  const before = await getBalance(userId);
+
+  await expect(createObjectEffectVideo({ userId, image: png, effect: "explode" })).rejects.toThrow(
+    InvalidVideoRequestError,
+  );
+
+  expect(await getBalance(userId)).toBe(before);
+  expect(storage.putObject).not.toHaveBeenCalled();
 });
 
 // A video whose uploads were stored `hoursAgo`. The database is shared, so
