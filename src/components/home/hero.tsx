@@ -1,13 +1,13 @@
 import { ArrowDown, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { projectConfig } from "project.config";
-import { GenerationConsole } from "./generation-console";
+import { TemplateShowcase } from "./template-showcase";
 import { PrimaryLink } from "./primary-link";
 import { Glow } from "./section-heading";
 
 const POINTS = ["1", "2"] as const;
 
-// Copy on the left, the generation console on the right; stacked on phones.
+// Copy on the left, the template showcase on the right; stacked on phones.
 export function Hero() {
   const t = useTranslations("Home.hero");
 
@@ -50,7 +50,7 @@ export function Hero() {
           ))}
         </ul>
       </div>
-      <GenerationConsole />
+      <TemplateShowcase />
     </section>
   );
 }

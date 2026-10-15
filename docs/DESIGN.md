@@ -126,7 +126,7 @@ Pairing rule: **mono for anything that is a title, label or number; sans for sen
 |---|---|
 | Buttons, inputs, sidebar sub-items | `rounded-lg` 12px. Small buttons 10px |
 | Cards, panels, sidebar items, icon tiles | `rounded-xl` 16px |
-| Large panels (generation console, final CTA, user menu) | `rounded-2xl` 20px |
+| Large panels (template showcase, final CTA, user menu) | `rounded-2xl` 20px |
 | Pills, badges, avatars, theme switcher | `rounded-full` |
 | Skeleton blocks | `rounded-md` 10px |
 
@@ -139,7 +139,7 @@ Nest at least one step smaller than the container.
 | Sticky nav | `border-b bg-background/65 backdrop-blur-xl backdrop-saturate-150` |
 | Hero badge | `rounded-full border border-primary-text/60 bg-background/55 backdrop-blur-md`, with a `--primary-text` dot |
 | Glow | `Glow` in `home/section-heading.tsx`: `radial-gradient(closest-side, var(--primary-text), transparent)`, `opacity-15 blur-2xl`. Behind the hero and the final CTA |
-| Border glow | `.border-glow` wrapper on the hero `GenerationConsole`: two arcs, teal through green and lime to amber, run around the 1px border every 8s, with a `blur(28px)` copy at 45% behind. Static with reduced motion |
+| Border glow | `.border-glow` wrapper on the hero `TemplateShowcase`: two arcs, teal through green and lime to amber, run around the 1px border every 8s, with a `blur(28px)` copy at 45% behind. Static with reduced motion |
 | Tool card | `bg-gradient-to-br from-muted/70 to-transparent`, border, hover border mix |
 
 ## 6. Components
@@ -178,7 +178,7 @@ A `rounded-full bg-muted p-1` group of three icon buttons: Sun (light), Moon (da
 
 ### Home (`home/`)
 
-1. **Hero:** two columns on large screens. Left: badge, H1, lead, `PrimaryLink`, the secondary pill (to the templates) and two check items. Right: the generation console. Stacked on phones.
+1. **Hero:** two columns on large screens. Left: badge, H1, lead, `PrimaryLink`, the secondary pill (to the templates) and two check items. Right: the template showcase. Stacked on phones.
 2. **Templates** (`templates.tsx`): the video templates the H1 names, as four 3:4 tiles over each template's real result poster, four columns on large screens and two on phones. Each tile has a template chip (`bg-black/45`), the template name as a link that covers the tile, and its length over a `from-black/75` scrim. The poster scales to 1.03 on hover.
 3. **Prompt ideas** (`ideas.tsx`): six sample prompts as tiles over scenes, in a dense 4 × 3 grid of uneven sizes on large screens and two columns on phones. Each tile has a kind chip (`bg-black/45`) and the prompt over a `from-black/75` scrim, white in both themes. The scene scales to 1.03 on hover.
 4. **Tools** (`features.tsx`): text to image leads with a large panel holding a scene; image to video and rap duo stack beside it. Each card has an icon tile, a mono meta label and a pine link to the tool.
@@ -186,7 +186,7 @@ A `rounded-full bg-muted p-1` group of three icon buttons: Sun (light), Moon (da
 6. **FAQ accordion:** `<details>` rows. When a row is open, its number circle and plus button fill with `--foreground`, and the plus turns 45° (`.icon-turn`).
 7. **Final CTA:** a `rounded-2xl` card with a glow, a badge, a title, `PrimaryLink` and three `--primary-text` check items.
 
-`home/generation-console.tsx` is an HTML stand-in for the product: a prompt, a finished image and a video still rendering. `home/scene.tsx` draws the images with CSS gradients and clipped shapes; replace them with real work made with the product.
+`home/template-showcase.tsx` plays a real zombie couple result (muted, looping, with controls) beside the four templates, each a link with a poster thumbnail; the playing one has a `--primary-text` border. `home/scene.tsx` draws the images with CSS gradients and clipped shapes; replace them with real work made with the product.
 
 ### Blog (`blog/`)
 
@@ -219,7 +219,7 @@ Transform and opacity only, 120-200ms. Every class below turns off under `prefer
 | `.icon-turn` | Plus turns 45° inside an open `<details>` |
 | `.icon-swap` | Cross-fade and scale between two icons |
 
-The generation console has ambient loops instead: `.render-progress` fills the progress bar every 6s, `.render-scan` sweeps a band of light across the video every 3s, `.scene-drift` slowly zooms the video frame over 12s and `.render-caret` blinks the prompt caret. With reduced motion they stop, and the bar holds at 62%.
+The template showcase's border glow loops instead, and stops with reduced motion.
 
 Cards change only their border color on hover. Hover styles apply only on devices that hover (`@media (hover: hover)`).
 
