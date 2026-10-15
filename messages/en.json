@@ -9,8 +9,8 @@
     "hero": {
       "eyebrow": "AI images and video",
       "heading": "Viral AI video templates",
-      "title": "Write a line. Watch it move.",
-      "body": "Describe a scene and get an image. Keep the one you like and turn it into a 5 or 10 second video.",
+      "title": "Your photos, in a viral video.",
+      "body": "Pick a template and upload one or two photos. You get a 10- or 15-second video with music: a rap duo, a zombie couple, a hug with your younger self.",
       "cta": "Start creating free",
       "secondary": "Browse templates",
       "points": {
@@ -23,19 +23,11 @@
       "title": "Pick a template, add your photos",
       "body": "Each template is a ready-made viral video. Upload one or two photos and get the finished video, with music."
     },
-    "console": {
-      "label": "Example generation",
-      "title": "New generation",
-      "credits": "9 credits",
-      "prompt": "Prompt",
-      "promptText": "A paper boat drifting through a neon-lit canal at dusk, soft rain, cinematic",
-      "image": "Image",
-      "imageMeta": "16:9 · 1696×960",
-      "done": "Done",
-      "video": "Video",
-      "videoMeta": "5 s · 1080p",
-      "rendering": "Rendering",
-      "time": "00:03 / 00:05"
+    "showcase": {
+      "label": "Example template video",
+      "photos": "From 2 photos",
+      "list": "Templates",
+      "playing": "Playing"
     },
     "ideas": {
       "eyebrow": "Prompt ideas",

@@ -12,7 +12,7 @@ test("hero states the value and leads to sign-in", async ({ page }) => {
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "Viral AI video templates Write a line. Watch it move.",
+      name: "Viral AI video templates Your photos, in a viral video.",
     }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Start creating free" }).first().click();
@@ -40,7 +40,7 @@ test("landing has templates, prompt ideas, tools, steps, FAQ and a closing call 
 }) => {
   await page.goto("/en");
 
-  await expect(page.getByRole("figure", { name: "Example generation" })).toBeVisible();
+  await expect(page.getByRole("figure", { name: "Example template video" })).toBeVisible();
   for (const name of [
     "Pick a template, add your photos",
     "Start from a prompt like these",
@@ -61,12 +61,13 @@ test("the hero's second link scrolls to the templates", async ({ page }) => {
   await expect(page.getByRole("heading", { level: 2, name: "Pick a template, add your photos" })).toBeInViewport();
 });
 
-test("the console stops moving for reduced motion", async ({ browser }) => {
+test("the showcase's glowing border stops for reduced motion", async ({ browser }) => {
   const page = await browser.newPage({ reducedMotion: "reduce" });
   await page.goto("/en");
 
-  await expect(page.locator(".render-progress")).toHaveCSS("animation-name", "none");
-  await expect(page.locator(".scene-drift")).toHaveCSS("animation-name", "none");
+  const glow = page.locator(".border-glow");
+  await expect(glow).toBeVisible();
+  expect(await glow.evaluate((el) => getComputedStyle(el, "::before").animationName)).toBe("none");
   await page.close();
 });
 
@@ -87,7 +88,7 @@ test("landing is translated", async ({ page }) => {
   await page.goto("/zh");
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "AI 爆款视频模板 写一句话，看它动起来。" }),
+    page.getByRole("heading", { level: 1, name: "AI 爆款视频模板 用你的照片，拍一条爆款视频。" }),
   ).toBeVisible();
 });
 

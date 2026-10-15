@@ -14,7 +14,7 @@ test("the only h1 is the large headline: the query, then the tagline", () => {
   expect(
     screen.getByRole("heading", {
       level: 1,
-      name: "Viral AI video templates Write a line. Watch it move.",
+      name: "Viral AI video templates Your photos, in a viral video.",
     }),
   ).toBeDefined();
 });
@@ -33,17 +33,26 @@ test("renders in Chinese", () => {
   renderWithIntl(<Page />, "zh");
 
   expect(
-    screen.getByRole("heading", { level: 1, name: "AI 爆款视频模板 写一句话，看它动起来。" }),
+    screen.getByRole("heading", { level: 1, name: "AI 爆款视频模板 用你的照片，拍一条爆款视频。" }),
   ).toBeDefined();
 });
 
-test("the hero preview goes from a prompt to an image to a video", () => {
+// The hero plays a real template result and lists every template.
+test("the hero plays a real template video and links each template", () => {
   renderWithIntl(<Page />);
 
-  const preview = screen.getByRole("figure", { name: "Example generation" });
-  expect(within(preview).getByText(/A paper boat drifting/)).toBeDefined();
-  expect(within(preview).getByText("Image")).toBeDefined();
-  expect(within(preview).getByText("Video")).toBeDefined();
+  const showcase = screen.getByRole("figure", { name: "Example template video" });
+  const video = within(showcase).getByLabelText(/A real 15-second AI zombie couple video/);
+  expect(video.getAttribute("src")).toBe("/landing/zombie/sample.mp4");
+  expect(
+    within(showcase).getAllByRole("link").map((link) => link.getAttribute("href")),
+  ).toEqual([
+    "/en/ai-zombie-couple-video",
+    "/en/ai-rap-video-generator",
+    "/en/hug-your-younger-self-ai",
+    "/en/ai-vampire-transformation-video",
+  ]);
+  expect(within(showcase).getByText("Playing")).toBeDefined();
 });
 
 // The templates are what the h1 promises; each card links its public page.
