@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, desc, eq, ne } from "drizzle-orm";
+import { capture } from "@/server/analytics";
 import { grantCredits } from "@/server/credits";
 import { getDb } from "@/server/db";
 import { notify } from "@/server/notifications";
@@ -116,10 +117,15 @@ export async function fulfillOrder(provider: ProviderId, orderId: string) {
     reason: "purchase",
     idempotencyKey: `order:${unpaid.id}`,
   });
-  await db
+  const [paid] = await db
     .update(order)
     .set({ status: "paid", paidAt: new Date() })
-    .where(and(eq(order.id, orderId), eq(order.provider, provider), ne(order.status, "paid")));
+    .where(and(eq(order.id, orderId), eq(order.provider, provider), ne(order.status, "paid")))
+    .returning({ id: order.id });
+  if (paid) await capture("payment_succeeded", unpaid.userId, {
+    payment_kind: "pack", provider, product_id: unpaid.packId, credits: unpaid.credits,
+    catalogue_amount_minor: unpaid.amount, currency: unpaid.currency,
+  });
   await notify(unpaid.userId, `order:${unpaid.id}`, {
     type: "order_paid",
     data: { orderId: unpaid.id, credits: unpaid.credits },

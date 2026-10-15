@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { PostHogPageviews } from "./posthog";
 import dynamic from "next/dynamic";
 
 // Vercel Web Analytics (page views, without cookies) and Speed Insights
@@ -19,6 +21,7 @@ const VercelSpeedInsights =
 export function Analytics() {
   return (
     <>
+      <Suspense fallback={null}><PostHogPageviews /></Suspense>
       {VercelAnalytics && <VercelAnalytics />}
       {VercelSpeedInsights && <VercelSpeedInsights />}
     </>

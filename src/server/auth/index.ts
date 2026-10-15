@@ -2,6 +2,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { APIError } from "better-auth/api";
 import { magicLink } from "better-auth/plugins";
+import { capture } from "@/server/analytics";
 import { afterDeleteUser, beforeDeleteUser, LiveSubscriptionError } from "@/server/account";
 import { grantCredits } from "@/server/credits";
 import { signupCredits } from "@/server/credits/config";
@@ -49,6 +50,7 @@ export const auth = betterAuth({
       create: {
         // Runs after the user row commits. The key makes a retry safe.
         after: async (user) => {
+          await capture("signup_completed", user.id);
           if (signupCredits <= 0) return;
           await grantCredits({
             userId: user.id,
