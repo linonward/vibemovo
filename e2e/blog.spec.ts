@@ -7,7 +7,9 @@ test("the blog lists each locale's posts, newest first", async ({ page }) => {
   await expect(page).toHaveTitle("AI Video Guides: Photo to Video and Rap Videos | vibemovo");
   const titles = page.getByRole("main").getByRole("heading", { level: 2 });
   await expect(titles).toHaveText([
+    "AI Vampire Transformation Video from One Photo",
     "AI Zombie Couple Video: Make a Zombie Love Story",
+    "Hug Your Younger Self AI: Make the Hug Video",
     "Migos AI Song & Video Generator from Two Photos",
     "How to Make an AI Rap Video of Two People from Photos",
     "How to Turn a Photo into a Video with AI",
@@ -50,7 +52,9 @@ test("a post's tags open a page of the posts with that tag", async ({ page }) =>
   await expect(page.getByRole("heading", { level: 1, name: "Posts tagged “guides”" })).toBeVisible();
   await expect(page).toHaveTitle("Posts tagged “guides” | vibemovo");
   await expect(page.getByRole("main").getByRole("heading", { level: 2 })).toHaveText([
+    "AI Vampire Transformation Video from One Photo",
     "AI Zombie Couple Video: Make a Zombie Love Story",
+    "Hug Your Younger Self AI: Make the Hug Video",
     "Migos AI Song & Video Generator from Two Photos",
     "How to Make an AI Rap Video of Two People from Photos",
     "How to Turn a Photo into a Video with AI",
