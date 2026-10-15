@@ -1,10 +1,12 @@
-import { ArrowRight, BookOpen, Check } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { ArrowRight, ArrowUp, BookOpen, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { cn } from "cn";
-import { PrimaryLink } from "@/components/home/primary-link";
 import { Glow, SectionHeading } from "@/components/home/section-heading";
+import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import type { ImageLimits } from "@/lib/image-limits";
+import { LandingTryout } from "./landing-tryout";
 
 const POINTS = ["1", "2"] as const;
 const STEPS = ["1", "2", "3"] as const;
@@ -13,11 +15,18 @@ const IDEAS = ["birthday", "couple", "team", "friends"] as const;
 const TIPS = ["1", "2", "3", "4"] as const;
 const QUESTIONS = ["1", "2", "3", "4", "5", "6", "7", "8"] as const;
 
-// What the copy states about the rap duo, from its server config.
-export type RapFacts = { credits: number; signup: number; maxImageMb: number; maxNameLength: number };
+// What the copy states about the rap duo, and what its form checks, from its
+// server config.
+export type RapFacts = {
+  credits: number;
+  signup: number;
+  maxImageBytes: number;
+  imageLimits: ImageLimits;
+  maxNameLength: number;
+};
 
-// The public page for "AI rap video generator from photos": what the rap
-// duo makes, a real result, the steps and the cost. Sections follow the
+// The public page for "AI rap video generator from photos": the rap duo's
+// form right in the hero, a real result, the steps and the cost. Sections follow the
 // home page's (docs/DESIGN.md, Home). `guide` is the locale's blog guide,
 // if it has one; `related` are the locale's other guides worth a link.
 export function RapLanding({
@@ -30,9 +39,6 @@ export function RapLanding({
   related?: { href: string; title: string }[];
 }) {
   const t = useTranslations("RapLanding");
-  const locale = useLocale();
-  // Sign-in returns visitors to the tool itself.
-  const start = `/sign-in?next=${encodeURIComponent(`/${locale}/videos/rap`)}`;
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
@@ -46,18 +52,15 @@ export function RapLanding({
           <p className="max-w-[46ch] text-lg leading-8 text-pretty text-muted-foreground sm:text-xl">
             {t("hero.body")}
           </p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            <PrimaryLink href={start}>{t("hero.cta")}</PrimaryLink>
-            {guide && (
-              <Link
-                href={guide}
-                className="inline-flex h-11 items-center gap-1.5 rounded-full border bg-card px-5 text-sm font-semibold transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
-              >
-                <BookOpen className="size-4" />
-                {t("hero.guide")}
-              </Link>
-            )}
-          </div>
+          {guide && (
+            <Link
+              href={guide}
+              className="inline-flex h-11 items-center gap-1.5 rounded-full border bg-card px-5 text-sm font-semibold transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
+            >
+              <BookOpen className="size-4" />
+              {t("hero.guide")}
+            </Link>
+          )}
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {POINTS.map((key) => (
               <li
@@ -70,18 +73,26 @@ export function RapLanding({
             ))}
           </ul>
         </div>
-        <figure className="flex flex-col gap-3">
-          <Image
-            src="/blog/ai-rap-video-two-people/frames.jpg"
-            alt={t("result.alt")}
-            width={960}
-            height={540}
-            loading="eager"
-            className="w-full rounded-2xl border"
-          />
-          <figcaption className="text-sm text-muted-foreground">{t("result.caption")}</figcaption>
-        </figure>
+        <LandingTryout
+          kind="rap"
+          credits={facts.credits}
+          signup={facts.signup}
+          maxImageBytes={facts.maxImageBytes}
+          imageLimits={facts.imageLimits}
+          maxNameLength={facts.maxNameLength}
+        />
       </section>
+
+      <figure className="flex flex-col gap-3 pb-20">
+        <Image
+          src="/blog/ai-rap-video-two-people/frames.jpg"
+          alt={t("result.alt")}
+          width={960}
+          height={540}
+          className="w-full rounded-2xl border"
+        />
+        <figcaption className="text-sm text-muted-foreground">{t("result.caption")}</figcaption>
+      </figure>
 
       <section aria-labelledby="rap-steps" className="flex flex-col gap-12 border-t py-20">
         <SectionHeading eyebrow={t("steps.eyebrow")} id="rap-steps">
@@ -102,7 +113,7 @@ export function RapLanding({
               <h3 className="font-display text-lg font-semibold">{t(`steps.items.${key}.title`)}</h3>
               <p className="max-w-[38ch] text-pretty text-muted-foreground">
                 {t(`steps.items.${key}.body`, {
-                  size: facts.maxImageMb,
+                  size: facts.maxImageBytes / (1024 * 1024),
                   max: facts.maxNameLength,
                   credits: facts.credits,
                 })}
@@ -236,7 +247,11 @@ export function RapLanding({
           {t("cta.title")}
         </h2>
         <p className="text-lg text-muted-foreground">{t("cta.body")}</p>
-        <PrimaryLink href={start}>{t("cta.button")}</PrimaryLink>
+        {/* Back up to the form; a plain anchor, as Link would add the locale. */}
+        <a href="#try" className={buttonVariants({ size: "lg" })}>
+          {t("cta.button")}
+          <ArrowUp />
+        </a>
       </section>
     </main>
   );

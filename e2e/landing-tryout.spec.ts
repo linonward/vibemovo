@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { greyPng } from "./support/images";
-import { getSession, randomIp, readMagicLink, uniqueEmail } from "./support/auth";
+import { getSession, randomIp, readMagicLink, signIn, uniqueEmail } from "./support/auth";
 
 const photo = (name: string) => ({ name, mimeType: "image/png", buffer: greyPng(320, 320) });
 
@@ -44,4 +44,26 @@ test("the closing call to action leads back up to the form", async ({ page }) =>
 
   await expect(page).toHaveURL("/en/ai-vampire-transformation-video#try");
   await expect(page.getByRole("region", { name: "Try it now" }).getByLabel("Your photo")).toBeInViewport();
+});
+
+test("a signed-in visitor makes a rap duo from its landing page, names and all", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/en/ai-rap-video-generator");
+
+  const form = page.getByRole("region", { name: "Try it now" });
+  // A pick before hydration has no handler yet, so repeat it until the preview shows.
+  await expect(async () => {
+    await form.getByLabel("Left photo").setInputFiles(photo("ada.png"));
+    await expect(form.getByRole("img", { name: "Left photo preview" })).toBeVisible({ timeout: 1000 });
+  }).toPass();
+  await form.getByLabel("Right photo").setInputFiles(photo("bo.png"));
+  const generate = form.getByRole("button", { name: "Generate (75 credits)" });
+  await expect(generate).toBeDisabled();
+  await form.getByLabel("Left name").fill("Ada");
+  await form.getByLabel("Right name").fill("Bo");
+  await generate.click();
+
+  // The route took the names and photos and answered; here videos are off.
+  await expect(form.getByRole("alert")).toHaveText("The rap duo isn't set up yet.");
+  await expect(page.getByRole("dialog")).toHaveCount(0);
 });

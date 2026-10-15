@@ -1,14 +1,15 @@
-// The photos a signed-out visitor picked on a landing page, kept in the
-// browser's IndexedDB while sign-in leaves the page (Google redirects; a
-// magic link opens a new tab), so the page can send them on return. Files
-// never reach the server before sign-in.
+// The photos (and text, such as the rap duo's names) a signed-out visitor
+// entered on a landing page, kept in the browser's IndexedDB while sign-in
+// leaves the page (Google redirects; a magic link opens a new tab), so the
+// page can send them on return. Nothing reaches the server before sign-in.
 
 const DB = "vibemovo";
 const STORE = "photo-drafts";
 // A draft older than this is a visit the visitor gave up on.
 const MAX_AGE_MS = 60 * 60 * 1000;
 
-type Draft = { photos: File[]; savedAt: number };
+export type PhotoDraft = { photos: File[]; fields: Record<string, string> };
+type Stored = PhotoDraft & { savedAt: number };
 
 function open(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -35,13 +36,14 @@ async function run<T>(mode: IDBTransactionMode, action: (store: IDBObjectStore) 
 // Each fails quietly: without IndexedDB (private windows in some browsers)
 // the visitor picks the photos again after sign-in.
 
-export async function savePhotoDraft(key: string, photos: File[]): Promise<void> {
-  await run("readwrite", (store) => store.put({ photos, savedAt: Date.now() } satisfies Draft, key)).catch(() => {});
+export async function savePhotoDraft(key: string, { photos, fields }: PhotoDraft): Promise<void> {
+  const stored: Stored = { photos, fields, savedAt: Date.now() };
+  await run("readwrite", (store) => store.put(stored, key)).catch(() => {});
 }
 
-export async function loadPhotoDraft(key: string): Promise<File[] | null> {
-  const draft = await run<Draft | undefined>("readonly", (store) => store.get(key)).catch(() => undefined);
-  return draft && Date.now() - draft.savedAt < MAX_AGE_MS ? draft.photos : null;
+export async function loadPhotoDraft(key: string): Promise<PhotoDraft | null> {
+  const stored = await run<Stored | undefined>("readonly", (store) => store.get(key)).catch(() => undefined);
+  return stored && Date.now() - stored.savedAt < MAX_AGE_MS ? { photos: stored.photos, fields: stored.fields } : null;
 }
 
 export async function clearPhotoDraft(key: string): Promise<void> {

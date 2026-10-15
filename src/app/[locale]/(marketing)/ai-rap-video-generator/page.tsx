@@ -5,7 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import { listPosts, postLocales } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 import { signupCredits } from "@/server/credits/config";
-import { RAP_CREDITS, RAP_MAX_IMAGE_BYTES, RAP_MAX_NAME_LENGTH } from "@/server/videos/config";
+import { RAP_CREDITS, RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES, RAP_MAX_NAME_LENGTH } from "@/server/videos/config";
 
 const PATH = "/ai-rap-video-generator";
 // The step-by-step guide to the rap duo, linked where the locale has it.
@@ -34,7 +34,8 @@ export default async function Page({ params }: PageProps<"/[locale]/ai-rap-video
       facts={{
         credits: RAP_CREDITS,
         signup: signupCredits,
-        maxImageMb: RAP_MAX_IMAGE_BYTES / (1024 * 1024),
+        maxImageBytes: RAP_MAX_IMAGE_BYTES,
+        imageLimits: RAP_IMAGE_LIMITS,
         maxNameLength: RAP_MAX_NAME_LENGTH,
       }}
       guide={guide}
