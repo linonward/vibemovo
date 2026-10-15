@@ -211,6 +211,7 @@ test("a checkout the provider refuses leaves a failed order, which a payment sti
   stripe.createCheckout.mockRejectedValueOnce(new Error("Stripe 500"));
 
   await expect(checkout("small")).rejects.toThrow("Stripe 500");
+  expect(vi.mocked(capture).mock.calls.filter(([event]) => event === "checkout_started")).toHaveLength(0);
   const { id, status } = await onlyOrder();
   expect(status).toBe("failed");
 
@@ -266,4 +267,9 @@ test("deleting the user removes their orders and credits", async () => {
 
   expect(await listOrders(userId)).toEqual([]);
   expect(await getBalance(userId)).toBe(0);
+});
+
+test("captures checkout only after the provider creates it", async () => {
+  await checkout("small");
+  expect(capture).toHaveBeenCalledWith("checkout_started", userId, { payment_kind: "pack", provider: "stripe", product_id: "small", credits: 100, catalogue_amount_minor: 500, currency: "usd" });
 });

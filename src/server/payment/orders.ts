@@ -67,6 +67,10 @@ export async function createCheckout(input: {
   try {
     const { sessionId, url } = await provider.createCheckout({ orderId: id, pack, ...input });
     await db.update(order).set({ providerSessionId: sessionId }).where(eq(order.id, id));
+    await capture("checkout_started", input.userId, {
+      payment_kind: "pack", provider: provider.id, product_id: pack.id, credits: pack.credits,
+      catalogue_amount_minor: pack.amount, currency: pack.currency,
+    });
     return url;
   } catch (error) {
     await closeOrder(provider.id, id, "failed");

@@ -666,6 +666,8 @@ All events carry `app=vibemovo`; filter by it in a shared PostHog project. The i
 | Event | Source and meaning |
 | --- | --- |
 | `$pageview` | Initial page and client pathname changes; query, hash, referrer and resource IDs are excluded |
+| `$identify` | Links the browser anonymous ID to the authenticated account ID |
+| `checkout_started` | A pack or subscription checkout was created by the provider and its session saved; rejected attempts do not count |
 | `signup_completed` | Better Auth creates a new account, including accounts without signup credits |
 | `generation_started` | An image or video job and its credit debit have committed |
 | `generation_succeeded` | The result has been stored and the job changed to succeeded |
@@ -674,8 +676,24 @@ All events carry `app=vibemovo`; filter by it in a shared PostHog project. The i
 
 Generation properties include `kind` and `credits`. Rap duo uses the video lifecycle. Payment properties include `payment_kind`, `provider`, `product_id`, `credits`, `catalogue_amount_minor`, `currency` and subscription `interval`. The catalogue amount is not net revenue or the actual tax-adjusted charge. Refunds are not revenue adjustments in PostHog.
 
-Browser identifiers exist only in memory and reset on reload. Server events use a namespaced account ID. These streams are not linked into a visitor-to-signup funnel. No analytics cookies, browser storage, autocapture, person profiles or session replay are enabled. Prompts, files, names, emails, raw errors, payment credentials and provider payment IDs are excluded. GeoIP enrichment is disabled; the ingestion service still receives browser network requests.
+The browser stores a random anonymous ID, the last authenticated account ID and an expiry in `localStorage` (`vibemovo:analytics`) for at most 30 days. Storage failures fall back to memory. Once Better Auth resolves the session, `$identify` links the anonymous ID to `vibemovo:<userId>`; signed-in page views and server events use that same ID. Identification enables pseudonymous person profiles without name/email properties. Logout or a direct account switch rotates the anonymous ID before another account can be linked. A session fetch error does not count as logout. No analytics cookies, autocapture or session replay are enabled. Prompts, files, names, emails, raw errors, payment credentials and provider payment IDs are excluded. GeoIP enrichment is disabled; the ingestion service still receives browser network requests.
 
 Delivery is best effort, not a financial ledger. Server calls wait at most 1.5 seconds, log a generic failure and let the business operation succeed. Committed state transitions and unique notification records suppress repeated completion/payment events. A crash, failed notification insert or capture failure can lose an event; there is no durable retry queue. Use the payment database for accounting.
 
 Verify with PostHog Activity filtered by `app=vibemovo`: visit a page, then follow a normal signup/generation/payment flow. For ingestion-only tests use a separate `analytics_connection_test` event with `is_test=true`; do not fabricate business success events. Unit and integration tests exercise capture failures, private route redaction, lifecycle transitions and repeated webhooks without production charges.
+
+
+### Conversion funnels
+
+In PostHog, create a Funnels insight filtered by `app = vibemovo`. Use unique persons and ordered steps:
+
+1. `$pageview` (optionally filter `$pathname` to the landing page).
+2. `signup_completed`.
+3. `generation_started`.
+4. `generation_succeeded`.
+5. `checkout_started`.
+6. `payment_succeeded`.
+
+Use a 30-day conversion window initially. Also create separate activation (`signup_completed` → `generation_succeeded`) and purchase (`checkout_started` → `payment_succeeded`) funnels: users can purchase before generating, so a single strict six-step funnel excludes that valid path. Returning accounts do not emit another signup event. Break down checkout by `payment_kind`, `product_id`, `provider` and `interval`.
+
+Historical anonymous traffic cannot be linked retroactively without its original browser ID. Cross-device visits, cleared/blocked storage, expired IDs and blocked analytics can leave gaps. Magic links opened in another tab on the same browser retain the ID; opening them on another device does not. Identification is best effort and retries on a later navigation after a failed send. Subscription renewals also emit `payment_succeeded`; this is a user-conversion funnel, not checkout-level reconciliation or net revenue reporting.
