@@ -53,6 +53,12 @@ test("shows a real result and the real cost", () => {
   renderWithIntl(<EffectLanding kind="zombie" facts={facts} />);
 
   expect(screen.getByRole("img", { name: /Four frames from a 15-second AI zombie couple video/ })).toBeDefined();
+  const video = screen.getByLabelText(/A real 15-second AI zombie couple video/) as HTMLVideoElement;
+  expect(video.tagName).toBe("VIDEO");
+  expect(video.getAttribute("src")).toBe("/landing/zombie/sample.mp4");
+  expect(video.getAttribute("poster")).toBe("/landing/zombie/poster.jpg");
+  expect(video.muted && video.loop && video.autoplay && video.controls).toBe(true);
+  expect(video.hasAttribute("playsinline")).toBe(true);
   expect(screen.getByText(/One video costs 75 credits/)).toBeDefined();
   expect(screen.getByText(/New accounts get 75 free credits, enough for your first/)).toBeDefined();
   expect(screen.getByRole("link", { name: "pricing page" }).getAttribute("href")).toBe("/en/pricing");
@@ -65,14 +71,15 @@ test("renders in Chinese", () => {
 });
 
 test.each([
-  ["hug", "Hug your younger self with AI, from two photos", /Make a younger-self hug video/, "Your childhood photo", /Four frames from a 15-second AI younger-self hug video/],
-  ["vampire", "AI vampire transformation video from one photo", /Make a vampire video/, "Your photo", /Four frames from a 10-second AI vampire transformation video/],
-] as const)("the %s page names its query, shows a real result and its own form", (kind, h1, cta, photo, alt) => {
+  ["hug", "Hug your younger self with AI, from two photos", /Make a younger-self hug video/, "Your childhood photo", /Four frames from a 15-second AI younger-self hug video/, /A real 15-second AI younger-self hug video/],
+  ["vampire", "AI vampire transformation video from one photo", /Make a vampire video/, "Your photo", /Four frames from a 10-second AI vampire transformation video/, /A real 10-second AI vampire transformation video/],
+] as const)("the %s page names its query, shows a real result and its own form", (kind, h1, cta, photo, alt, video) => {
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
 
   expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   expect(screen.getByRole("heading", { level: 1, name: h1 })).toBeDefined();
   expect(screen.getByRole("img", { name: alt })).toBeDefined();
+  expect(screen.getByLabelText(video).getAttribute("src")).toBe(`/landing/${kind}/sample.mp4`);
   expect(screen.getByLabelText(photo)).toBeDefined();
   expect(screen.getByRole("link", { name: cta }).getAttribute("href")).toBe("#try");
   expect(screen.getByText(/New accounts get 75 free credits, enough for your first/)).toBeDefined();

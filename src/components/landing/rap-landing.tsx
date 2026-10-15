@@ -1,6 +1,5 @@
 import { ArrowRight, ArrowUp, BookOpen, Check } from "lucide-react";
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { cn } from "cn";
 import { Glow, SectionHeading } from "@/components/home/section-heading";
 import { buttonVariants } from "@/components/ui/button";
@@ -84,12 +83,18 @@ export function RapLanding({
       </section>
 
       <figure className="flex flex-col gap-3 pb-20">
-        <Image
-          src="/blog/ai-rap-video-two-people/frames.jpg"
-          alt={t("result.alt")}
+        <video
+          src="/landing/rap/sample.mp4"
+          poster="/landing/rap/poster.jpg"
+          aria-label={t("result.video")}
           width={960}
           height={540}
-          className="w-full rounded-2xl border"
+          autoPlay
+          muted
+          loop
+          playsInline
+          controls
+          className="w-full rounded-2xl border bg-muted"
         />
         <figcaption className="text-sm text-muted-foreground">{t("result.caption")}</figcaption>
       </figure>
