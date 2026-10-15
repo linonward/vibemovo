@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { projectConfig } from "project.config";
 import { SectionHeading } from "./section-heading";
 
-const QUESTIONS = ["1", "2", "3", "4", "5"] as const;
+const QUESTIONS = ["1", "2", "3", "4", "5", "6"] as const;
 
 // Numbered rows; an open row inverts its index and toggle (docs/DESIGN.md, FAQ accordion).
 export function Faq() {

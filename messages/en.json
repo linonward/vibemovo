@@ -12,11 +12,16 @@
       "title": "Write a line. Watch it move.",
       "body": "Describe a scene and get an image. Keep the one you like and turn it into a 5 or 10 second video.",
       "cta": "Start creating free",
-      "secondary": "See prompt ideas",
+      "secondary": "Browse templates",
       "points": {
         "1": "Free credits on sign-up",
         "2": "No password"
       }
+    },
+    "templates": {
+      "eyebrow": "Templates",
+      "title": "Pick a template, add your photos",
+      "body": "Each template is a ready-made viral video. Upload one or two photos and get the finished video, with music."
     },
     "console": {
       "label": "Example generation",
@@ -116,22 +121,26 @@
       "title": "Questions",
       "items": {
         "1": {
+          "title": "What are viral AI video templates?",
+          "body": "Ready-made video ideas, like a rap duo, a zombie couple, a hug with your younger self or a vampire transformation. Upload one or two photos, and vibemovo makes the video with you in it, with music."
+        },
+        "2": {
           "title": "What can I make?",
           "body": "Images from a text prompt, videos from an image, and 15-second rap duo videos from two photos."
         },
-        "2": {
+        "3": {
           "title": "How do credits work?",
           "body": "Images and seconds of video each cost credits. New accounts start with free credits. Buy a pack or subscribe on the Credits & billing page. Credits never expire, and a failed generation gives them back."
         },
-        "3": {
+        "4": {
           "title": "How long does a video take?",
           "body": "Usually a few minutes. You can close the page: you get a notification when the video is ready."
         },
-        "4": {
+        "5": {
           "title": "Do I need a password?",
           "body": "No. We email you a sign-in link, or you can use your Google account."
         },
-        "5": {
+        "6": {
           "title": "How do I contact support?",
           "body": "Email <email></email>. We reply within 3 business days."
         }

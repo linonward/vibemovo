@@ -31,7 +31,7 @@ export function Hero() {
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
           <PrimaryLink href="/sign-in">{t("cta")}</PrimaryLink>
           <a
-            href="#ideas"
+            href="#templates"
             className="inline-flex h-11 items-center gap-1.5 rounded-full border bg-card px-5 text-sm font-semibold transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
           >
             {t("secondary")}

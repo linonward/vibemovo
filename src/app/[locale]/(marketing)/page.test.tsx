@@ -46,6 +46,40 @@ test("the hero preview goes from a prompt to an image to a video", () => {
   expect(within(preview).getByText("Video")).toBeDefined();
 });
 
+// The templates are what the h1 promises; each card links its public page.
+test("the templates link each template's page, right after the hero", () => {
+  renderWithIntl(<Page />);
+
+  const templates = screen.getByRole("region", { name: "Pick a template, add your photos" });
+  expect(
+    within(templates).getAllByRole("heading", { level: 3 }).map((h) => h.textContent),
+  ).toEqual([
+    "AI rap videos",
+    "AI zombie couple videos",
+    "AI younger-self hug videos",
+    "AI vampire transformation videos",
+  ]);
+  expect(
+    within(templates).getAllByRole("link").map((link) => link.getAttribute("href")),
+  ).toEqual([
+    "/en/ai-rap-video-generator",
+    "/en/ai-zombie-couple-video",
+    "/en/hug-your-younger-self-ai",
+    "/en/ai-vampire-transformation-video",
+  ]);
+  expect(within(templates).getByText("10 seconds, 9:16 vertical")).toBeDefined();
+  const sections = screen.getAllByRole("region").map((r) => r.getAttribute("aria-labelledby"));
+  expect(sections.slice(0, 2)).toEqual(["templates", "ideas"]);
+});
+
+test("the hero's second link leads to the templates", () => {
+  renderWithIntl(<Page />);
+
+  expect(screen.getByRole("link", { name: "Browse templates" }).getAttribute("href")).toBe(
+    "#templates",
+  );
+});
+
 test("the prompt ideas name what each one makes", () => {
   renderWithIntl(<Page />);
 
@@ -85,7 +119,8 @@ test("FAQ questions are numbered", () => {
 
   const faq = screen.getByRole("region", { name: "Questions" });
   expect(within(faq).getByText("01")).toBeDefined();
-  expect(within(faq).getByText("05")).toBeDefined();
+  expect(within(faq).getByText("06")).toBeDefined();
+  expect(within(faq).getByText("What are viral AI video templates?")).toBeDefined();
   expect(within(faq).getByText("How do credits work?")).toBeDefined();
 });
 
