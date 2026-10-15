@@ -4,15 +4,15 @@ import { signIn } from "./support/auth";
 test("hero states the value and leads to sign-in", async ({ page }) => {
   await page.goto("/en");
 
-  await expect(page).toHaveTitle("AI Image & Video Generator: Photo to Video | vibemovo");
+  await expect(page).toHaveTitle("Viral AI Video Templates: Your Photos to Video | vibemovo");
   await expect(page.locator('head meta[name="description"]')).toHaveAttribute(
     "content",
-    "Make AI images from text and turn photos into videos, including 15-second rap duo videos. Sign in with email or Google and start with free credits.",
+    "Turn your photos into viral AI videos: rap duos, zombie couples, younger-self hugs and vampire transformations. Start free with sign-up credits.",
   );
   await expect(
     page.getByRole("heading", {
       level: 1,
-      name: "vibemovo AI image and video generator",
+      name: "Viral AI video templates Write a line. Watch it move.",
     }),
   ).toBeVisible();
   await page.getByRole("link", { name: "Start creating free" }).first().click();
@@ -86,7 +86,7 @@ test("landing is translated", async ({ page }) => {
   await page.goto("/zh");
 
   await expect(
-    page.getByRole("heading", { level: 1, name: "vibemovo AI 图像与视频生成器" }),
+    page.getByRole("heading", { level: 1, name: "AI 爆款视频模板 写一句话，看它动起来。" }),
   ).toBeVisible();
 });
 

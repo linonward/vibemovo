@@ -100,7 +100,7 @@ Pairing rule: **mono for anything that is a title, label or number; sans for sen
 
 | Role | Classes | Where |
 |---|---|---|
-| Hero tagline | `font-display font-bold text-[2.25rem] leading-[1.15] sm:text-5xl sm:leading-[1.2] display-tight break-keep` (Chinese breaks only after punctuation) | `home/hero.tsx` |
+| Hero H1 | `font-display font-bold text-[2.25rem] leading-[1.15] sm:text-5xl sm:leading-[1.2] display-tight break-keep` (Chinese breaks only after punctuation). On the home page: the query the page targets, then the tagline in `text-muted-foreground`, each on its own line | `home/hero.tsx` |
 | Section H2 | `font-display font-bold text-3xl sm:text-4xl leading-tight display-tight` | `home/section-heading.tsx` |
 | Card title | `font-display text-lg font-semibold` | Home tools and steps |
 | FAQ question | `font-display font-bold text-base sm:text-lg` | `home/faq.tsx` |
@@ -137,7 +137,7 @@ Nest at least one step smaller than the container.
 | Effect | Classes |
 |---|---|
 | Sticky nav | `border-b bg-background/65 backdrop-blur-xl backdrop-saturate-150` |
-| Hero badge | `rounded-full border border-primary-text/60 bg-background/55 backdrop-blur-md`, with a `--primary-text` dot. On the home page it is the H1: the brand and the query the page targets |
+| Hero badge | `rounded-full border border-primary-text/60 bg-background/55 backdrop-blur-md`, with a `--primary-text` dot |
 | Glow | `Glow` in `home/section-heading.tsx`: `radial-gradient(closest-side, var(--primary-text), transparent)`, `opacity-15 blur-2xl`. Behind the hero and the final CTA |
 | Border glow | `.border-glow` wrapper on the hero `GenerationConsole`: two arcs, teal through green and lime to amber, run around the 1px border every 8s, with a `blur(28px)` copy at 45% behind. Static with reduced motion |
 | Tool card | `bg-gradient-to-br from-muted/70 to-transparent`, border, hover border mix |
@@ -178,7 +178,7 @@ A `rounded-full bg-muted p-1` group of three icon buttons: Sun (light), Moon (da
 
 ### Home (`home/`)
 
-1. **Hero:** two columns on large screens. Left: badge (the H1), tagline, lead, `PrimaryLink`, the secondary pill (to the prompt ideas) and two check items. Right: the generation console. Stacked on phones.
+1. **Hero:** two columns on large screens. Left: badge, H1, lead, `PrimaryLink`, the secondary pill (to the prompt ideas) and two check items. Right: the generation console. Stacked on phones.
 2. **Prompt ideas** (`ideas.tsx`): six sample prompts as tiles over scenes, in a dense 4 × 3 grid of uneven sizes on large screens and two columns on phones. Each tile has a kind chip (`bg-black/45`) and the prompt over a `from-black/75` scrim, white in both themes. The scene scales to 1.03 on hover.
 3. **Tools** (`features.tsx`): text to image leads with a large panel holding a scene; image to video and rap duo stack beside it. Each card has an icon tile, a mono meta label and a pine link to the tool.
 4. **Steps** (`how-it-works.tsx`): three columns under a 2px top rule, with a large mono number. The first step's rule and number are `--primary-text`.

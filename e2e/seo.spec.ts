@@ -106,7 +106,7 @@ test("the home, legal and rap video pages name their canonical URL and every loc
 test("marketing pages carry keyword-first titles", async ({ page }) => {
   const titles = {
     "/en/ai-rap-video-generator": "AI Rap Video Generator: Two Photos to a Rap Video | vibemovo",
-    "/zh": "AI 图像与视频生成器：照片一键变视频 | vibemovo",
+    "/zh": "AI 爆款视频模板：用照片一键做视频 | vibemovo",
     "/zh/pricing": "AI 视频生成器价格：积分包与订阅方案 | vibemovo",
     "/zh/blog": "AI 视频教程：照片变视频与说唱视频 | vibemovo",
     "/zh/ai-rap-video-generator": "AI 说唱视频生成器：用照片做说唱视频 | vibemovo",
@@ -192,7 +192,7 @@ test("llms.txt describes the product and links the public pages", async ({ reque
   const lines = text.split("\n");
   expect(lines[0]).toBe("# vibemovo");
   expect(lines[2]).toBe(
-    "> Make AI images from text and turn photos into videos, including 15-second rap duo videos. Sign in with email or Google and start with free credits.",
+    "> Turn your photos into viral AI videos: rap duos, zombie couples, younger-self hugs and vampire transformations. Start free with sign-up credits.",
   );
   expect(text).toContain("- Text to image: Write what you want to see.");
   expect(text).toContain("- Image to video: Upload a photo or use one you made.");

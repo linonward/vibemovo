@@ -1,13 +1,14 @@
 {
   "Metadata": {
     "title": "vibemovo",
-    "homeTitle": "AI 图像与视频生成器：照片一键变视频 | vibemovo",
-    "tagline": "AI 图像与视频生成",
-    "description": "输入文字生成 AI 图片，把照片变成视频，还能制作 15 秒双人说唱视频。用邮箱或 Google 登录，新账号自带免费积分。"
+    "homeTitle": "AI 爆款视频模板：用照片一键做视频 | vibemovo",
+    "tagline": "AI 爆款视频模板",
+    "description": "用照片一键做 AI 爆款视频：双人说唱、僵尸情侣、拥抱童年的自己、吸血鬼变身。新账号自带免费积分，注册即可开始。"
   },
   "Home": {
     "hero": {
-      "eyebrow": "AI 图像与视频生成器",
+      "eyebrow": "AI 图像与视频",
+      "heading": "AI 爆款视频模板",
       "title": "写一句话，看它动起来。",
       "body": "描述一个画面，得到一张图片。留下你喜欢的那张，再把它变成 5 秒或 10 秒的视频。",
       "cta": "免费开始创作",
