@@ -5,16 +5,18 @@ import Page from "./page";
 
 afterEach(cleanup);
 
-// The h1 names the query the home page targets; the tagline stays the
-// largest text, but isn't a heading.
-test("the only h1 names the AI image and video generator, above the tagline", () => {
+// The large headline is the h1: the query the home page targets, then the
+// tagline. The small badge above it isn't a heading.
+test("the only h1 is the large headline: the query, then the tagline", () => {
   renderWithIntl(<Page />);
 
   expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   expect(
-    screen.getByRole("heading", { level: 1, name: "vibemovo AI image and video generator" }),
+    screen.getByRole("heading", {
+      level: 1,
+      name: "Viral AI video templates Write a line. Watch it move.",
+    }),
   ).toBeDefined();
-  expect(screen.getByText("Write a line. Watch it move.").tagName).toBe("P");
 });
 
 test("both calls to action lead to sign-in", () => {
@@ -31,7 +33,7 @@ test("renders in Chinese", () => {
   renderWithIntl(<Page />, "zh");
 
   expect(
-    screen.getByRole("heading", { level: 1, name: "vibemovo AI 图像与视频生成器" }),
+    screen.getByRole("heading", { level: 1, name: "AI 爆款视频模板 写一句话，看它动起来。" }),
   ).toBeDefined();
 });
 
