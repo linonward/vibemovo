@@ -93,3 +93,16 @@ test.each([
 
   expect(screen.getByRole("heading", { level: 1, name: h1 })).toBeDefined();
 });
+
+test.each([
+  ["zombie", "AI zombie couple video questions", "AI 僵尸情侣视频常见问题"],
+  ["hug", "AI younger-self hug video questions", "AI 拥抱童年视频常见问题"],
+  ["vampire", "AI vampire transformation video questions", "AI 吸血鬼变身视频常见问题"],
+] as const)("the %s FAQ heading names the query", (kind, en, zh) => {
+  renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
+  expect(screen.getByRole("heading", { level: 2, name: en })).toBeDefined();
+  cleanup();
+
+  renderWithIntl(<EffectLanding kind={kind} facts={facts} />, "zh");
+  expect(screen.getByRole("heading", { level: 2, name: zh })).toBeDefined();
+});
