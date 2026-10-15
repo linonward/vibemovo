@@ -147,6 +147,21 @@ test("the sidebar opens the rap duo, off while Bailian is not set up", async ({ 
   await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
 });
 
+test("the sidebar opens the zombie couple, off while Bailian is not set up", async ({ page }) => {
+  await signIn(page);
+  await page.goto("/en/videos");
+
+  await page
+    .getByRole("navigation", { name: "Dashboard navigation" })
+    .getByRole("link", { name: "Zombie couple", exact: true })
+    .click();
+
+  await expect(page).toHaveURL("/en/videos/zombie");
+  await expect(page.getByRole("heading", { level: 1, name: "Zombie couple" })).toBeVisible();
+  await expect(page.getByText("The zombie couple isn't set up yet.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
+});
+
 test("a photo too small for Bailian is turned away as soon as it is picked", async ({ page }) => {
   await signIn(page);
   await page.goto("/en/videos/rap");
@@ -188,6 +203,26 @@ test("a rap video needs a session, two photos and two names, then reports videos
   expect(await invalid.json()).toEqual({ error: "INVALID_REQUEST" });
 
   const off = await post(multipart(png));
+  expect(off.status()).toBe(503);
+  expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
+});
+
+test("a zombie couple video needs a session and two photos, then reports videos off", async ({ page, request }) => {
+  const photo = (buffer: Buffer) => ({ name: "photo.png", mimeType: "image/png", buffer });
+  const anonymous = await request.post("/api/videos/zombie", { multipart: { image1: photo(png), image2: photo(png) } });
+  expect(anonymous.status()).toBe(401);
+
+  await signIn(page);
+  const post = (body: object) =>
+    page.request.post("/api/videos/zombie", { multipart: body as never, headers: { origin: BASE_URL } });
+
+  const missing = await post({ image1: photo(png) });
+  expect(missing.status()).toBe(400);
+  const invalid = await post({ image1: photo(png), image2: photo(Buffer.from("<html>")) });
+  expect(invalid.status()).toBe(400);
+  expect(await invalid.json()).toEqual({ error: "INVALID_REQUEST" });
+
+  const off = await post({ image1: photo(png), image2: photo(png) });
   expect(off.status()).toBe(503);
   expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
 });

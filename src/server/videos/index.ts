@@ -27,6 +27,8 @@ import {
   RAP_MAX_NAME_LENGTH,
   RAP_RATIO,
   RAP_RESOLUTION,
+  ZOMBIE_CREDITS,
+  ZOMBIE_TITLE,
   UPLOAD_EXPIRY_BATCH,
   UPLOAD_RETENTION_MS,
   VIDEO_DURATIONS,
@@ -40,6 +42,7 @@ import {
   videoCost,
 } from "./config";
 import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
+import { zombiePrompt } from "./zombie";
 import { checkImageSize, type ImageLimits, imageSize } from "./image-size";
 import { video } from "./schema";
 
@@ -193,14 +196,22 @@ function blocked(error: unknown): unknown {
     : error;
 }
 
-// The rap duo needs Bailian and storage, whatever VIDEO_PROVIDER says.
+// The rap duo and the zombie couple need Bailian and storage, whatever
+// VIDEO_PROVIDER says.
+function duoEnabled() {
+  return getReferenceVideoProvider() !== null && storageConfigured();
+}
+
 export function rapOptions(): { enabled: boolean; credits: number } {
-  return { enabled: getReferenceVideoProvider() !== null && storageConfigured(), credits: RAP_CREDITS };
+  return { enabled: duoEnabled(), credits: RAP_CREDITS };
+}
+
+export function zombieOptions(): { enabled: boolean; credits: number } {
+  return { enabled: duoEnabled(), credits: ZOMBIE_CREDITS };
 }
 
 // Two photos and two names become a 15-second video where each person raps
-// a line written for them. Stored and finished like any video: the first
-// photo is its image, and the "dashscope" provider polls the job.
+// a line written for them.
 export async function createRapVideo(input: {
   userId: string;
   names: RapLines;
@@ -211,6 +222,41 @@ export async function createRapVideo(input: {
   if (names.some((name) => !name || name.length > RAP_MAX_NAME_LENGTH)) {
     throw new InvalidVideoRequestError(`Names must be 1-${RAP_MAX_NAME_LENGTH} characters`);
   }
+  return createDuoVideo({
+    userId: input.userId,
+    images: input.images,
+    text: names.join("\n"),
+    credits: RAP_CREDITS,
+    // The model can take seconds, and never throws.
+    prompt: async () => {
+      const lines = await writeLyrics(names, input.language);
+      return { title: `${names[0]} & ${names[1]}: ${lines[0]} / ${lines[1]}`, prompt: rapPrompt(lines) };
+    },
+  });
+}
+
+// Two photos become a 15-second video where the couple turns into zombies.
+export function createZombieVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
+  return createDuoVideo({
+    ...input,
+    text: null,
+    credits: ZOMBIE_CREDITS,
+    prompt: async () => ({ title: ZOMBIE_TITLE, prompt: zombiePrompt() }),
+  });
+}
+
+// Two photos, the first on the left, become one Wan 3.0 video. Stored and
+// finished like any video: the first photo is its image, and the
+// "dashscope" provider polls the job. `text`, the user's words, is checked
+// before anything is stored; `prompt` runs once the photos pass moderation,
+// before credits are spent, and gives the stored title and the model's prompt.
+async function createDuoVideo(input: {
+  userId: string;
+  images: [Uint8Array, Uint8Array];
+  text: string | null;
+  credits: number;
+  prompt: () => Promise<{ title: string; prompt: string }>;
+}): Promise<Video> {
   const images = input.images.map((bytes) => {
     const type = imageType(bytes);
     if (!type || bytes.byteLength > RAP_MAX_IMAGE_BYTES) {
@@ -221,20 +267,17 @@ export async function createRapVideo(input: {
   const provider = getReferenceVideoProvider();
   if (!provider || !storageConfigured()) throw new VideosDisabledError();
   for (const { bytes } of images) assertImageSize(bytes, RAP_IMAGE_LIMITS);
-  checkPrompt(names.join("\n"));
+  if (input.text !== null) checkPrompt(input.text);
 
-  const { userId } = input;
+  const { userId, credits } = input;
   const id = randomUUID();
-  const credits = RAP_CREDITS;
   const imageKey = videos.fileKey(userId, id, images[0].ext);
   const files = [
     { key: imageKey, bytes: images[0].bytes, mime: images[0].mime },
     { key: videos.fileKey(userId, `${id}-2`, images[1].ext), bytes: images[1].bytes, mime: images[1].mime },
   ];
   const moderated = await storeAndCheck(userId, id, credits, files);
-  // Before spending: the model can take seconds, and never throws.
-  const lines = await writeLyrics(names, input.language);
-  const prompt = `${names[0]} & ${names[1]}: ${lines[0]} / ${lines[1]}`;
+  const { title, prompt } = await input.prompt();
   const db = getDb();
   try {
     const row = await videos.start(
@@ -243,7 +286,7 @@ export async function createRapVideo(input: {
         tx.insert(video).values({
           id,
           userId,
-          prompt,
+          prompt: title,
           duration: RAP_DURATION,
           provider: provider.id,
           resolution: RAP_RESOLUTION,
@@ -252,7 +295,7 @@ export async function createRapVideo(input: {
       async () => {
         if (!moderated) await storeFiles(files);
         const requestId = await provider.submit({
-          prompt: rapPrompt(lines),
+          prompt,
           images: await Promise.all(
             images.map(async ({ bytes, mime }, index) => ({
               bytes,
@@ -358,8 +401,8 @@ export function sweepStaleVideos(now = new Date()): Promise<{ failed: number; ch
   return videos.sweep(now);
 }
 
-// The extensions imageType gives, for the rap duo's second photo, whose key
-// isn't stored. Deleting a key that doesn't exist succeeds.
+// The extensions imageType gives, for the second photo of a rap duo or a
+// zombie couple, whose key isn't stored. Deleting a key that doesn't exist succeeds.
 const IMAGE_EXTS = ["jpg", "png", "webp"];
 
 // Deletes uploaded photos older than UPLOAD_RETENTION_MS, oldest first, and
@@ -378,6 +421,7 @@ export async function expireUploads(now = new Date()): Promise<number> {
   let cleared = 0;
   for (const row of rows) {
     const keys = [row.imageKey as string];
+    // Only the two-photo videos are RAP_DURATION long.
     if (row.duration === RAP_DURATION) {
       keys.push(...IMAGE_EXTS.map((ext) => videos.fileKey(row.userId, `${row.id}-2`, ext)));
     }

@@ -54,6 +54,7 @@ const CREATE = [
     icon: Clapperboard,
     children: [
       { href: "/videos/rap", key: "videoRap" },
+      { href: "/videos/zombie", key: "videoZombie" },
       { href: "/videos/library", key: "videoLibrary" },
     ],
   },
