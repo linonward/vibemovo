@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import { cleanup, fireEvent, screen, waitFor, within } from "@testing-library/react";
 import { renderWithIntl } from "@/test/intl";
-import { PairGenerator, type PairGeneratorProps } from "./pair-generator";
+import { EffectGenerator, type EffectGeneratorProps } from "./effect-generator";
 
 const fetchMock = vi.fn();
 
@@ -19,7 +19,7 @@ afterEach(() => {
   fetchMock.mockReset();
 });
 
-const props: PairGeneratorProps = {
+const props: EffectGeneratorProps = {
   kind: "zombie",
   balance: 100,
   credits: 75,
@@ -49,7 +49,7 @@ function pick(label: string, size = 10) {
 }
 
 test("needs both photos before it generates", () => {
-  renderWithIntl(<PairGenerator {...props} />);
+  renderWithIntl(<EffectGenerator {...props} />);
   const button = screen.getByRole("button", { name: "Generate (75 credits)" });
 
   pick("Your photo");
@@ -66,7 +66,7 @@ test("sends both photos, then polls until the video is ready", async () => {
     .mockResolvedValueOnce(
       reply(200, { video: { ...pending, status: "succeeded", url: "https://storage.test/new.mp4" } }),
     );
-  renderWithIntl(<PairGenerator {...props} />);
+  renderWithIntl(<EffectGenerator {...props} />);
 
   const left = pick("Your photo");
   const right = pick("Your partner's photo");
@@ -86,7 +86,7 @@ test("sends both photos, then polls until the video is ready", async () => {
 
 test("the younger-self hug asks for today's and a childhood photo and sends them to its own route", async () => {
   fetchMock.mockResolvedValueOnce(reply(200, { video: { ...pending, prompt: "Hug your younger self" } }));
-  renderWithIntl(<PairGenerator {...props} kind="hug" />);
+  renderWithIntl(<EffectGenerator {...props} kind="hug" />);
 
   expect(screen.getByRole("heading", { level: 2, name: "Your videos" })).toBeTruthy();
   const today = pick("Your photo today");
@@ -100,8 +100,24 @@ test("the younger-self hug asks for today's and a childhood photo and sends them
   expect((init.body as FormData).get("image2")).toBe(child);
 });
 
+test("the vampire transformation asks for one photo and sends it as image1", async () => {
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { ...pending, prompt: "Vampire transformation", credits: 50 } }));
+  renderWithIntl(<EffectGenerator {...props} kind="vampire" credits={50} />);
+
+  expect(screen.queryByLabelText("Your partner's photo")).toBeNull();
+  const photo = pick("Your photo");
+  fireEvent.click(screen.getByRole("button", { name: "Generate (50 credits)" }));
+
+  await waitFor(() => expect(screen.getByText("50 credits left")).toBeTruthy());
+  const [url, init] = fetchMock.mock.calls[0];
+  expect(url).toBe("/api/videos/vampire");
+  const form = init.body as FormData;
+  expect(form.get("image1")).toBe(photo);
+  expect(form.has("image2")).toBe(false);
+});
+
 test("refuses a photo over the size limit", () => {
-  renderWithIntl(<PairGenerator {...props} />);
+  renderWithIntl(<EffectGenerator {...props} />);
 
   pick("Your photo", 2 * 1024 * 1024 + 1);
 
@@ -116,7 +132,7 @@ test.each([
   [503, "VIDEOS_DISABLED", "isn't set up yet"],
 ])("explains a %s reply", async (status, error, text) => {
   fetchMock.mockResolvedValueOnce(reply(status, { error }));
-  renderWithIntl(<PairGenerator {...props} />);
+  renderWithIntl(<EffectGenerator {...props} />);
 
   pick("Your photo");
   pick("Your partner's photo");
@@ -127,7 +143,7 @@ test.each([
 });
 
 test("links to billing when the balance is short, and says when it is off", () => {
-  renderWithIntl(<PairGenerator {...props} balance={10} enabled={false} />);
+  renderWithIntl(<EffectGenerator {...props} balance={10} enabled={false} />);
 
   expect(screen.getByText("The zombie couple isn't set up yet.")).toBeTruthy();
   expect(screen.getByRole("link", { name: "Buy credits" }).getAttribute("href")).toBe("/en/billing");

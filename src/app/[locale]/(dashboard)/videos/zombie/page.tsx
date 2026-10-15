@@ -5,7 +5,7 @@ import { userBalance } from "@/app/_lib/account";
 import { currentSession } from "@/app/_lib/session";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { PageSkeleton } from "@/components/dashboard/page-skeleton";
-import { PairGenerator } from "@/components/videos/pair-generator";
+import { EffectGenerator } from "@/components/videos/effect-generator";
 import { listVideos, zombieOptions } from "@/server/videos";
 import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES } from "@/server/videos/config";
 
@@ -37,7 +37,7 @@ async function ZombieContent() {
   const options = zombieOptions();
 
   return (
-    <PairGenerator
+    <EffectGenerator
       kind="zombie"
       balance={balance}
       credits={options.credits}

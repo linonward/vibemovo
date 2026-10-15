@@ -72,6 +72,15 @@ export const HUG_RATIO = ZOMBIE_RATIO;
 // What the video list shows in place of a prompt.
 export const HUG_TITLE = "Hug your younger self";
 
+// The vampire transformation (/videos/vampire): one photo on the rap duo's
+// model, size and photo limits, vertical. 10 seconds, so expireUploads
+// doesn't look for a second photo (two-photo videos are RAP_DURATION long).
+export const VAMPIRE_DURATION = 10;
+export const VAMPIRE_CREDITS = 5 * VAMPIRE_DURATION;
+export const VAMPIRE_RATIO = ZOMBIE_RATIO;
+// What the video list shows in place of a prompt.
+export const VAMPIRE_TITLE = "Vampire transformation";
+
 // Each rap duo photo, as Bailian Wan 3.0 accepts it: at least 240 pixels a
 // side ("resolution must be at least 240x240"); the rest as for Wan 2.7.
 export const RAP_IMAGE_LIMITS: ImageLimits = VIDEO_IMAGE_LIMITS.dashscope;

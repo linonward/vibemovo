@@ -33,6 +33,10 @@ import {
   HUG_CREDITS,
   HUG_RATIO,
   HUG_TITLE,
+  VAMPIRE_CREDITS,
+  VAMPIRE_DURATION,
+  VAMPIRE_RATIO,
+  VAMPIRE_TITLE,
   UPLOAD_EXPIRY_BATCH,
   UPLOAD_RETENTION_MS,
   VIDEO_DURATIONS,
@@ -48,6 +52,7 @@ import {
 import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
 import { zombiePrompt } from "./zombie";
 import { hugPrompt } from "./hug";
+import { vampirePrompt } from "./vampire";
 import { checkImageSize, type ImageLimits, imageSize } from "./image-size";
 import { video } from "./schema";
 
@@ -201,22 +206,26 @@ function blocked(error: unknown): unknown {
     : error;
 }
 
-// The rap duo, the zombie couple and the younger-self hug need Bailian and storage, whatever
-// VIDEO_PROVIDER says.
-function duoEnabled() {
+// The photo effects on Wan 3.0 (rap duo, zombie couple, younger-self hug,
+// vampire transformation) need Bailian and storage, whatever VIDEO_PROVIDER says.
+function referenceEnabled() {
   return getReferenceVideoProvider() !== null && storageConfigured();
 }
 
 export function rapOptions(): { enabled: boolean; credits: number } {
-  return { enabled: duoEnabled(), credits: RAP_CREDITS };
+  return { enabled: referenceEnabled(), credits: RAP_CREDITS };
 }
 
 export function zombieOptions(): { enabled: boolean; credits: number } {
-  return { enabled: duoEnabled(), credits: ZOMBIE_CREDITS };
+  return { enabled: referenceEnabled(), credits: ZOMBIE_CREDITS };
 }
 
 export function hugOptions(): { enabled: boolean; credits: number } {
-  return { enabled: duoEnabled(), credits: HUG_CREDITS };
+  return { enabled: referenceEnabled(), credits: HUG_CREDITS };
+}
+
+export function vampireOptions(): { enabled: boolean; credits: number } {
+  return { enabled: referenceEnabled(), credits: VAMPIRE_CREDITS };
 }
 
 // Two photos and two names become a 15-second video where each person raps
@@ -231,7 +240,7 @@ export async function createRapVideo(input: {
   if (names.some((name) => !name || name.length > RAP_MAX_NAME_LENGTH)) {
     throw new InvalidVideoRequestError(`Names must be 1-${RAP_MAX_NAME_LENGTH} characters`);
   }
-  return createDuoVideo({
+  return createReferenceVideo({
     userId: input.userId,
     images: input.images,
     text: names.join("\n"),
@@ -248,7 +257,7 @@ export async function createRapVideo(input: {
 // Two photos become a 15-second vertical video: the survivor (the first
 // photo) hugs their partner (the second), now a zombie.
 export function createZombieVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
-  return createDuoVideo({
+  return createReferenceVideo({
     ...input,
     text: null,
     credits: ZOMBIE_CREDITS,
@@ -260,7 +269,7 @@ export function createZombieVideo(input: { userId: string; images: [Uint8Array, 
 // Two photos become a 15-second vertical video: the person today (the
 // first photo) hugs themselves as a child (the second).
 export function createHugVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
-  return createDuoVideo({
+  return createReferenceVideo({
     ...input,
     text: null,
     credits: HUG_CREDITS,
@@ -269,16 +278,33 @@ export function createHugVideo(input: { userId: string; images: [Uint8Array, Uin
   });
 }
 
-// Two photos, the first on the left, become one Wan 3.0 video. Stored and
-// finished like any video: the first photo is its image, and the
-// "dashscope" provider polls the job. `text`, the user's words, is checked
+// One photo becomes a 10-second vertical video where the person turns into
+// a vampire.
+export function createVampireVideo(input: { userId: string; image: Uint8Array }): Promise<Video> {
+  return createReferenceVideo({
+    userId: input.userId,
+    images: [input.image],
+    text: null,
+    credits: VAMPIRE_CREDITS,
+    duration: VAMPIRE_DURATION,
+    ratio: VAMPIRE_RATIO,
+    prompt: async () => ({ title: VAMPIRE_TITLE, prompt: vampirePrompt() }),
+  });
+}
+
+// One or two photos, the first on the left, become one Wan 3.0 video.
+// Stored and finished like any video: the first photo is its image, the
+// second is stored as <id>-2, and the "dashscope" provider polls the job.
+// Two-photo videos must be RAP_DURATION long: expireUploads finds their
+// second photo by it. `text`, the user's words, is checked
 // before anything is stored; `prompt` runs once the photos pass moderation,
 // before credits are spent, and gives the stored title and the model's prompt.
-async function createDuoVideo(input: {
+async function createReferenceVideo(input: {
   userId: string;
-  images: [Uint8Array, Uint8Array];
+  images: [Uint8Array] | [Uint8Array, Uint8Array];
   text: string | null;
   credits: number;
+  duration?: number;
   ratio: string;
   prompt: () => Promise<{ title: string; prompt: string }>;
 }): Promise<Video> {
@@ -294,13 +320,14 @@ async function createDuoVideo(input: {
   for (const { bytes } of images) assertImageSize(bytes, RAP_IMAGE_LIMITS);
   if (input.text !== null) checkPrompt(input.text);
 
-  const { userId, credits } = input;
+  const { userId, credits, duration = RAP_DURATION } = input;
   const id = randomUUID();
-  const imageKey = videos.fileKey(userId, id, images[0].ext);
-  const files = [
-    { key: imageKey, bytes: images[0].bytes, mime: images[0].mime },
-    { key: videos.fileKey(userId, `${id}-2`, images[1].ext), bytes: images[1].bytes, mime: images[1].mime },
-  ];
+  const files = images.map(({ bytes, ext, mime }, index) => ({
+    key: videos.fileKey(userId, index === 0 ? id : `${id}-${index + 1}`, ext),
+    bytes,
+    mime,
+  }));
+  const imageKey = files[0].key;
   const moderated = await storeAndCheck(userId, id, credits, files);
   const { title, prompt } = await input.prompt();
   const db = getDb();
@@ -312,7 +339,7 @@ async function createDuoVideo(input: {
           id,
           userId,
           prompt: title,
-          duration: RAP_DURATION,
+          duration,
           provider: provider.id,
           resolution: RAP_RESOLUTION,
           credits,
@@ -328,7 +355,7 @@ async function createDuoVideo(input: {
               url: await signedUrl(files[index].key),
             })),
           ),
-          duration: RAP_DURATION,
+          duration,
           resolution: RAP_RESOLUTION,
           ratio: input.ratio,
         });
