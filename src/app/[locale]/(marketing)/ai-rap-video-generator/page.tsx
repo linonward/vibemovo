@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { RapLanding } from "@/components/landing/rap-landing";
 import type { Locale } from "@/i18n/routing";
-import { listPosts, postLocales } from "@/lib/content";
+import { postLocales, relatedPosts } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 import { signupCredits } from "@/server/credits/config";
 import { RAP_CREDITS, RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES, RAP_MAX_NAME_LENGTH } from "@/server/videos/config";
@@ -26,9 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/ai-rap-v
 export default async function Page({ params }: PageProps<"/[locale]/ai-rap-video-generator">) {
   const { locale } = await params;
   const guide = (await postLocales(GUIDE)).includes(locale as Locale) ? `/blog/${GUIDE}` : undefined;
-  const related = (await listPosts(locale as Locale))
-    .filter((post) => RELATED.includes(post.slug))
-    .map((post) => ({ href: `/blog/${post.slug}`, title: post.title }));
+  const related = await relatedPosts(locale as Locale, RELATED);
   return (
     <RapLanding
       facts={{

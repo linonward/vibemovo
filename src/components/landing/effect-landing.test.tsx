@@ -114,3 +114,13 @@ test.each(["zombie", "hug", "vampire"] as const)("the %s page links the other ef
   expect(within(more).getAllByRole("link")).toHaveLength(3);
   expect(within(more).getByRole("link", { name: /Rap duo/ }).getAttribute("href")).toBe("/en/ai-rap-video-generator");
 });
+
+test("lists the locale's related guides after the other effects", () => {
+  const related = [{ href: "/blog/hug-your-younger-self-ai", title: "Hug Your Younger Self AI: Make the Hug Video" }];
+  renderWithIntl(<EffectLanding kind="zombie" facts={facts} related={related} />);
+
+  const more = screen.getByRole("region", { name: "More AI video effects" });
+  const links = within(more).getAllByRole("link");
+  expect(links).toHaveLength(4);
+  expect(links.at(-1)?.getAttribute("href")).toBe("/en/blog/hug-your-younger-self-ai");
+});
