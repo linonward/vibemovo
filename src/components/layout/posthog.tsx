@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 // user input, including on 404 pages. Never send search, hash or referrer.
 const ROUTES = new Set([
   "", "pricing", "ai-rap-video-generator", "privacy", "terms", "refund", "sign-in",
-  "dashboard", "images", "images/library", "videos", "videos/library", "videos/rap",
+  "dashboard", "images", "images/library", "videos", "videos/library", "videos/rap", "videos/zombie",
   "chat", "notifications", "feedback", "billing", "api-keys", "profile", "admin",
   "admin/users", "admin/orders", "admin/notifications", "admin/metrics", "admin/feedback", "blog",
 ]);

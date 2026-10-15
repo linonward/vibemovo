@@ -56,6 +56,13 @@ export const RAP_CREDITS = 5 * RAP_DURATION;
 export const RAP_MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 export const RAP_MAX_NAME_LENGTH = 30;
 
+// The zombie couple (/videos/zombie): two photos on the rap duo's model,
+// length, size and photo limits, at the same price. Keep RAP_DURATION:
+// expireUploads finds a two-photo video's second photo by it.
+export const ZOMBIE_CREDITS = RAP_CREDITS;
+// What the video list shows in place of a prompt.
+export const ZOMBIE_TITLE = "Zombie couple";
+
 // Each rap duo photo, as Bailian Wan 3.0 accepts it: at least 240 pixels a
 // side ("resolution must be at least 240x240"); the rest as for Wan 2.7.
 export const RAP_IMAGE_LIMITS: ImageLimits = VIDEO_IMAGE_LIMITS.dashscope;

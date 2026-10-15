@@ -391,6 +391,7 @@
     "previous": "Previous",
     "next": "Next",
     "videoRap": "Rap duo",
+    "videoZombie": "Zombie couple",
     "videoLibrary": "All videos",
     "adminOrders": "Orders",
     "adminBroadcasts": "Broadcasts",
@@ -795,6 +796,35 @@
       "imageSize": "Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
       "failed": "Generation failed. The credits were refunded. Try again.",
       "blocked": "A name or photo was blocked by content moderation. Try different ones.",
+      "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
+    }
+  },
+  "ZombieVideos": {
+    "title": "Zombie couple",
+    "description": "Two photos become a 15-second video: the couple slow-dances, turns into zombies together and keeps dancing.",
+    "left": {
+      "photo": "Left photo",
+      "preview": "Left photo preview"
+    },
+    "right": {
+      "photo": "Right photo",
+      "preview": "Right photo preview"
+    },
+    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light.",
+    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
+    "generating": "Sending…",
+    "balance": "{count, plural, one {# credit left} other {# credits left}}",
+    "buyCredits": "Buy credits",
+    "disabled": "The zombie couple isn't set up yet.",
+    "historyTitle": "Your videos",
+    "empty": "No videos yet.",
+    "viewAll": "View all",
+    "errors": {
+      "credits": "Not enough credits. Buy more on the Credits & billing page.",
+      "invalid": "Use JPEG, PNG or WebP photos up to {size} MB each.",
+      "imageSize": "Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
+      "failed": "Generation failed. The credits were refunded. Try again.",
+      "blocked": "A photo was blocked by content moderation. Try a different one.",
       "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
     }
   },

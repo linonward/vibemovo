@@ -6,6 +6,7 @@ import { Billing } from "@/components/billing/billing";
 import { ImageGenerator } from "@/components/images/image-generator";
 import { RapGenerator } from "@/components/videos/rap-generator";
 import { VideoGenerator } from "@/components/videos/video-generator";
+import { ZombieGenerator } from "@/components/videos/zombie-generator";
 import { CreditsProvider, useCredits } from "./credits";
 
 vi.mock("@/i18n/navigation", () => ({
@@ -34,6 +35,16 @@ const surfaces = {
       credits={75}
       maxImageBytes={2 * 1024 * 1024}
       maxNameLength={30}
+      imageLimits={{ minSide: 240, maxSide: 8000, maxRatio: 8 }}
+      enabled
+      videos={[]}
+    />
+  ),
+  zombie: (
+    <ZombieGenerator
+      balance={100}
+      credits={75}
+      maxImageBytes={2 * 1024 * 1024}
       imageLimits={{ minSide: 240, maxSide: 8000, maxRatio: 8 }}
       enabled
       videos={[]}
