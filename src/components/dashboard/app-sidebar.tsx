@@ -57,6 +57,7 @@ const CREATE = [
       { href: "/videos/zombie", key: "videoZombie" },
       { href: "/videos/hug", key: "videoHug" },
       { href: "/videos/vampire", key: "videoVampire" },
+      { href: "/videos/raindance", key: "videoRaindance" },
       { href: "/videos/effects", key: "videoObject" },
       { href: "/videos/library", key: "videoLibrary" },
     ],

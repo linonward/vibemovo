@@ -100,6 +100,21 @@ test("the younger-self hug asks for today's and a childhood photo and sends them
   expect((init.body as FormData).get("image2")).toBe(child);
 });
 
+test("the raindance duo asks for the one on the dock and the singer and sends them to its own route", async () => {
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { ...pending, prompt: "Raindance duo" } }));
+  renderWithIntl(<EffectGenerator {...props} kind="raindance" />);
+
+  const dock = pick("Photo of the one on the dock");
+  const singer = pick("Photo of the singer");
+  fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
+
+  await waitFor(() => expect(screen.getByText("25 credits left")).toBeTruthy());
+  const [url, init] = fetchMock.mock.calls[0];
+  expect(url).toBe("/api/videos/raindance");
+  expect((init.body as FormData).get("image1")).toBe(dock);
+  expect((init.body as FormData).get("image2")).toBe(singer);
+});
+
 test("the vampire transformation asks for one photo and sends it as image1", async () => {
   fetchMock.mockResolvedValueOnce(reply(200, { video: { ...pending, prompt: "Vampire transformation", credits: 50 } }));
   renderWithIntl(<EffectGenerator {...props} kind="vampire" credits={50} />);

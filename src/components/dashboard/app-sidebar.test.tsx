@@ -139,6 +139,17 @@ test("the vampire transformation sits under the video generator", () => {
   expect(vampire.getAttribute("aria-current")).toBe("page");
 });
 
+test("the raindance duo sits under the video generator", () => {
+  pathname = "/videos/raindance";
+  const nav = renderSidebar(false);
+
+  const videos = within(nav).getByRole("link", { name: "Video generator" });
+  const raindance = within(nav).getByRole("link", { name: "Raindance duo" });
+  expect(raindance.getAttribute("href")).toBe("/en/videos/raindance");
+  expect(videos.closest("li")?.contains(raindance)).toBe(true);
+  expect(raindance.getAttribute("aria-current")).toBe("page");
+});
+
 // The loading skeleton reads this attribute on the next full page load.
 test("mirrors the collapsed state on <html> for the loading skeleton", () => {
   renderSidebar(false);
@@ -168,7 +179,7 @@ test("groups the tools under Create, and billing and API keys under Account", ()
     within(within(nav).getByRole("list", { name: group }))
       .getAllByRole("link")
       .map((link) => link.textContent);
-  expect(names("Create")).toEqual(["AI chat", "Image generator", "All images", "Video generator", "Rap duo", "Zombie couple", "Hug your younger self", "Vampire transformation", "Object effects", "All videos"]);
+  expect(names("Create")).toEqual(["AI chat", "Image generator", "All images", "Video generator", "Rap duo", "Zombie couple", "Hug your younger self", "Vampire transformation", "Raindance duo", "Object effects", "All videos"]);
   expect(names("Account")).toEqual(["Credits & billing", "API keys"]);
   expect(within(nav).queryByRole("link", { name: "Feedback" })).toBeNull();
   // The dashboard home sits above the groups, without a label.

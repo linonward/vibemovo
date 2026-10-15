@@ -22,6 +22,7 @@ export const CLIENT_NAMESPACES = [
   "Videos",
   "ZombieVideos",
   "HugVideos",
+  "RaindanceVideos",
   "VampireVideos",
   "ObjectVideos",
   "LandingTryout",

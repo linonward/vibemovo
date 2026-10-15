@@ -84,6 +84,17 @@ export const VAMPIRE_RATIO = ZOMBIE_RATIO;
 // What the video list shows in place of a prompt.
 export const VAMPIRE_TITLE = "Vampire transformation";
 
+// The raindance duo (/videos/raindance): two photos, the one on the dock
+// and the singer, on the zombie couple's model, length, size, photo limits
+// and price.
+export const RAINDANCE_CREDITS = RAP_CREDITS;
+export const RAINDANCE_RATIO = ZOMBIE_RATIO;
+// The poster is cut from the wide shot with both on the dock (0 to 5 s in
+// the prompt), not taken from the first photo.
+export const RAINDANCE_POSTER_MS = 3_000;
+// What the video list shows in place of a prompt.
+export const RAINDANCE_TITLE = "Raindance duo";
+
 // Each rap duo photo, as Bailian Wan 3.0 accepts it: at least 240 pixels a
 // side ("resolution must be at least 240x240"); the rest as for Wan 2.7.
 export const RAP_IMAGE_LIMITS: ImageLimits = VIDEO_IMAGE_LIMITS.dashscope;

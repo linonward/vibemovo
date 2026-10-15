@@ -89,7 +89,9 @@ const {
   createZombieVideo,
   zombieOptions,
   createHugVideo,
+  createRaindanceVideo,
   hugOptions,
+  raindanceOptions,
   createVampireVideo,
   vampireOptions,
   createObjectEffectVideo,
@@ -866,6 +868,49 @@ test("a zombie couple's second photo is deleted with the first after a day", asy
   const deleted = storage.deleteObject.mock.calls.map(([key]) => key);
   expect(deleted).toContain(`videos/${userId}/${id}-2.png`);
   expect(await imageKeyOf(id)).toBeNull();
+});
+
+const raindance = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createRaindanceVideo({ userId, images });
+
+test("the raindance duo is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
+  ai.state.active = null;
+  expect(raindanceOptions()).toEqual({ enabled: true, credits: 75 });
+  ai.state.reference = false;
+  expect(raindanceOptions().enabled).toBe(false);
+});
+
+test("a raindance duo stores both photos, queues one vertical Wan 3.0 job and spends 75 credits", async () => {
+  const before = await getBalance(userId);
+
+  const result = await raindance();
+
+  expect(storage.putObject).toHaveBeenCalledWith(`videos/${userId}/${result.id}.jpg`, jpeg, "image/jpeg");
+  expect(storage.putObject).toHaveBeenCalledWith(`videos/${userId}/${result.id}-2.png`, png, "image/png");
+  expect(writeLyrics).not.toHaveBeenCalled();
+  const job = ai.reference.submit.mock.calls[0][0];
+  expect(job).toMatchObject({ duration: 15, resolution: "720p", ratio: "9:16" });
+  expect(job.prompt).toContain("dock");
+  expect(result).toMatchObject({ prompt: "Raindance duo", duration: 15, credits: 75, status: "pending" });
+  expect(await getBalance(userId)).toBe(before - 75);
+});
+
+test("a finished raindance duo gets a poster of both on the dock, in place of the first photo", async () => {
+  const created = await raindance();
+  ai.providers.dashscope.result.mockResolvedValueOnce({ status: "succeeded", url: "https://dashscope.test/out.mp4" });
+
+  await refreshVideo(userId, created.id);
+
+  expect(posterFrame).toHaveBeenCalledWith(mp4, 3);
+  expect(await rows()).toMatchObject([{ posterMs: 3_000 }]);
+});
+
+test("a raindance duo with a photo that isn't an image spends nothing", async () => {
+  const before = await getBalance(userId);
+
+  await expect(raindance([jpeg, new Uint8Array([1, 2, 3])])).rejects.toThrow();
+
+  expect(storage.putObject).not.toHaveBeenCalled();
+  expect(await getBalance(userId)).toBe(before);
 });
 
 const hug = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createHugVideo({ userId, images });

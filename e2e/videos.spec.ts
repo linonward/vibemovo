@@ -155,6 +155,7 @@ const EFFECTS = [
   { route: "zombie", title: "Zombie couple", off: "The zombie couple isn't set up yet.", photos: 2, credits: 75 },
   { route: "hug", title: "Hug your younger self", off: "Hug your younger self isn't set up yet.", photos: 2, credits: 75 },
   { route: "vampire", title: "Vampire transformation", off: "The vampire transformation isn't set up yet.", photos: 1, credits: 50 },
+  { route: "raindance", title: "Raindance duo", off: "The raindance duo isn't set up yet.", photos: 2, credits: 75 },
   // On the active provider; with none, fal's price as an example.
   { route: "effects", title: "Object effects", off: "Object effects aren't set up yet.", photos: 1, credits: 20 },
 ] as const;

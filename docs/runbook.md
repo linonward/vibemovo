@@ -84,7 +84,7 @@ The table lists every variable in `.env.example` and every `process.env` read in
 | `FAL_KEY`            | With fal          | fal API key                                                   |
 | `SEEAPI_API_KEY`     | With SeeAPI       | SeeAPI API key                                                |
 | `PROMPT_MODERATION` | No | `waffo` screens image/video prompts before spending credits; empty uses only the local blocklist. Requires `WAFFO_MERCHANT_ID` and `WAFFO_PRIVATE_KEY` |
-| `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and the photos of the Wan 3.0 photo effects (rap duo, zombie couple, younger-self hug, vampire transformation) with SeeAPI's NSFW filter. Empty turns the check off |
+| `IMAGE_MODERATION`   | No                | `seeapi` checks video start images and the photos of the Wan 3.0 photo effects (rap duo, zombie couple, younger-self hug, vampire transformation, raindance duo) with SeeAPI's NSFW filter. Empty turns the check off |
 | `STORAGE_ENDPOINT`   | No                | S3-compatible endpoint. Empty means AWS S3                    |
 | `STORAGE_REGION`     | No                | Region for request signing. Default `auto`                    |
 | `STORAGE_BUCKET`     | With images or videos | Private bucket for generated images and videos            |
@@ -304,6 +304,15 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 - Photo limits are the rap duo's.
 - The prompt template is `vampirePrompt` in `src/server/videos/vampire.ts`. It keeps the fangs and eyes at costume level, with no blood or gore, so Bailian's moderation lets it through.
 - Keep it shorter than `RAP_DURATION`: the upload cleanup would otherwise look for a second photo.
+
+### Raindance duo (Bailian Wan 3.0)
+
+`/videos/raindance` turns two photos into a 15-second 720p vertical (9:16) video with sound, after the "Raindance" AI trend: the first person waits at the end of a wooden dock at golden hour, the second walks up singing to them, then both sit at the end of the dock at sunset. It needs the zombie couple's setup and costs `RAINDANCE_CREDITS` (75).
+
+- Photo limits are the rap duo's.
+- The prompt template is `raindancePrompt` in `src/server/videos/raindance.ts`. The singing is a wordless melody of the model's own. Never name the trend's song, its artists or its lyrics in the prompt: users add the song when they post.
+- The poster is cut at `RAINDANCE_POSTER_MS` (3 s), the wide shot with both on the dock.
+- Keep it `RAP_DURATION` long, like the zombie couple.
 
 ## API keys
 
