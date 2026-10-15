@@ -477,6 +477,7 @@
     "videoRap": "Rap duo",
     "videoZombie": "Zombie couple",
     "videoHug": "Hug your younger self",
+    "videoVampire": "Vampire transformation",
     "videoLibrary": "All videos",
     "adminOrders": "Orders",
     "adminBroadcasts": "Broadcasts",
@@ -940,6 +941,31 @@
       "failed": "Generation failed. The credits were refunded. Try again.",
       "blocked": "A photo was blocked by content moderation. Try a different one.",
       "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
+    }
+  },
+  "VampireVideos": {
+    "title": "Vampire transformation",
+    "description": "One photo becomes a 10-second vertical Halloween video: lightning strikes in a candlelit castle and you turn into a vampire, cape and all.",
+    "left": {
+      "photo": "Your photo",
+      "preview": "Your photo preview"
+    },
+    "photoHint": "JPEG, PNG or WebP, up to {size} MB. One person, facing the camera, in good light.",
+    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
+    "generating": "Sending…",
+    "balance": "{count, plural, one {# credit left} other {# credits left}}",
+    "buyCredits": "Buy credits",
+    "disabled": "The vampire transformation isn't set up yet.",
+    "historyTitle": "Your videos",
+    "empty": "No videos yet.",
+    "viewAll": "View all",
+    "errors": {
+      "credits": "Not enough credits. Buy more on the Credits & billing page.",
+      "invalid": "Use a JPEG, PNG or WebP photo up to {size} MB.",
+      "imageSize": "Use a photo {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
+      "failed": "Generation failed. The credits were refunded. Try again.",
+      "blocked": "The photo was blocked by content moderation. Try a different one.",
+      "moderation": "The photo couldn't be checked right now. No credits were spent. Try again in a minute."
     }
   },
   "Notifications": {

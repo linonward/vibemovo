@@ -14,13 +14,18 @@ import { VideoList } from "./video-list";
 
 type Video = GeneratedVideo;
 
-// The two-photo effects without words, by their route.
-const ENDPOINTS = { zombie: "/api/videos/zombie", hug: "/api/videos/hug" } as const;
+// The photo effects without words: their route and their photos, sent as
+// image1 and image2 in this order.
+const KINDS = {
+  zombie: { endpoint: "/api/videos/zombie", sides: ["left", "right"] },
+  hug: { endpoint: "/api/videos/hug", sides: ["left", "right"] },
+  vampire: { endpoint: "/api/videos/vampire", sides: ["left"] },
+} as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
 
-export type PairKind = keyof typeof ENDPOINTS;
+export type EffectKind = keyof typeof KINDS;
 
-export type PairGeneratorProps = {
-  kind: PairKind;
+export type EffectGeneratorProps = {
+  kind: EffectKind;
   balance: number;
   // The fixed price of one video.
   credits: number;
@@ -36,8 +41,7 @@ export type PairGeneratorProps = {
 const POLL_MS = 5000;
 
 // 图1 stands on the left, 图2 on the right.
-const SIDES = ["left", "right"] as const;
-type Side = (typeof SIDES)[number];
+type Side = "left" | "right";
 
 const ERRORS = {
   INSUFFICIENT_CREDITS: "errors.credits",
@@ -50,12 +54,17 @@ const ERRORS = {
 
 const parse = (video: Serialized<Video>): Video => ({ ...video, createdAt: new Date(video.createdAt) });
 
-export function PairGenerator(props: PairGeneratorProps) {
-  const endpoint = ENDPOINTS[props.kind];
-  // Both namespaces have the same keys. Literal names, so the client
-  // messages test can check that the browser gets them.
-  const messages = { zombie: useTranslations("ZombieVideos"), hug: useTranslations("HugVideos") };
-  const t = messages[props.kind];
+export function EffectGenerator(props: EffectGeneratorProps) {
+  const { endpoint, sides } = KINDS[props.kind];
+  // Literal names, so the client messages test can check that the browser
+  // gets them. The namespaces share their keys, except that a one-photo
+  // effect has no "right"; it never reads them, since it has no right side.
+  const messages = {
+    zombie: useTranslations("ZombieVideos"),
+    hug: useTranslations("HugVideos"),
+    vampire: useTranslations("VampireVideos"),
+  };
+  const t = messages[props.kind] as typeof messages.zombie;
   const [photos, setPhotos] = useState<Record<Side, File | null>>({ left: null, right: null });
   const [previews, setPreviews] = useState<Record<Side, string | null>>({ left: null, right: null });
   // The latest pick per side, so a slow size check for an earlier file changes nothing.
@@ -69,7 +78,7 @@ export function PairGenerator(props: PairGeneratorProps) {
   const size = Math.round(props.maxImageBytes / 1024 / 1024);
   const { min, max: maxSide, ratio } = limitValues(props.imageLimits);
   const messageValues = { size, min, maxSide, ratio };
-  const ready = SIDES.every((side) => photos[side]);
+  const ready = sides.every((side) => photos[side]);
   const pendingIds = videos.filter((video) => video.status === "pending").map((video) => video.id);
 
   useEffect(
@@ -115,12 +124,11 @@ export function PairGenerator(props: PairGeneratorProps) {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!photos.left || !photos.right) return;
+    if (!ready) return;
     setSubmitting(true);
     setError(null);
     const form = new FormData();
-    form.set("image1", photos.left);
-    form.set("image2", photos.right);
+    sides.forEach((side, index) => form.set(`image${index + 1}`, photos[side] as File));
     const response = await fetch(endpoint, { method: "POST", body: form }).catch(() => null);
     const body: ApiBody<VideoResponse> = response ? await response.json().catch(() => ({})) : {};
     setSubmitting(false);
@@ -138,8 +146,8 @@ export function PairGenerator(props: PairGeneratorProps) {
     <div className="flex flex-col gap-10">
       <form onSubmit={submit} className="flex flex-col gap-5 rounded-xl border bg-card p-5">
         {!props.enabled && <p className="text-muted-foreground">{t("disabled")}</p>}
-        <div className="grid gap-5 sm:grid-cols-2">
-          {SIDES.map((side) => (
+        <div className={sides.length > 1 ? "grid gap-5 sm:grid-cols-2" : "grid gap-5"}>
+          {sides.map((side) => (
             <div key={side} className="flex flex-col gap-2">
               <Label htmlFor={`${props.kind}-${side}-photo`}>{t(`${side}.photo`)}</Label>
               <input

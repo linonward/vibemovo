@@ -85,6 +85,8 @@ const {
   zombieOptions,
   createHugVideo,
   hugOptions,
+  createVampireVideo,
+  vampireOptions,
   countVideos,
   refreshVideo,
   sweepStaleVideos,
@@ -858,6 +860,59 @@ test("a younger-self hug with a photo that isn't an image spends nothing", async
 
   expect(storage.putObject).not.toHaveBeenCalled();
   expect(await getBalance(userId)).toBe(before);
+});
+
+const vampire = (image: Uint8Array = jpeg) => createVampireVideo({ userId, image });
+
+test("the vampire transformation is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
+  ai.state.active = null;
+  expect(vampireOptions()).toEqual({ enabled: true, credits: 50 });
+  ai.state.reference = false;
+  expect(vampireOptions().enabled).toBe(false);
+});
+
+test("a vampire transformation stores one photo, queues one 10-second vertical Wan 3.0 job and spends 50 credits", async () => {
+  const before = await getBalance(userId);
+
+  const result = await vampire();
+
+  const key = `videos/${userId}/${result.id}.jpg`;
+  expect(storage.putObject).toHaveBeenCalledTimes(1);
+  expect(storage.putObject).toHaveBeenCalledWith(key, jpeg, "image/jpeg");
+  const job = ai.reference.submit.mock.calls[0][0];
+  expect(job).toMatchObject({
+    images: [{ bytes: jpeg, mime: "image/jpeg", url: `https://storage.test/${key}?signed` }],
+    duration: 10,
+    resolution: "720p",
+    ratio: "9:16",
+  });
+  expect(job.prompt).toContain("vampire");
+  expect(result).toMatchObject({ prompt: "Vampire transformation", duration: 10, credits: 50, status: "pending" });
+  expect(await getBalance(userId)).toBe(before - 50);
+});
+
+test("a vampire transformation with a photo Bailian would refuse spends nothing", async () => {
+  const before = await getBalance(userId);
+
+  await expect(vampire(pngOf(194, 259))).rejects.toThrow();
+
+  expect(storage.putObject).not.toHaveBeenCalled();
+  expect(await getBalance(userId)).toBe(before);
+});
+
+test("a vampire transformation's photo is deleted after a day, without looking for a second", async () => {
+  const { id } = await vampire();
+  await getDb()
+    .update(video)
+    .set({ createdAt: new Date(Date.now() - 25 * 60 * 60_000) })
+    .where(eq(video.id, id));
+
+  await expireAll();
+
+  const deleted = storage.deleteObject.mock.calls.map(([key]) => key);
+  expect(deleted).toContain(`videos/${userId}/${id}.jpg`);
+  expect(deleted.filter((key) => key.includes(`${id}-2`))).toEqual([]);
+  expect(await imageKeyOf(id)).toBeNull();
 });
 
 // A video whose uploads were stored `hoursAgo`. The database is shared, so

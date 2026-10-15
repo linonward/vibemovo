@@ -477,6 +477,7 @@
     "videoRap": "双人说唱",
     "videoZombie": "僵尸情侣",
     "videoHug": "拥抱童年的自己",
+    "videoVampire": "吸血鬼变身",
     "videoLibrary": "全部视频",
     "adminOrders": "订单",
     "adminBroadcasts": "群发通知",
@@ -936,6 +937,31 @@
     "errors": {
       "credits": "积分不足。请到积分与账单页面购买。",
       "invalid": "请使用每张不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
+      "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
+      "failed": "生成失败，积分已退回。请重试。",
+      "blocked": "照片未通过内容审核。请换一张。",
+      "moderation": "暂时无法检查照片，没有扣积分。请一分钟后重试。"
+    }
+  },
+  "VampireVideos": {
+    "title": "吸血鬼变身",
+    "description": "上传一张照片，生成一段 10 秒的竖屏万圣节视频：烛光城堡里电闪雷鸣，你变身成披着斗篷的吸血鬼。",
+    "left": {
+      "photo": "你的照片",
+      "preview": "你的照片预览"
+    },
+    "photoHint": "JPEG、PNG 或 WebP，不超过 {size} MB。照片里一个人，正脸，光线充足。",
+    "generate": "生成（{count} 积分）",
+    "generating": "正在提交…",
+    "balance": "剩余 {count} 积分",
+    "buyCredits": "购买积分",
+    "disabled": "吸血鬼变身尚未配置。",
+    "historyTitle": "你的视频",
+    "empty": "还没有视频。",
+    "viewAll": "查看全部",
+    "errors": {
+      "credits": "积分不足。请到积分与账单页面购买。",
+      "invalid": "请使用不超过 {size} MB 的 JPEG、PNG 或 WebP 照片。",
       "imageSize": "请使用每边 {min, number} 到 {maxSide, number} 像素的照片，长边不超过短边的 {ratio} 倍。",
       "failed": "生成失败，积分已退回。请重试。",
       "blocked": "照片未通过内容审核。请换一张。",

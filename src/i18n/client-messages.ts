@@ -22,6 +22,7 @@ export const CLIENT_NAMESPACES = [
   "Videos",
   "ZombieVideos",
   "HugVideos",
+  "VampireVideos",
 ] as const;
 
 export function clientMessages<M extends AbstractIntlMessages>(messages: M): Partial<M> {

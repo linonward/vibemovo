@@ -6,7 +6,7 @@ import { Billing } from "@/components/billing/billing";
 import { ImageGenerator } from "@/components/images/image-generator";
 import { RapGenerator } from "@/components/videos/rap-generator";
 import { VideoGenerator } from "@/components/videos/video-generator";
-import { PairGenerator } from "@/components/videos/pair-generator";
+import { EffectGenerator } from "@/components/videos/effect-generator";
 import { CreditsProvider, useCredits } from "./credits";
 
 vi.mock("@/i18n/navigation", () => ({
@@ -41,7 +41,7 @@ const surfaces = {
     />
   ),
   zombie: (
-    <PairGenerator
+    <EffectGenerator
       kind="zombie"
       balance={100}
       credits={75}

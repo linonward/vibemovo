@@ -11,7 +11,8 @@ export const video = pgTable(
   {
     ...generationColumns(),
     prompt: text("prompt").notNull(),
-    // Seconds: one of VIDEO_DURATIONS, or RAP_DURATION for a two-photo video.
+    // Seconds: one of VIDEO_DURATIONS, RAP_DURATION for a two-photo video,
+    // or VAMPIRE_DURATION for a vampire transformation.
     duration: integer("duration").notNull(),
     // The provider that took the job; it alone can finish it.
     provider: text("provider", { enum: VIDEO_PROVIDER_IDS }).notNull(),

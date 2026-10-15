@@ -150,13 +150,14 @@ test("the sidebar opens the rap duo, off while Bailian is not set up", async ({ 
   await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
 });
 
-// The two-photo effects without words.
-const PAIRS = [
-  { route: "zombie", title: "Zombie couple", off: "The zombie couple isn't set up yet." },
-  { route: "hug", title: "Hug your younger self", off: "Hug your younger self isn't set up yet." },
+// The photo effects without words.
+const EFFECTS = [
+  { route: "zombie", title: "Zombie couple", off: "The zombie couple isn't set up yet.", photos: 2, credits: 75 },
+  { route: "hug", title: "Hug your younger self", off: "Hug your younger self isn't set up yet.", photos: 2, credits: 75 },
+  { route: "vampire", title: "Vampire transformation", off: "The vampire transformation isn't set up yet.", photos: 1, credits: 50 },
 ] as const;
 
-for (const { route, title, off } of PAIRS) {
+for (const { route, title, off, credits } of EFFECTS) {
   test(`the sidebar opens ${title}, off while Bailian is not set up`, async ({ page }) => {
     await signIn(page);
     await page.goto("/en/videos");
@@ -169,7 +170,7 @@ for (const { route, title, off } of PAIRS) {
     await expect(page).toHaveURL(`/en/videos/${route}`);
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
     await expect(page.getByText(off)).toBeVisible();
-    await expect(page.getByRole("button", { name: "Generate (75 credits)" })).toBeDisabled();
+    await expect(page.getByRole("button", { name: `Generate (${credits} credits)` })).toBeDisabled();
   });
 }
 
@@ -218,24 +219,27 @@ test("a rap video needs a session, two photos and two names, then reports videos
   expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
 });
 
-for (const { route, title } of PAIRS) {
-  test(`a ${title} video needs a session and two photos, then reports videos off`, async ({ page, request }) => {
+for (const { route, title, photos } of EFFECTS) {
+  test(`a ${title} video needs a session and its photos, then reports videos off`, async ({ page, request }) => {
     const photo = (buffer: Buffer) => ({ name: "photo.png", mimeType: "image/png", buffer });
+    // image1, and image2 for a two-photo effect; the last one as given.
+    const body = (last: Buffer) =>
+      photos === 2 ? { image1: photo(png), image2: photo(last) } : { image1: photo(last) };
     const endpoint = `/api/videos/${route}`;
-    const anonymous = await request.post(endpoint, { multipart: { image1: photo(png), image2: photo(png) } });
+    const anonymous = await request.post(endpoint, { multipart: body(png) as never });
     expect(anonymous.status()).toBe(401);
 
     await signIn(page);
     const post = (body: object) =>
       page.request.post(endpoint, { multipart: body as never, headers: { origin: BASE_URL } });
 
-    const missing = await post({ image1: photo(png) });
+    const missing = await post(photos === 2 ? { image1: photo(png) } : { name: "no photo" });
     expect(missing.status()).toBe(400);
-    const invalid = await post({ image1: photo(png), image2: photo(Buffer.from("<html>")) });
+    const invalid = await post(body(Buffer.from("<html>")));
     expect(invalid.status()).toBe(400);
     expect(await invalid.json()).toEqual({ error: "INVALID_REQUEST" });
 
-    const off = await post({ image1: photo(png), image2: photo(png) });
+    const off = await post(body(png));
     expect(off.status()).toBe(503);
     expect(await off.json()).toEqual({ error: "VIDEOS_DISABLED" });
   });
