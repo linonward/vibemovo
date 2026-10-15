@@ -34,12 +34,16 @@ export async function GET() {
     const blog = await getTranslations({ locale, namespace: "Blog" });
     const rap = await getTranslations({ locale, namespace: "RapLanding" });
     const zombie = await getTranslations({ locale, namespace: "ZombieLanding" });
+    const hug = await getTranslations({ locale, namespace: "HugLanding" });
+    const vampire = await getTranslations({ locale, namespace: "VampireLanding" });
     return [
       `- [${projectConfig.name}](${url(`/${locale}`)}): ${home("hero.title")}`,
       ...LEGAL_DOCS.map((doc) => `- [${legal(doc)}](${url(`/${locale}/${doc}`)})`),
       `- [${pricing("title")}](${url(`/${locale}/pricing`)}): ${pricing("description")}`,
       `- [${rap("title")}](${url(`/${locale}/ai-rap-video-generator`)}): ${rap("description")}`,
       `- [${zombie("title")}](${url(`/${locale}/ai-zombie-couple-video`)}): ${zombie("description")}`,
+      `- [${hug("title")}](${url(`/${locale}/hug-your-younger-self-ai`)}): ${hug("description")}`,
+      `- [${vampire("title")}](${url(`/${locale}/ai-vampire-transformation-video`)}): ${vampire("description")}`,
       `- [${blog("title")}](${url(`/${locale}/blog`)}): ${blog("description")}`,
       ...(await listPosts(locale)).map(
         (post) => `- [${post.title}](${url(`/${locale}/blog/${post.slug}`)}): ${post.description}`,

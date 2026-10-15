@@ -11,17 +11,33 @@ const STEPS = ["1", "2", "3"] as const;
 const FEATURES = ["1", "2", "3"] as const;
 const QUESTIONS = ["1", "2", "3", "4"] as const;
 
-// What the copy states about the zombie couple, from its server config.
-export type ZombieFacts = { credits: number; signup: number; maxImageMb: number };
+// What the copy states about an effect, from its server config.
+export type EffectFacts = { credits: number; signup: number; maxImageMb: number };
 
-// The public page for "AI zombie couple video": what the zombie couple
-// makes, a real result, the steps and the cost. Laid out like the rap duo's
-// page (rap-landing.tsx). `guide` is the locale's blog guide, if it has one.
-export function ZombieLanding({ facts, guide }: { facts: ZombieFacts; guide?: string }) {
-  const t = useTranslations("ZombieLanding");
+// Each effect's tool behind sign-in and the four frames of a real result.
+const LANDINGS = {
+  zombie: { tool: "/videos/zombie", frames: "/blog/ai-zombie-couple-video/frames.jpg" },
+  hug: { tool: "/videos/hug", frames: "/landing/hug/frames.jpg" },
+  vampire: { tool: "/videos/vampire", frames: "/landing/vampire/frames.jpg" },
+} as const;
+
+export type EffectLandingKind = keyof typeof LANDINGS;
+
+// The public page for one video effect's search query: what it makes, a
+// real result, the steps and the cost. Laid out like the rap duo's page
+// (rap-landing.tsx). The copy lives under the kind's own namespace, with
+// the same keys. `guide` is the locale's blog guide, if it has one.
+export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind; facts: EffectFacts; guide?: string }) {
+  const messages = {
+    zombie: useTranslations("ZombieLanding"),
+    hug: useTranslations("HugLanding"),
+    vampire: useTranslations("VampireLanding"),
+  };
+  const t = messages[kind] as typeof messages.zombie;
   const locale = useLocale();
+  const { tool, frames } = LANDINGS[kind];
   // Sign-in returns visitors to the tool itself.
-  const start = `/sign-in?next=${encodeURIComponent(`/${locale}/videos/zombie`)}`;
+  const start = `/sign-in?next=${encodeURIComponent(`/${locale}${tool}`)}`;
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
@@ -61,7 +77,7 @@ export function ZombieLanding({ facts, guide }: { facts: ZombieFacts; guide?: st
         </div>
         <figure className="flex flex-col gap-3">
           <Image
-            src="/blog/ai-zombie-couple-video/frames.jpg"
+            src={frames}
             alt={t("result.alt")}
             width={1440}
             height={640}
@@ -72,8 +88,8 @@ export function ZombieLanding({ facts, guide }: { facts: ZombieFacts; guide?: st
         </figure>
       </section>
 
-      <section aria-labelledby="zombie-steps" className="flex flex-col gap-12 border-t py-20">
-        <SectionHeading eyebrow={t("steps.eyebrow")} id="zombie-steps">
+      <section aria-labelledby={`${kind}-steps`} className="flex flex-col gap-12 border-t py-20">
+        <SectionHeading eyebrow={t("steps.eyebrow")} id={`${kind}-steps`}>
           {t("steps.title")}
         </SectionHeading>
         <ol className="grid gap-10 md:grid-cols-3 md:gap-8">
@@ -100,8 +116,8 @@ export function ZombieLanding({ facts, guide }: { facts: ZombieFacts; guide?: st
         </ol>
       </section>
 
-      <section aria-labelledby="zombie-features" className="flex flex-col gap-12 border-t py-20">
-        <SectionHeading eyebrow={t("features.eyebrow")} id="zombie-features">
+      <section aria-labelledby={`${kind}-features`} className="flex flex-col gap-12 border-t py-20">
+        <SectionHeading eyebrow={t("features.eyebrow")} id={`${kind}-features`}>
           {t("features.title")}
         </SectionHeading>
         <ul className="grid gap-4 md:grid-cols-3">
@@ -115,10 +131,10 @@ export function ZombieLanding({ facts, guide }: { facts: ZombieFacts; guide?: st
       </section>
 
       <section
-        aria-labelledby="zombie-faq"
+        aria-labelledby={`${kind}-faq`}
         className="grid gap-10 border-t py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"
       >
-        <SectionHeading eyebrow={t("faq.eyebrow")} id="zombie-faq">
+        <SectionHeading eyebrow={t("faq.eyebrow")} id={`${kind}-faq`}>
           {t("faq.title")}
         </SectionHeading>
         <dl className="border-b">
@@ -142,12 +158,12 @@ export function ZombieLanding({ facts, guide }: { facts: ZombieFacts; guide?: st
       </section>
 
       <section
-        aria-labelledby="zombie-cta"
+        aria-labelledby={`${kind}-cta`}
         className="relative isolate mb-20 flex flex-col items-center gap-6 overflow-hidden rounded-2xl border bg-card px-6 py-16 text-center sm:px-12 sm:py-20"
       >
         <Glow className="-top-24" />
         <h2
-          id="zombie-cta"
+          id={`${kind}-cta`}
           className="display-tight font-display text-3xl leading-tight font-bold text-balance sm:text-5xl"
         >
           {t("cta.title")}

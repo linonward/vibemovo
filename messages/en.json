@@ -429,6 +429,174 @@
       "button": "Make a zombie couple video"
     }
   },
+  "HugLanding": {
+    "nav": "AI younger-self hug videos",
+    "title": "Hug Your Younger Self AI Video Generator",
+    "metaTitle": "Hug Your Younger Self AI: Photos to a Hug Video",
+    "description": "Turn a photo of you today and one from childhood into a 15-second video: you find your younger self in a sunny park and hug. Vertical, with music.",
+    "hero": {
+      "eyebrow": "Younger-self hug",
+      "title": "Hug your younger self with AI, from two photos",
+      "body": "Upload a photo of you today and one of you as a child. You get a 15-second vertical video: you find your younger self in a sunny park, kneel and hug, then golden light surrounds the child.",
+      "cta": "Make a younger-self hug video",
+      "guide": "Read the guide",
+      "points": {
+        "1": "15 seconds, 9:16 vertical",
+        "2": "Music and sound included"
+      }
+    },
+    "result": {
+      "alt": "Four frames from a 15-second AI younger-self hug video: a man in a blue suit walks into a sunny park toward a boy playing with a toy car, kneels beside him, hugs him with his eyes closed, then golden light surrounds the boy.",
+      "caption": "Four frames from a real result, made from two photos of an AI-generated person. The hug starts at about 8 seconds, and the light comes at about 12."
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "title": "From two photos to one hug",
+      "items": {
+        "1": {
+          "title": "Upload your photo today",
+          "body": "One person, facing the camera, in good light. JPEG, PNG or WebP, up to {size} MB."
+        },
+        "2": {
+          "title": "Upload a childhood photo",
+          "body": "Only you as a child, with your face visible. The child in the video keeps that face."
+        },
+        "3": {
+          "title": "Generate",
+          "body": "One video costs {credits} credits. It is usually ready in a few minutes, and you can play or download it."
+        }
+      }
+    },
+    "features": {
+      "eyebrow": "The hug your younger self trend",
+      "title": "What you get",
+      "items": {
+        "1": {
+          "title": "The whole moment in 15 seconds",
+          "body": "You find your younger self playing in the grass, kneel down and hug, and golden light surrounds the child."
+        },
+        "2": {
+          "title": "Made for TikTok, Reels and Shorts",
+          "body": "The video is 9:16 and comes with its own piano music and sound. You don't add a song."
+        },
+        "3": {
+          "title": "Still your faces",
+          "body": "The adult keeps your face and outfit today, and the child keeps the face from your childhood photo."
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions",
+      "items": {
+        "1": {
+          "title": "How much does a younger-self hug video cost?",
+          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, which is not enough for one. Buy credits on the <pricing>pricing page</pricing>."
+        },
+        "2": {
+          "title": "What if a video fails?",
+          "body": "You get the credits back. Try again with the same photos or different ones."
+        },
+        "3": {
+          "title": "How long does it take?",
+          "body": "Usually a few minutes. You can close the page: you get a notification when the video is ready."
+        },
+        "4": {
+          "title": "Which photo goes first?",
+          "body": "The first photo is you today, the adult who kneels down. The second photo is you as a child."
+        }
+      }
+    },
+    "cta": {
+      "title": "Hug your younger self",
+      "body": "Sign in with an email link or your Google account. No password.",
+      "button": "Make a younger-self hug video"
+    }
+  },
+  "VampireLanding": {
+    "nav": "AI vampire transformation videos",
+    "title": "AI Vampire Transformation Video Generator",
+    "metaTitle": "AI Vampire Transformation: One Photo to Video",
+    "description": "Turn one photo into a 10-second vampire transformation: lightning strikes in a candlelit castle and you get pale skin, red eyes, fangs and a cape.",
+    "hero": {
+      "eyebrow": "Vampire transformation",
+      "title": "AI vampire transformation video from one photo",
+      "body": "Upload one photo. You get a 10-second vertical Halloween video: lightning strikes in a candlelit castle and you turn into a vampire, with red eyes, small fangs and a crimson-lined cape.",
+      "cta": "Make a vampire video",
+      "guide": "Read the guide",
+      "points": {
+        "1": "10 seconds, 9:16 vertical",
+        "2": "Music and sound included"
+      }
+    },
+    "result": {
+      "alt": "Four frames from a 10-second AI vampire transformation video: a man in a blue blazer in a candlelit castle hall, lightning strikes and he wears a crimson-lined cape with red eyes, a close-up of his fangs, then bats fly around him.",
+      "caption": "Four frames from a real result, made from one photo of an AI-generated person. The change starts with the lightning at about 3 seconds; the fangs show at about 6."
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "title": "From one photo to one vampire",
+      "items": {
+        "1": {
+          "title": "Upload your photo",
+          "body": "One person, facing the camera, in good light. JPEG, PNG or WebP, up to {size} MB."
+        },
+        "2": {
+          "title": "Generate",
+          "body": "One video costs {credits} credits. You don't write a prompt: the transformation is set."
+        },
+        "3": {
+          "title": "Play or download",
+          "body": "It is usually ready in a few minutes. You get a notification if you leave the page."
+        }
+      }
+    },
+    "features": {
+      "eyebrow": "A Halloween effect",
+      "title": "What you get",
+      "items": {
+        "1": {
+          "title": "The whole change in 10 seconds",
+          "body": "You stand in a castle hall, lightning flashes, you turn into a vampire and hide behind the cape before the bats fly at the camera."
+        },
+        "2": {
+          "title": "Made for TikTok, Reels and Shorts",
+          "body": "The video is 9:16 and comes with its own organ music, thunder and bats. You don't add a song."
+        },
+        "3": {
+          "title": "Still your face",
+          "body": "Your face and hair stay recognisable. The vampire look is a film costume: no blood, no gore."
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Questions",
+      "items": {
+        "1": {
+          "title": "How much does a vampire video cost?",
+          "body": "{credits} credits for one 10-second video. New accounts get {signup} free credits, which is not enough for one. Buy credits on the <pricing>pricing page</pricing>."
+        },
+        "2": {
+          "title": "What if a video fails?",
+          "body": "You get the credits back. Try again with the same photo or a different one."
+        },
+        "3": {
+          "title": "How long does it take?",
+          "body": "Usually a few minutes. You can close the page: you get a notification when the video is ready."
+        },
+        "4": {
+          "title": "Is it scary?",
+          "body": "It's spooky, not gory. The prompt asks for a costume look with no blood, wounds or biting."
+        }
+      }
+    },
+    "cta": {
+      "title": "Make your vampire video",
+      "body": "Sign in with an email link or your Google account. No password.",
+      "button": "Make a vampire video"
+    }
+  },
   "Footer": {
     "blurb": "Prompt to image, image to video. New accounts start with free credits.",
     "product": "Product",

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { ZombieLanding } from "@/components/landing/zombie-landing";
+import { EffectLanding } from "@/components/landing/effect-landing";
 import type { Locale } from "@/i18n/routing";
 import { postLocales } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
@@ -25,7 +25,8 @@ export default async function Page({ params }: PageProps<"/[locale]/ai-zombie-co
   const { locale } = await params;
   const guide = (await postLocales(GUIDE)).includes(locale as Locale) ? `/blog/${GUIDE}` : undefined;
   return (
-    <ZombieLanding
+    <EffectLanding
+      kind="zombie"
       facts={{
         credits: ZOMBIE_CREDITS,
         signup: signupCredits,
