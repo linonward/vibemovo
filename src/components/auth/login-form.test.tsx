@@ -73,6 +73,23 @@ test.each([
   window.history.replaceState(null, "", "/");
 });
 
+test("a form in a dialog returns to the page that opened it, not to ?next=", async () => {
+  window.history.replaceState(null, "", "/en/sign-in?next=%2Fen%2Fbilling");
+  const callbackURL = "/en/hug-your-younger-self-ai?try=1";
+  social.mockResolvedValue({ data: { redirect: true }, error: null });
+  magicLink.mockResolvedValue({ data: { status: true }, error: null });
+
+  renderWithIntl(<LoginForm returnTo={callbackURL} />);
+  fireEvent.click(screen.getByRole("button", { name: "Continue with Google" }));
+  expect(social).toHaveBeenCalledWith({ provider: "google", callbackURL });
+
+  cleanup();
+  renderWithIntl(<LoginForm returnTo={callbackURL} />);
+  sendMagicLink();
+  expect(magicLink).toHaveBeenCalledWith(expect.objectContaining({ callbackURL }));
+  window.history.replaceState(null, "", "/");
+});
+
 test("without Turnstile, sends the magic link with no challenge", async () => {
   magicLink.mockResolvedValue({ data: { status: true }, error: null });
   renderWithIntl(<LoginForm />);

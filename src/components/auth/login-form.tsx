@@ -14,7 +14,9 @@ type State = "idle" | "sending" | "sent" | "error" | "google-error";
 
 // With a Turnstile site key, a magic link waits for the challenge and
 // sends its token; the server rejects magic-link requests without one.
-export function LoginForm({ turnstileSiteKey }: { turnstileSiteKey?: string }) {
+// `returnTo` is for a form outside /sign-in, which has no ?next=: a dialog
+// returns to the page that opened it.
+export function LoginForm({ turnstileSiteKey, returnTo }: { turnstileSiteKey?: string; returnTo?: string }) {
   const t = useTranslations("LoginForm");
   const locale = useLocale();
   const [state, setState] = useState<State>("idle");
@@ -24,7 +26,7 @@ export function LoginForm({ turnstileSiteKey }: { turnstileSiteKey?: string }) {
 
   // Read at submit, not render, so the page needs no Suspense boundary.
   const callbackURL = () =>
-    signInReturnPath(new URLSearchParams(window.location.search).get("next"), locale);
+    signInReturnPath(returnTo ?? new URLSearchParams(window.location.search).get("next"), locale);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

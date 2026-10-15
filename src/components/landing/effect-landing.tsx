@@ -1,30 +1,33 @@
-import { BookOpen, Check } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
+import { ArrowUp, BookOpen, Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { cn } from "cn";
-import { PrimaryLink } from "@/components/home/primary-link";
 import { Glow, SectionHeading } from "@/components/home/section-heading";
+import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import type { ImageLimits } from "@/lib/image-limits";
+import { LandingTryout } from "./landing-tryout";
 
 const POINTS = ["1", "2"] as const;
 const STEPS = ["1", "2", "3"] as const;
 const FEATURES = ["1", "2", "3"] as const;
 const QUESTIONS = ["1", "2", "3", "4"] as const;
 
-// What the copy states about an effect, from its server config.
-export type EffectFacts = { credits: number; signup: number; maxImageMb: number };
+// What the copy states about an effect, and what its form checks, from its
+// server config.
+export type EffectFacts = { credits: number; signup: number; maxImageBytes: number; imageLimits: ImageLimits };
 
-// Each effect's tool behind sign-in and the four frames of a real result.
+// The four frames of each effect's real result.
 const LANDINGS = {
-  zombie: { tool: "/videos/zombie", frames: "/blog/ai-zombie-couple-video/frames.jpg" },
-  hug: { tool: "/videos/hug", frames: "/landing/hug/frames.jpg" },
-  vampire: { tool: "/videos/vampire", frames: "/landing/vampire/frames.jpg" },
+  zombie: { frames: "/blog/ai-zombie-couple-video/frames.jpg" },
+  hug: { frames: "/landing/hug/frames.jpg" },
+  vampire: { frames: "/landing/vampire/frames.jpg" },
 } as const;
 
 export type EffectLandingKind = keyof typeof LANDINGS;
 
-// The public page for one video effect's search query: what it makes, a
-// real result, the steps and the cost. Laid out like the rap duo's page
+// The public page for one video effect's search query: the effect's form
+// right in the hero, a real result, the steps and the cost. Laid out like the rap duo's page
 // (rap-landing.tsx). The copy lives under the kind's own namespace, with
 // the same keys. `guide` is the locale's blog guide, if it has one.
 export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind; facts: EffectFacts; guide?: string }) {
@@ -34,10 +37,8 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
     vampire: useTranslations("VampireLanding"),
   };
   const t = messages[kind] as typeof messages.zombie;
-  const locale = useLocale();
-  const { tool, frames } = LANDINGS[kind];
-  // Sign-in returns visitors to the tool itself.
-  const start = `/sign-in?next=${encodeURIComponent(`/${locale}${tool}`)}`;
+  const { frames } = LANDINGS[kind];
+  const maxImageMb = facts.maxImageBytes / (1024 * 1024);
 
   return (
     <main id="main-content" className="mx-auto w-full max-w-6xl flex-1 px-5 sm:px-8">
@@ -51,18 +52,15 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
           <p className="max-w-[46ch] text-lg leading-8 text-pretty text-muted-foreground sm:text-xl">
             {t("hero.body")}
           </p>
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-            <PrimaryLink href={start}>{t("hero.cta")}</PrimaryLink>
-            {guide && (
-              <Link
-                href={guide}
-                className="inline-flex h-11 items-center gap-1.5 rounded-full border bg-card px-5 text-sm font-semibold transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
-              >
-                <BookOpen className="size-4" />
-                {t("hero.guide")}
-              </Link>
-            )}
-          </div>
+          {guide && (
+            <Link
+              href={guide}
+              className="inline-flex h-11 items-center gap-1.5 rounded-full border bg-card px-5 text-sm font-semibold transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_20%)]"
+            >
+              <BookOpen className="size-4" />
+              {t("hero.guide")}
+            </Link>
+          )}
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
             {POINTS.map((key) => (
               <li
@@ -75,18 +73,19 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
             ))}
           </ul>
         </div>
-        <figure className="flex flex-col gap-3">
-          <Image
-            src={frames}
-            alt={t("result.alt")}
-            width={1440}
-            height={640}
-            loading="eager"
-            className="w-full rounded-2xl border"
-          />
-          <figcaption className="text-sm text-muted-foreground">{t("result.caption")}</figcaption>
-        </figure>
+        <LandingTryout
+          kind={kind}
+          credits={facts.credits}
+          signup={facts.signup}
+          maxImageBytes={facts.maxImageBytes}
+          imageLimits={facts.imageLimits}
+        />
       </section>
+
+      <figure className="flex flex-col gap-3 pb-20">
+        <Image src={frames} alt={t("result.alt")} width={1440} height={640} className="w-full rounded-2xl border" />
+        <figcaption className="text-sm text-muted-foreground">{t("result.caption")}</figcaption>
+      </figure>
 
       <section aria-labelledby={`${kind}-steps`} className="flex flex-col gap-12 border-t py-20">
         <SectionHeading eyebrow={t("steps.eyebrow")} id={`${kind}-steps`}>
@@ -107,7 +106,7 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
               <h3 className="font-display text-lg font-semibold">{t(`steps.items.${key}.title`)}</h3>
               <p className="max-w-[38ch] text-pretty text-muted-foreground">
                 {t(`steps.items.${key}.body`, {
-                  size: facts.maxImageMb,
+                  size: maxImageMb,
                   credits: facts.credits,
                 })}
               </p>
@@ -169,7 +168,11 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
           {t("cta.title")}
         </h2>
         <p className="text-lg text-muted-foreground">{t("cta.body")}</p>
-        <PrimaryLink href={start}>{t("cta.button")}</PrimaryLink>
+        {/* Back up to the form; a plain anchor, as Link would add the locale. */}
+        <a href="#try" className={buttonVariants({ size: "lg" })}>
+          {t("cta.button")}
+          <ArrowUp />
+        </a>
       </section>
     </main>
   );

@@ -1,11 +1,24 @@
-import { afterEach, expect, test } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { cleanup, screen } from "@testing-library/react";
 import { renderWithIntl } from "@/test/intl";
-import { EffectLanding } from "./effect-landing";
+
+// The form in the hero (landing-tryout.test.tsx covers it) reads the session.
+vi.mock("@/lib/auth-client", () => ({ authClient: { useSession: () => ({ data: null, isPending: false }) } }));
+vi.mock("@/i18n/navigation", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/i18n/navigation")>()),
+  useRouter: () => ({ push: vi.fn() }),
+}));
+
+const { EffectLanding } = await import("./effect-landing");
 
 afterEach(cleanup);
 
-const facts = { credits: 75, signup: 75, maxImageMb: 2 };
+const facts = {
+  credits: 75,
+  signup: 75,
+  maxImageBytes: 2 * 1024 * 1024,
+  imageLimits: { minSide: 240, maxSide: 8000, maxRatio: 8 },
+};
 
 test("the headline names the query and is the page's only h1", () => {
   renderWithIntl(<EffectLanding kind="zombie" facts={facts} guide="/blog/ai-zombie-couple-video" />);
@@ -14,14 +27,15 @@ test("the headline names the query and is the page's only h1", () => {
   expect(screen.getByRole("heading", { level: 1, name: "AI zombie couple video from two photos" })).toBeDefined();
 });
 
-test("both calls to action sign in and return to the zombie couple page", () => {
+test("the hero holds the effect's form, and the closing call to action leads back to it", () => {
   renderWithIntl(<EffectLanding kind="zombie" facts={facts} />);
 
-  const links = screen.getAllByRole("link", { name: /Make a zombie couple video/ });
-  expect(links.map((link) => link.getAttribute("href"))).toEqual([
-    "/en/sign-in?next=%2Fen%2Fvideos%2Fzombie",
-    "/en/sign-in?next=%2Fen%2Fvideos%2Fzombie",
-  ]);
+  const form = screen.getByRole("region", { name: "Try it now" });
+  expect(form.id).toBe("try");
+  expect(screen.getByLabelText("Your photo")).toBeDefined();
+  expect(screen.getByLabelText("Your partner's photo")).toBeDefined();
+  expect(screen.getByRole("link", { name: /Make a zombie couple video/ }).getAttribute("href")).toBe("#try");
+  expect(screen.queryByRole("link", { name: /sign-in/ })).toBeNull();
 });
 
 test("links the guide when the locale has one", () => {
@@ -51,19 +65,16 @@ test("renders in Chinese", () => {
 });
 
 test.each([
-  ["hug", "Hug your younger self with AI, from two photos", /Make a younger-self hug video/, "hug", /Four frames from a 15-second AI younger-self hug video/],
-  ["vampire", "AI vampire transformation video from one photo", /Make a vampire video/, "vampire", /Four frames from a 10-second AI vampire transformation video/],
-] as const)("the %s page names its query, shows a real result and returns to its tool", (kind, h1, cta, tool, alt) => {
+  ["hug", "Hug your younger self with AI, from two photos", /Make a younger-self hug video/, "Your childhood photo", /Four frames from a 15-second AI younger-self hug video/],
+  ["vampire", "AI vampire transformation video from one photo", /Make a vampire video/, "Your photo", /Four frames from a 10-second AI vampire transformation video/],
+] as const)("the %s page names its query, shows a real result and its own form", (kind, h1, cta, photo, alt) => {
   renderWithIntl(<EffectLanding kind={kind} facts={facts} />);
 
   expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
   expect(screen.getByRole("heading", { level: 1, name: h1 })).toBeDefined();
   expect(screen.getByRole("img", { name: alt })).toBeDefined();
-  const links = screen.getAllByRole("link", { name: cta });
-  expect(links.map((link) => link.getAttribute("href"))).toEqual([
-    `/en/sign-in?next=%2Fen%2Fvideos%2F${tool}`,
-    `/en/sign-in?next=%2Fen%2Fvideos%2F${tool}`,
-  ]);
+  expect(screen.getByLabelText(photo)).toBeDefined();
+  expect(screen.getByRole("link", { name: cta }).getAttribute("href")).toBe("#try");
   expect(screen.getByText(/New accounts get 75 free credits, enough for your first/)).toBeDefined();
 });
 

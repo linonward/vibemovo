@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { expect, type Page } from "@playwright/test";
 import { BASE_URL, EMAIL_OUTBOX_DIR } from "../../playwright.config";
 
-function randomIp() {
+export function randomIp() {
   const octet = () => Math.floor(Math.random() * 254) + 1;
   return `10.${octet()}.${octet()}.${octet()}`;
 }
