@@ -4,10 +4,11 @@ import { expect, test } from "vitest";
 
 // The build bakes NEXT_PUBLIC_* variables into the browser code, so the
 // Dockerfile must take each as a build argument, and the runbook's build
-// command must pass it. Vercel Web Analytics works only on Vercel.
+// command must pass it. Vercel Web Analytics and Speed Insights work only
+// on Vercel.
 const root = new URL("../../", import.meta.url);
 const read = (path: string) => readFileSync(new URL(path, root), "utf8");
-const VERCEL_ONLY = ["NEXT_PUBLIC_VERCEL_ANALYTICS"];
+const VERCEL_ONLY = ["NEXT_PUBLIC_VERCEL_ANALYTICS", "NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS"];
 
 const publicVariables = [...read(".env.example").matchAll(/^(NEXT_PUBLIC_\w+)=/gm)]
   .map(([, name]) => name)

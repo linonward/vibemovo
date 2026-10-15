@@ -41,6 +41,7 @@ const schema = z.object({
   STORAGE_FORCE_PATH_STYLE: z.enum(["true", "false"], "must be true or false, or empty").optional(),
   NEXT_PUBLIC_SENTRY_DSN: optional(z.string().pipe(httpUrl)),
   NEXT_PUBLIC_VERCEL_ANALYTICS: z.enum(["1"], "must be 1, or empty").optional(),
+  NEXT_PUBLIC_VERCEL_SPEED_INSIGHTS: z.enum(["1"], "must be 1, or empty").optional(),
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"], "must be debug, info, warn or error, or empty").optional(),
   LOG_FORMAT: z.enum(["json", "pretty"], "must be json or pretty, or empty").optional(),
 });
