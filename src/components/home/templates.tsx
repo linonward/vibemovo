@@ -2,19 +2,12 @@ import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { EFFECT_PAGES, type EffectPage, effectPoster } from "@/lib/effect-pages";
 import { SectionHeading } from "./section-heading";
 
 // The video templates the h1 promises, each over its real result's poster
 // and linking its public page. The rap poster is 16:9 and the others 9:16;
 // the 3:4 tile crops both around the people in the middle.
-const TEMPLATES = [
-  ["RapLanding", "/ai-rap-video-generator", "/landing/rap/poster.jpg"],
-  ["ZombieLanding", "/ai-zombie-couple-video", "/landing/zombie/poster.jpg"],
-  ["HugLanding", "/hug-your-younger-self-ai", "/landing/hug/poster.jpg"],
-  ["VampireLanding", "/ai-vampire-transformation-video", "/landing/vampire/poster.jpg"],
-  ["RaindanceLanding", "/raindance-ai-trend", "/landing/raindance/poster.jpg"],
-] as const;
-
 export function Templates() {
   const t = useTranslations("Home.templates");
 
@@ -27,8 +20,8 @@ export function Templates() {
         <p className="max-w-[36ch] text-pretty text-muted-foreground">{t("body")}</p>
       </div>
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
-        {TEMPLATES.map((template) => (
-          <TemplateCard key={template[0]} template={template} />
+        {EFFECT_PAGES.map((template) => (
+          <TemplateCard key={template.kind} template={template} />
         ))}
       </ul>
     </section>
@@ -36,16 +29,16 @@ export function Templates() {
 }
 
 function TemplateCard({
-  template: [namespace, href, poster],
+  template: { kind, path, namespace },
 }: {
-  template: (typeof TEMPLATES)[number];
+  template: EffectPage;
 }) {
   const t = useTranslations(namespace);
 
   return (
     <li className="group relative isolate aspect-[3/4] overflow-hidden rounded-xl border transition-colors duration-150 [@media(hover:hover)]:hover:border-[color-mix(in_oklch,var(--border),var(--foreground)_30%)]">
       <Image
-        src={poster}
+        src={effectPoster(kind)}
         alt=""
         fill
         sizes="(min-width: 1024px) 220px, (min-width: 640px) 33vw, 50vw"
@@ -58,7 +51,7 @@ function TemplateCard({
         <div className="flex flex-col gap-1">
           {/* The link covers the whole tile. */}
           <h3 className="font-display text-base font-semibold text-pretty break-keep sm:text-lg">
-            <Link href={href} className="after:absolute after:inset-0">
+            <Link href={path} className="after:absolute after:inset-0">
               {t("nav")}
             </Link>
           </h3>

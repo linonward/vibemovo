@@ -9,7 +9,7 @@ Where code goes and which layer may import which.
 | `src/app/`                  | Routes only: pages, layouts, route handlers, `sitemap.ts`, `robots.ts` | Everything                          |
 | `src/server/<module>/`      | Server-only business logic, one directory per module           | `src/server`, `project.config`, npm packages |
 | `src/components/<area>/`    | UI, one directory per area (`home`, `billing`, `chat`, ...). `ui/` is shadcn | `src/components`, `src/lib`, `src/hooks`, `src/i18n`, `project.config`; tests also `src/test` |
-| `src/lib/`                  | Shared utilities and browser clients (`auth-client.ts`). `api.ts` is the API contract: error codes and response bodies | `src/lib`, `src/i18n`               |
+| `src/lib/`                  | Shared utilities and browser clients (`auth-client.ts`). `api.ts` is the API contract: error codes and response bodies. `effect-pages.ts` lists the effect landing pages for every page that links them | `src/lib`, `src/i18n`               |
 | `src/hooks/`                | React hooks                                                    | `src/lib`, `src/hooks`              |
 | `src/i18n/`                 | next-intl routing, locale-aware navigation, request config     | `src/i18n`, `messages/`, npm packages |
 | `messages/<locale>.json`    | UI strings, one file per locale, same keys in every file       | —                                   |

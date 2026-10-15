@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { projectConfig } from "project.config";
 import { Link } from "@/i18n/navigation";
 import { LEGAL_DOCS } from "@/lib/content";
+import { EFFECT_PAGES, type EffectPage } from "@/lib/effect-pages";
 import { Brand } from "./brand";
 import { ThemeSwitcher } from "./theme-switcher";
 
@@ -12,11 +13,6 @@ export function Footer() {
   const legal = useTranslations("Legal");
   const pricing = useTranslations("Pricing");
   const blog = useTranslations("Blog");
-  const rap = useTranslations("RapLanding");
-  const zombie = useTranslations("ZombieLanding");
-  const hug = useTranslations("HugLanding");
-  const vampire = useTranslations("VampireLanding");
-  const raindance = useTranslations("RaindanceLanding");
 
   return (
     <footer className="border-t">
@@ -35,31 +31,11 @@ export function Footer() {
                 {pricing("title")}
               </Link>
             </li>
-            <li>
-              <Link href="/ai-rap-video-generator" className={LINK}>
-                {rap("nav")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/ai-zombie-couple-video" className={LINK}>
-                {zombie("nav")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/hug-your-younger-self-ai" className={LINK}>
-                {hug("nav")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/ai-vampire-transformation-video" className={LINK}>
-                {vampire("nav")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/raindance-ai-trend" className={LINK}>
-                {raindance("nav")}
-              </Link>
-            </li>
+            {EFFECT_PAGES.map((page) => (
+              <li key={page.path}>
+                <EffectLink page={page} />
+              </li>
+            ))}
             <li>
               <Link href="/blog" className={LINK}>
                 {blog("title")}
@@ -99,5 +75,15 @@ export function Footer() {
         </div>
       </div>
     </footer>
+  );
+}
+
+// A hook can't run inside map, so each link reads its own namespace.
+function EffectLink({ page: { path, namespace } }: { page: EffectPage }) {
+  const t = useTranslations(namespace);
+  return (
+    <Link href={path} className={LINK}>
+      {t("nav")}
+    </Link>
   );
 }

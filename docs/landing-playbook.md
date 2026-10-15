@@ -43,9 +43,7 @@ How to turn one search query into a page that ranks and converts. Use it for eve
 
 ### Links
 
-- [ ] `src/app/sitemap.ts`, `src/app/llms.txt/route.ts` and the footer.
-- [ ] The home page templates (`src/components/home/templates.tsx`).
-- [ ] `EFFECTS` in `src/components/landing/more-effects.tsx` and its copy under `MoreEffects`, so every landing page links the new one.
+- [ ] Add the page to `EFFECT_PAGES` (`src/lib/effect-pages.ts`), and its copy under `MoreEffects.<kind>`. The sitemap, llms.txt, footer, home templates and showcase, every landing page's `MoreEffects` and the analytics routes read that list. `src/lib/effect-pages.test.ts` checks the route, the en and zh copy, and the sample.
 - [ ] A blog guide for the same query in `content/blog/<locale>/`, linking to the landing page and back from its `guide` link.
 - [ ] Two related guides in the page's `RELATED`, and the new guide in the `RELATED` of a related page.
 

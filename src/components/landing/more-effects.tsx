@@ -2,17 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { SectionHeading } from "@/components/home/section-heading";
 import { Link } from "@/i18n/navigation";
-
-// Every effect's landing page, in the order the home page shows them.
-const EFFECTS = [
-  { kind: "rap", href: "/ai-rap-video-generator" },
-  { kind: "zombie", href: "/ai-zombie-couple-video" },
-  { kind: "hug", href: "/hug-your-younger-self-ai" },
-  { kind: "vampire", href: "/ai-vampire-transformation-video" },
-  { kind: "raindance", href: "/raindance-ai-trend" },
-] as const;
-
-export type EffectKind = (typeof EFFECTS)[number]["kind"];
+import { EFFECT_PAGES, type EffectPageKind } from "@/lib/effect-pages";
 
 // The end of each landing page: links to the other effects' pages, then the
 // locale's related guides, so every landing page reaches every other.
@@ -20,15 +10,15 @@ export function MoreEffects({
   current,
   related = [],
 }: {
-  current: EffectKind;
+  current: EffectPageKind;
   related?: { href: string; title: string }[];
 }) {
   const t = useTranslations("MoreEffects");
   const items = [
-    ...EFFECTS.filter((effect) => effect.kind !== current).map((effect) => ({
-      href: effect.href,
-      title: t(`${effect.kind}.title`),
-      body: t(`${effect.kind}.body`),
+    ...EFFECT_PAGES.filter((page) => page.kind !== current).map((page) => ({
+      href: page.path,
+      title: t(`${page.kind}.title`),
+      body: t(`${page.kind}.body`),
     })),
     ...related.map((post) => ({ ...post, body: t("guide") })),
   ];
