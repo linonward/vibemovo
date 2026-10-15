@@ -42,11 +42,18 @@ const nextConfig: NextConfig = {
       ["./node_modules/ffmpeg-static/ffmpeg"],
     ]),
   ),
-  // The credit history moved into /billing. Keeps old links and bookmarks working.
+  // Moved pages. Keeps old links, bookmarks and search results working.
   redirects: async () => [
+    // The credit history moved into /billing.
     {
       source: `/:locale(${routing.locales.join("|")})/credits`,
       destination: "/:locale/billing",
+      permanent: true,
+    },
+    // The post dropped an artist's name from its title and slug.
+    {
+      source: "/en/blog/migos-ai-song-video-generator",
+      destination: "/en/blog/hotel-lobby-rap-duo-video",
       permanent: true,
     },
   ],

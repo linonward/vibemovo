@@ -18,7 +18,7 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
       `${baseURL}/en/blog/ai-vampire-transformation-video`,
       `${baseURL}/en/blog/ai-zombie-couple-video`,
       `${baseURL}/en/blog/hug-your-younger-self-ai`,
-      `${baseURL}/en/blog/migos-ai-song-video-generator`,
+      `${baseURL}/en/blog/hotel-lobby-rap-duo-video`,
       `${baseURL}/en/blog/photo-to-video-ai`,
     ].sort(),
   );

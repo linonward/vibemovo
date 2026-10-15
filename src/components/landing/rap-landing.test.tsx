@@ -50,7 +50,7 @@ test("renders in Chinese", () => {
   expect(screen.getByRole("heading", { level: 1, name: "AI 说唱视频生成器，用照片就能做" })).toBeDefined();
 });
 
-const related = [{ href: "/blog/migos-ai-song-video-generator", title: "Migos AI Song & Video Generator from Two Photos" }];
+const related = [{ href: "/blog/hotel-lobby-rap-duo-video", title: "Hotel Lobby Rap Duo: AI Song & Video from Photos" }];
 
 test("covers ideas, photo tips and the common questions", () => {
   renderWithIntl(<RapLanding facts={facts} guide="/blog/ai-rap-video-two-people" related={related} />);
@@ -68,7 +68,7 @@ test("links the other effects and the locale's related guides", () => {
 
   const more = screen.getByRole("region", { name: "More AI video effects" });
   expect(within(more).getByRole("link", { name: /Zombie couple/ }).getAttribute("href")).toBe("/en/ai-zombie-couple-video");
-  expect(within(more).getByRole("link", { name: /Migos AI Song/ }).getAttribute("href")).toBe(
-    "/en/blog/migos-ai-song-video-generator",
+  expect(within(more).getByRole("link", { name: /Hotel Lobby Rap Duo/ }).getAttribute("href")).toBe(
+    "/en/blog/hotel-lobby-rap-duo-video",
   );
 });
