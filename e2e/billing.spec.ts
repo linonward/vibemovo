@@ -23,14 +23,14 @@ test("the sidebar opens billing with the balance, the packs and the credit histo
   await expect(page).toHaveURL("/en/billing");
   await expect(page.getByRole("heading", { level: 1, name: "Credits & billing" })).toBeVisible();
   // signupCredits in src/server/credits/config.ts
-  await expect(page.getByText("Credit balance").locator("+ p")).toHaveText("10 credits");
+  await expect(page.getByText("Credit balance").locator("+ p")).toHaveText("30 credits");
   await expect(page.getByRole("button", { name: "Buy 100 credits for $5.00" })).toBeDisabled();
   await expect(page.getByText("Payments aren't set up yet.")).toBeVisible();
   await expect(page.getByText("No orders yet.")).toBeVisible();
   const rows = page.getByRole("table", { name: "Credit history" }).getByRole("row");
   await expect(rows).toHaveCount(2);
   await expect(rows.nth(1)).toContainText("Signup bonus");
-  await expect(rows.nth(1)).toContainText("+10");
+  await expect(rows.nth(1)).toContainText("+30");
 });
 
 test("offers the subscription plan, off while payments aren't set up", async ({ page }) => {
@@ -49,7 +49,7 @@ test("opens on the yearly plan chosen on the pricing page", async ({ page }) => 
   await page.goto("/en/billing?plan=pro-yearly");
 
   await expect(page.getByRole("button", { name: "Yearly" })).toHaveAttribute("aria-pressed", "true");
-  const subscribe = page.getByRole("button", { name: "Subscribe for $100.00 per year" });
+  const subscribe = page.getByRole("button", { name: "Subscribe for $108.00 per year" });
   await expect(subscribe).toBeDisabled();
   await expect(page.getByRole("listitem").filter({ has: subscribe })).toContainText("Selected");
 });

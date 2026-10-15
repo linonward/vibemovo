@@ -80,7 +80,7 @@ test("the account menu shows the plan and balance and switches the language", as
   const menu = page.getByRole("menu");
   await expect(menu.getByText(email)).toBeVisible();
   await expect(menu.getByText("Free", { exact: true })).toBeVisible();
-  await expect(menu.getByRole("menuitem", { name: "10 credits left" })).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "30 credits left" })).toBeVisible();
 
   await menu.getByRole("menuitem", { name: "Language: English" }).click();
   await page.getByRole("menuitem", { name: "中文" }).click();
@@ -123,7 +123,7 @@ test("the dashboard shows linked stat cards", async ({ page }) => {
 
   const stats = page.getByRole("region", { name: "Overview" });
   const credits = stats.getByRole("link", { name: /Credits/ });
-  await expect(credits).toContainText("10");
+  await expect(credits).toContainText("30");
   await expect(stats.getByRole("link", { name: /Chats/ })).toContainText("0");
 
   await credits.click();

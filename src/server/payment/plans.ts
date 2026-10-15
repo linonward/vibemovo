@@ -5,7 +5,7 @@
 // currency's smallest unit.
 export const SUBSCRIPTION_PLANS = [
   { id: "pro", interval: "month", credits: 300, amount: 1000, currency: "usd" },
-  { id: "pro-yearly", interval: "year", credits: 250, amount: 10000, currency: "usd" },
+  { id: "pro-yearly", interval: "year", credits: 300, amount: 10800, currency: "usd" },
 ] as const;
 
 export const PLAN_INTERVALS = ["month", "year"] as const;

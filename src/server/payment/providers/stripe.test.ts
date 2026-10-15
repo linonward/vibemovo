@@ -126,7 +126,7 @@ test("bills a yearly plan once a year at its yearly price", async () => {
     ...base,
     subscriptionId: "sub-2",
     expiresAt: new Date("2026-10-12T00:31:00Z"),
-    plan: { id: "pro-yearly", interval: "year", credits: 250, amount: 10000, currency: "usd" },
+    plan: { id: "pro-yearly", interval: "year", credits: 300, amount: 10800, currency: "usd" },
   });
 
   expect(createSession).toHaveBeenCalledWith(
@@ -134,9 +134,9 @@ test("bills a yearly plan once a year at its yearly price", async () => {
       line_items: [
         expect.objectContaining({
           price_data: expect.objectContaining({
-            unit_amount: 10000,
+            unit_amount: 10800,
             recurring: { interval: "year" },
-            product_data: { name: "250 credits per month, billed yearly" },
+            product_data: { name: "300 credits per month, billed yearly" },
           }),
         }),
       ],

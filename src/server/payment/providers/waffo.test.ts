@@ -152,7 +152,7 @@ test("sells a yearly plan as the yearly product", async () => {
     userId: "user-1",
     subscriptionId: "sub-2",
     expiresAt: new Date(Date.now() + 31 * 60_000),
-    plan: { id: "pro-yearly", interval: "year", credits: 250, amount: 10000, currency: "usd" },
+    plan: { id: "pro-yearly", interval: "year", credits: 300, amount: 10800, currency: "usd" },
     email: "ada@example.com",
     locale: "en",
     successUrl: "https://app.test/en/billing?checkout=success",
@@ -160,7 +160,7 @@ test("sells a yearly plan as the yearly product", async () => {
   });
 
   expect(createAuthenticated).toHaveBeenCalledWith(
-    expect.objectContaining({ productId: "PROD_pro_yearly", priceSnapshot: expect.objectContaining({ amount: "100.00" }) }),
+    expect.objectContaining({ productId: "PROD_pro_yearly", priceSnapshot: expect.objectContaining({ amount: "108.00" }) }),
     { idempotencyKey: "sub-2" },
   );
 });

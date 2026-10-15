@@ -25,12 +25,15 @@ test("the sidebar opens videos, off while no provider is set up", async ({ page 
   await expect(page).toHaveURL("/en/videos");
   await expect(page.getByRole("heading", { level: 1, name: "Video generator" })).toBeVisible();
   await expect(page.getByText("Video generation isn't set up yet.")).toBeVisible();
-  // signupCredits in src/server/credits/config.ts is below a 5-second video.
-  await expect(page.getByText("10 credits left")).toBeVisible();
+  // signupCredits in src/server/credits/config.ts covers a 5-second video, not a 10-second one.
+  await expect(page.getByText("30 credits left")).toBeVisible();
   await page.getByLabel("Start image").setInputFiles({ name: "fox.png", mimeType: "image/png", buffer: png });
   await expect(page.getByRole("img", { name: "Start image preview" })).toBeVisible();
   await page.getByLabel("Prompt").fill("The fox runs");
   await expect(page.getByRole("button", { name: "Generate (20 credits)" })).toBeDisabled();
+  await expect(page.getByRole("link", { name: "Buy credits" })).toBeHidden();
+  await page.getByRole("radio", { name: "10 s" }).check({ force: true });
+  await expect(page.getByRole("button", { name: "Generate (40 credits)" })).toBeDisabled();
   await expect(page.getByRole("link", { name: "Buy credits" })).toBeVisible();
   await expect(page.getByText("No videos yet.")).toBeVisible();
 });
