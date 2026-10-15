@@ -311,7 +311,7 @@ Signed-in users turn an image into a 5- or 10-second video on `/videos`. `VIDEO_
 
 - Photo limits are the rap duo's.
 - The prompt template is `raindancePrompt` in `src/server/videos/raindance.ts`. The singing is a wordless melody of the model's own. Never name the trend's song, its artists or its lyrics in the prompt: users add the song when they post.
-- The poster is cut at `RAINDANCE_POSTER_MS` (3 s), the wide shot with both on the dock.
+- The poster is cut at `RAINDANCE_POSTER_MS` (9.5 s), where both faces show.
 - Keep it `RAP_DURATION` long, like the zombie couple.
 
 ## API keys

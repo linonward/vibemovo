@@ -36,6 +36,7 @@ export async function GET() {
     const zombie = await getTranslations({ locale, namespace: "ZombieLanding" });
     const hug = await getTranslations({ locale, namespace: "HugLanding" });
     const vampire = await getTranslations({ locale, namespace: "VampireLanding" });
+    const raindance = await getTranslations({ locale, namespace: "RaindanceLanding" });
     return [
       `- [${projectConfig.name}](${url(`/${locale}`)}): ${home("hero.title")}`,
       ...LEGAL_DOCS.map((doc) => `- [${legal(doc)}](${url(`/${locale}/${doc}`)})`),
@@ -44,6 +45,7 @@ export async function GET() {
       `- [${zombie("title")}](${url(`/${locale}/ai-zombie-couple-video`)}): ${zombie("description")}`,
       `- [${hug("title")}](${url(`/${locale}/hug-your-younger-self-ai`)}): ${hug("description")}`,
       `- [${vampire("title")}](${url(`/${locale}/ai-vampire-transformation-video`)}): ${vampire("description")}`,
+      `- [${raindance("title")}](${url(`/${locale}/raindance-ai-trend`)}): ${raindance("description")}`,
       `- [${blog("title")}](${url(`/${locale}/blog`)}): ${blog("description")}`,
       ...(await listPosts(locale)).map(
         (post) => `- [${post.title}](${url(`/${locale}/blog/${post.slug}`)}): ${post.description}`,

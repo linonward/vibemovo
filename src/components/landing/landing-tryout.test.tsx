@@ -130,6 +130,21 @@ test("the vampire transformation takes one photo", async () => {
   expect((fetchMock.mock.calls[0][1].body as FormData).get("image1")).toBe(photo);
 });
 
+test("the raindance duo sends the one on the dock and the singer to its own route", async () => {
+  useSession.mockReturnValue(signedIn);
+  fetchMock.mockResolvedValueOnce(reply(200, { video: { id: "v1" } }));
+  renderWithIntl(<LandingTryout {...props} kind="raindance" />);
+
+  const dock = pick("Photo of the one on the dock");
+  const singer = pick("Photo of the singer");
+  fireEvent.click(screen.getByRole("button", { name: "Generate (75 credits)" }));
+
+  await waitFor(() => expect(push).toHaveBeenCalledWith("/videos/raindance"));
+  expect(fetchMock.mock.calls[0][0]).toBe("/api/videos/raindance");
+  expect((fetchMock.mock.calls[0][1].body as FormData).get("image1")).toBe(dock);
+  expect((fetchMock.mock.calls[0][1].body as FormData).get("image2")).toBe(singer);
+});
+
 test("the rap duo asks for two names too and sends them with the page's language", async () => {
   useSession.mockReturnValue(signedIn);
   fetchMock.mockResolvedValueOnce(reply(200, { video: { id: "v1" } }));

@@ -659,6 +659,90 @@
       "button": "Make a vampire video"
     }
   },
+  "RaindanceLanding": {
+    "nav": "Raindance AI trend videos",
+    "title": "Raindance AI Trend Video Generator",
+    "metaTitle": "Raindance AI Trend: Two Photos to the Dock Video",
+    "description": "Turn two photos into the Raindance AI trend video: one of you waits on a wooden dock at golden hour, the other walks up singing. 15 seconds, vertical.",
+    "hero": {
+      "eyebrow": "Raindance trend",
+      "title": "Raindance AI trend video from two photos",
+      "body": "Upload two photos. You get a 15-second vertical video of the trend's dock scene: one of you waits at the end of a wooden dock at golden hour, the other walks up singing, then you watch the sunset together.",
+      "guide": "Read the guide",
+      "points": {
+        "1": "15 seconds, 9:16 vertical",
+        "2": "Add the song when you post"
+      }
+    },
+    "result": {
+      "alt": "Four frames from a 15-second Raindance AI trend video: a woman in a green suit sits at the end of a wooden dock over turquoise sea at golden hour as a man in a blue suit walks toward her, he sings with a hand on his chest, the two look at each other and smile, then they sit side by side facing the sunset.",
+      "video": "A real 15-second Raindance AI trend video: a man in a blue suit walks along a dock at golden hour and sings to a woman in a green suit.",
+      "caption": "A real result and four of its frames, made from two photos of AI-generated people. He walks up the dock in the first 5 seconds and sings to her from about 6; they watch the sunset together from about 11. The sound is the video's own melody, not the original song."
+    },
+    "steps": {
+      "eyebrow": "How it works",
+      "title": "From two photos to the dock scene",
+      "items": {
+        "1": {
+          "title": "Upload the one on the dock",
+          "body": "One person, facing the camera, in good light. JPEG, PNG or WebP, up to {size} MB."
+        },
+        "2": {
+          "title": "Upload the singer",
+          "body": "The person who walks up and sings. Use a photo of a different person, with the face visible."
+        },
+        "3": {
+          "title": "Generate",
+          "body": "One video costs {credits} credits. It is usually ready in a few minutes, and you can play or download it."
+        }
+      }
+    },
+    "features": {
+      "eyebrow": "The Raindance AI trend",
+      "title": "What you get",
+      "items": {
+        "1": {
+          "title": "The dock scene in 15 seconds",
+          "body": "A wooden dock over the sea at golden hour: the walk up, the song, and the two of you facing the sunset."
+        },
+        "2": {
+          "title": "Made for TikTok, Reels and Shorts",
+          "body": "The video is 9:16 and has its own soft melody. Add the Raindance song from the app's sound library when you post."
+        },
+        "3": {
+          "title": "Still your faces",
+          "body": "Each person keeps the face, hair and outfit from their photo, from the first frame to the last."
+        }
+      }
+    },
+    "faq": {
+      "eyebrow": "FAQ",
+      "title": "Raindance AI trend questions",
+      "items": {
+        "1": {
+          "title": "How much does a Raindance video cost?",
+          "body": "{credits} credits for one 15-second video. New accounts get {signup} free credits, enough for your first one. Buy credits on the <pricing>pricing page</pricing>."
+        },
+        "2": {
+          "title": "Does the video include the Raindance song?",
+          "body": "No. The video has its own wordless melody, and we don't use the original song. To match the trend, add the song from the TikTok or Instagram sound library when you post."
+        },
+        "3": {
+          "title": "How long does it take?",
+          "body": "A few minutes to about a quarter of an hour. You can close the page: you get a notification when the video is ready."
+        },
+        "4": {
+          "title": "Which photo goes first?",
+          "body": "The first photo is the person who waits at the end of the dock. The second photo is the person who walks up and sings."
+        }
+      }
+    },
+    "cta": {
+      "title": "Make your Raindance video",
+      "body": "Sign in with an email link or your Google account. No password.",
+      "button": "Make a Raindance video"
+    }
+  },
   "Footer": {
     "blurb": "Prompt to image, image to video. New accounts start with free credits.",
     "product": "Product",
@@ -1429,6 +1513,10 @@
     "vampire": {
       "title": "Vampire transformation",
       "body": "One photo becomes a 10-second video: lightning strikes, the cape and red eyes appear, then the fangs."
+    },
+    "raindance": {
+      "title": "Raindance trend",
+      "body": "Two photos become the Raindance dock scene: one of you waits at golden hour, the other walks up singing."
     }
   }
 }

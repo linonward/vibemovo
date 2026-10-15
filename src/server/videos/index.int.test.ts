@@ -894,14 +894,14 @@ test("a raindance duo stores both photos, queues one vertical Wan 3.0 job and sp
   expect(await getBalance(userId)).toBe(before - 75);
 });
 
-test("a finished raindance duo gets a poster of both on the dock, in place of the first photo", async () => {
+test("a finished raindance duo gets a poster of both faces on the dock, in place of the first photo", async () => {
   const created = await raindance();
   ai.providers.dashscope.result.mockResolvedValueOnce({ status: "succeeded", url: "https://dashscope.test/out.mp4" });
 
   await refreshVideo(userId, created.id);
 
-  expect(posterFrame).toHaveBeenCalledWith(mp4, 3);
-  expect(await rows()).toMatchObject([{ posterMs: 3_000 }]);
+  expect(posterFrame).toHaveBeenCalledWith(mp4, 9.5);
+  expect(await rows()).toMatchObject([{ posterMs: 9_500 }]);
 });
 
 test("a raindance duo with a photo that isn't an image spends nothing", async () => {

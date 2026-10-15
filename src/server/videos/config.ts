@@ -89,9 +89,9 @@ export const VAMPIRE_TITLE = "Vampire transformation";
 // and price.
 export const RAINDANCE_CREDITS = RAP_CREDITS;
 export const RAINDANCE_RATIO = ZOMBIE_RATIO;
-// The poster is cut from the wide shot with both on the dock (0 to 5 s in
-// the prompt), not taken from the first photo.
-export const RAINDANCE_POSTER_MS = 3_000;
+// The poster is cut where both faces show, as the two look at each other
+// (5 to 10 s in the prompt), not taken from the first photo.
+export const RAINDANCE_POSTER_MS = 9_500;
 // What the video list shows in place of a prompt.
 export const RAINDANCE_TITLE = "Raindance duo";
 

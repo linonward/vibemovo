@@ -22,6 +22,7 @@ const KINDS = {
   zombie: EFFECT_KINDS.zombie,
   hug: EFFECT_KINDS.hug,
   vampire: EFFECT_KINDS.vampire,
+  raindance: EFFECT_KINDS.raindance,
   rap: { endpoint: "/api/videos/rap", sides: ["left", "right"] },
 } as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
 
@@ -62,6 +63,7 @@ export function LandingTryout(props: LandingTryoutProps) {
     zombie: useTranslations("ZombieVideos"),
     hug: useTranslations("HugVideos"),
     vampire: useTranslations("VampireVideos"),
+    raindance: useTranslations("RaindanceVideos"),
     rap: useTranslations("RapVideos"),
   };
   const t = messages[props.kind] as typeof messages.zombie;

@@ -12,6 +12,7 @@ const TEMPLATES = [
   ["ZombieLanding", "/ai-zombie-couple-video", "/landing/zombie/poster.jpg"],
   ["HugLanding", "/hug-your-younger-self-ai", "/landing/hug/poster.jpg"],
   ["VampireLanding", "/ai-vampire-transformation-video", "/landing/vampire/poster.jpg"],
+  ["RaindanceLanding", "/raindance-ai-trend", "/landing/raindance/poster.jpg"],
 ] as const;
 
 export function Templates() {
@@ -25,7 +26,7 @@ export function Templates() {
         </SectionHeading>
         <p className="max-w-[36ch] text-pretty text-muted-foreground">{t("body")}</p>
       </div>
-      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+      <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 lg:gap-4">
         {TEMPLATES.map((template) => (
           <TemplateCard key={template[0]} template={template} />
         ))}
@@ -47,7 +48,7 @@ function TemplateCard({
         src={poster}
         alt=""
         fill
-        sizes="(min-width: 1024px) 270px, 50vw"
+        sizes="(min-width: 1024px) 220px, (min-width: 640px) 33vw, 50vw"
         className="-z-10 object-cover transition-transform duration-200 ease-out motion-reduce:transition-none [@media(hover:hover)]:group-hover:scale-[1.03]"
       />
       <div className="flex h-full flex-col justify-between bg-gradient-to-t from-black/75 via-black/10 to-transparent p-3 text-white sm:p-4">
