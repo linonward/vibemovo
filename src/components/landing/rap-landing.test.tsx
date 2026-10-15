@@ -88,6 +88,10 @@ test("links the other effects and the locale's related guides", () => {
 
   const more = screen.getByRole("region", { name: "More AI video effects" });
   expect(within(more).getByRole("link", { name: /Zombie couple/ }).getAttribute("href")).toBe("/en/ai-zombie-couple-video");
+  expect(within(more).getByRole("link", { name: /Younger-self hug/ }).getAttribute("href")).toBe("/en/hug-your-younger-self-ai");
+  expect(within(more).getByRole("link", { name: /Vampire transformation/ }).getAttribute("href")).toBe(
+    "/en/ai-vampire-transformation-video",
+  );
   expect(within(more).getByRole("link", { name: /Hotel Lobby Rap Duo/ }).getAttribute("href")).toBe(
     "/en/blog/hotel-lobby-rap-duo-video",
   );

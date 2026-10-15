@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import type { ImageLimits } from "@/lib/image-limits";
 import { LandingTryout } from "./landing-tryout";
+import { MoreEffects } from "./more-effects";
 
 const POINTS = ["1", "2"] as const;
 const STEPS = ["1", "2", "3"] as const;
@@ -171,6 +172,8 @@ export function EffectLanding({ kind, facts, guide }: { kind: EffectLandingKind;
           ))}
         </dl>
       </section>
+
+      <MoreEffects current={kind} />
 
       <section
         aria-labelledby={`${kind}-cta`}
