@@ -11,6 +11,7 @@ test("the blog lists each locale's posts, newest first", async ({ page }) => {
     "AI Zombie Couple Video: Make a Zombie Love Story",
     "Hotel Lobby Rap Duo: AI Song & Video from Photos",
     "Hug Your Younger Self AI: Make the Hug Video",
+    "Raindance AI Trend: Make the Dock Video from Two Photos",
     "How to Make an AI Rap Video of Two People from Photos",
     "How to Turn a Photo into a Video with AI",
   ]);
@@ -65,6 +66,7 @@ test("a post's tags open a page of the posts with that tag", async ({ page }) =>
     "AI Zombie Couple Video: Make a Zombie Love Story",
     "Hotel Lobby Rap Duo: AI Song & Video from Photos",
     "Hug Your Younger Self AI: Make the Hug Video",
+    "Raindance AI Trend: Make the Dock Video from Two Photos",
     "How to Make an AI Rap Video of Two People from Photos",
     "How to Turn a Photo into a Video with AI",
   ]);

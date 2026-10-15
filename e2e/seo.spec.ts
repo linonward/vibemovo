@@ -20,6 +20,7 @@ test("the sitemap lists the public pages in every locale", async ({ request, bas
       `${baseURL}/en/blog/hug-your-younger-self-ai`,
       `${baseURL}/en/blog/hotel-lobby-rap-duo-video`,
       `${baseURL}/en/blog/photo-to-video-ai`,
+      `${baseURL}/en/blog/raindance-ai-trend`,
     ].sort(),
   );
   expect(xml).toContain(`hreflang="zh" href="${baseURL}/zh/privacy"`);

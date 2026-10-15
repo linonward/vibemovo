@@ -13,6 +13,9 @@ for (const [path, guides] of [
     const hrefs = await more.getByRole("link").evaluateAll((links) => links.map((link) => link.getAttribute("href")));
     expect(hrefs.slice(4).sort()).toEqual(guides.map((guide) => `/en${guide}`).sort());
 
+    // The page's own guide sits in the hero.
+    await expect(page.getByRole("main").getByRole("link", { name: "Read the guide" })).toHaveAttribute("href", `/en/blog${path}`);
+
     await page.goto(`/zh${path}`);
     await expect(page.getByRole("main").getByRole("region", { name: "更多 AI 视频特效" }).getByRole("link")).toHaveCount(4);
   });
