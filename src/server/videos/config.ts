@@ -56,44 +56,8 @@ export const RAP_CREDITS = 5 * RAP_DURATION;
 export const RAP_MAX_IMAGE_BYTES = 2 * 1024 * 1024;
 export const RAP_MAX_NAME_LENGTH = 30;
 
-// The zombie couple (/videos/zombie): two photos on the rap duo's model,
-// length, size and photo limits, at the same price, but vertical for
-// TikTok, Reels and Shorts. Keep RAP_DURATION: expireUploads finds a
-// two-photo video's second photo by it.
-export const ZOMBIE_CREDITS = RAP_CREDITS;
-export const ZOMBIE_RATIO = "9:16";
-// The poster is cut from the hug (6 to 11 s in the prompt; 9 to 12 s in
-// tests), not taken from the survivor's photo.
-export const ZOMBIE_POSTER_MS = 10_000;
-// What the video list shows in place of a prompt.
-export const ZOMBIE_TITLE = "Zombie couple";
-
-// The younger-self hug (/videos/hug): two photos, today and as a child, on
-// the zombie couple's model, length, size, photo limits and price.
-export const HUG_CREDITS = RAP_CREDITS;
-export const HUG_RATIO = ZOMBIE_RATIO;
-// What the video list shows in place of a prompt.
-export const HUG_TITLE = "Hug your younger self";
-
-// The vampire transformation (/videos/vampire): one photo on the rap duo's
-// model, size and photo limits, vertical. 10 seconds, so expireUploads
-// doesn't look for a second photo (two-photo videos are RAP_DURATION long).
-export const VAMPIRE_DURATION = 10;
-export const VAMPIRE_CREDITS = 5 * VAMPIRE_DURATION;
-export const VAMPIRE_RATIO = ZOMBIE_RATIO;
-// What the video list shows in place of a prompt.
-export const VAMPIRE_TITLE = "Vampire transformation";
-
-// The raindance duo (/videos/raindance): two photos, the one on the dock
-// and the singer, on the zombie couple's model, length, size, photo limits
-// and price.
-export const RAINDANCE_CREDITS = RAP_CREDITS;
-export const RAINDANCE_RATIO = ZOMBIE_RATIO;
-// The poster is cut where both faces show, as the two look at each other
-// (5 to 10 s in the prompt), not taken from the first photo.
-export const RAINDANCE_POSTER_MS = 9_500;
-// What the video list shows in place of a prompt.
-export const RAINDANCE_TITLE = "Raindance duo";
+// The photo effects (/videos/<kind>, photo-effects.ts) run on the rap
+// duo's model, size and photo limits, at the same 5 credits a second.
 
 // Each rap duo photo, as Bailian Wan 3.0 accepts it: at least 240 pixels a
 // side ("resolution must be at least 240x240"); the rest as for Wan 2.7.

@@ -1,3 +1,5 @@
+import type { PhotoEffect } from "./photo-effects";
+
 // The vampire transformation, a Halloween effect: one photo becomes a
 // 10-second vertical video where the person turns into a vampire in a
 // candlelit hall. Nothing is written per video.
@@ -21,3 +23,14 @@ Beat three, 8 to 10 seconds, static camera: 图1 raises the cape across their fa
 Style: photorealistic, natural skin texture, sharp focus, 35mm film look, deep blue and candle-gold grade. Vampire look like a film costume: no blood, no wounds, no gore, no biting.
 No text, no logos, no extra people.`;
 }
+
+// One photo, 10 seconds.
+export const vampire = {
+  kind: "vampire",
+  title: "Vampire transformation",
+  photos: 1,
+  duration: 10,
+  ratio: "9:16",
+  credits: 5 * 10,
+  prompt: vampirePrompt,
+} as const satisfies PhotoEffect;

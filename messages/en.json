@@ -812,10 +812,6 @@
     "previous": "Previous",
     "next": "Next",
     "videoRap": "Rap duo",
-    "videoZombie": "Zombie couple",
-    "videoHug": "Hug your younger self",
-    "videoVampire": "Vampire transformation",
-    "videoRaindance": "Raindance duo",
     "videoObject": "Object effects",
     "videoLibrary": "All videos",
     "adminOrders": "Orders",
@@ -1249,116 +1245,75 @@
       "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
     }
   },
-  "ZombieVideos": {
-    "title": "Zombie couple",
-    "description": "Two photos become a 15-second vertical video: you find your partner turned zombie, drop the bat and hug them, then it cuts to a happy memory.",
-    "left": {
-      "photo": "Your photo",
-      "preview": "Your photo preview"
-    },
-    "right": {
-      "photo": "Your partner's photo",
-      "preview": "Your partner's photo preview"
-    },
-    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light. Your partner's photo becomes the zombie.",
+  "PhotoEffects": {
     "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
     "generating": "Sending…",
     "balance": "{count, plural, one {# credit left} other {# credits left}}",
     "buyCredits": "Buy credits",
-    "disabled": "The zombie couple isn't set up yet.",
     "historyTitle": "Your videos",
     "empty": "No videos yet.",
     "viewAll": "View all",
     "errors": {
       "credits": "Not enough credits. Buy more on the Credits & billing page.",
-      "invalid": "Use JPEG, PNG or WebP photos up to {size} MB each.",
-      "imageSize": "Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
+      "invalid": "{photos, plural, one {Use a JPEG, PNG or WebP photo up to {size} MB.} other {Use JPEG, PNG or WebP photos up to {size} MB each.}}",
+      "imageSize": "{photos, plural, one {Use a photo {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.} other {Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.}}",
       "failed": "Generation failed. The credits were refunded. Try again.",
-      "blocked": "A photo was blocked by content moderation. Try a different one.",
-      "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
-    }
-  },
-  "HugVideos": {
-    "title": "Hug your younger self",
-    "description": "Two photos become a 15-second vertical video: you today find yourself as a child in a sunny park, kneel and hug, then golden light surrounds the child.",
-    "left": {
-      "photo": "Your photo today",
-      "preview": "Your photo today preview"
+      "blocked": "{photos, plural, one {The photo was blocked by content moderation. Try a different one.} other {A photo was blocked by content moderation. Try a different one.}}",
+      "moderation": "{photos, plural, one {The photo couldn't be checked right now. No credits were spent. Try again in a minute.} other {The photos couldn't be checked right now. No credits were spent. Try again in a minute.}}"
     },
-    "right": {
-      "photo": "Your childhood photo",
-      "preview": "Your childhood photo preview"
-    },
-    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light. Use a childhood photo of yourself.",
-    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
-    "generating": "Sending…",
-    "balance": "{count, plural, one {# credit left} other {# credits left}}",
-    "buyCredits": "Buy credits",
-    "disabled": "Hug your younger self isn't set up yet.",
-    "historyTitle": "Your videos",
-    "empty": "No videos yet.",
-    "viewAll": "View all",
-    "errors": {
-      "credits": "Not enough credits. Buy more on the Credits & billing page.",
-      "invalid": "Use JPEG, PNG or WebP photos up to {size} MB each.",
-      "imageSize": "Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
-      "failed": "Generation failed. The credits were refunded. Try again.",
-      "blocked": "A photo was blocked by content moderation. Try a different one.",
-      "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
-    }
-  },
-  "RaindanceVideos": {
-    "title": "Raindance duo",
-    "description": "Two photos become a 15-second vertical video of the Raindance trend's dock scene: one of you waits at the end of a wooden dock at golden hour, the other walks up singing to them. Add the song yourself when you post.",
-    "left": {
-      "photo": "Photo of the one on the dock",
-      "preview": "Photo of the one on the dock preview"
-    },
-    "right": {
-      "photo": "Photo of the singer",
-      "preview": "Photo of the singer preview"
-    },
-    "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light.",
-    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
-    "generating": "Sending…",
-    "balance": "{count, plural, one {# credit left} other {# credits left}}",
-    "buyCredits": "Buy credits",
-    "disabled": "The raindance duo isn't set up yet.",
-    "historyTitle": "Your videos",
-    "empty": "No videos yet.",
-    "viewAll": "View all",
-    "errors": {
-      "credits": "Not enough credits. Buy more on the Credits & billing page.",
-      "invalid": "Use JPEG, PNG or WebP photos up to {size} MB each.",
-      "imageSize": "Use photos {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
-      "failed": "Generation failed. The credits were refunded. Try again.",
-      "blocked": "A photo was blocked by content moderation. Try a different one.",
-      "moderation": "The photos couldn't be checked right now. No credits were spent. Try again in a minute."
-    }
-  },
-  "VampireVideos": {
-    "title": "Vampire transformation",
-    "description": "One photo becomes a 10-second vertical Halloween video: lightning strikes in a candlelit castle and you turn into a vampire, cape and all.",
-    "left": {
-      "photo": "Your photo",
-      "preview": "Your photo preview"
-    },
-    "photoHint": "JPEG, PNG or WebP, up to {size} MB. One person, facing the camera, in good light.",
-    "generate": "Generate ({count, plural, one {# credit} other {# credits}})",
-    "generating": "Sending…",
-    "balance": "{count, plural, one {# credit left} other {# credits left}}",
-    "buyCredits": "Buy credits",
-    "disabled": "The vampire transformation isn't set up yet.",
-    "historyTitle": "Your videos",
-    "empty": "No videos yet.",
-    "viewAll": "View all",
-    "errors": {
-      "credits": "Not enough credits. Buy more on the Credits & billing page.",
-      "invalid": "Use a JPEG, PNG or WebP photo up to {size} MB.",
-      "imageSize": "Use a photo {min, number} to {maxSide, number} pixels on each side, with the long side at most {ratio} times the short side.",
-      "failed": "Generation failed. The credits were refunded. Try again.",
-      "blocked": "The photo was blocked by content moderation. Try a different one.",
-      "moderation": "The photo couldn't be checked right now. No credits were spent. Try again in a minute."
+    "kinds": {
+      "zombie": {
+        "title": "Zombie couple",
+        "description": "Two photos become a 15-second vertical video: you find your partner turned zombie, drop the bat and hug them, then it cuts to a happy memory.",
+        "left": {
+          "photo": "Your photo",
+          "preview": "Your photo preview"
+        },
+        "right": {
+          "photo": "Your partner's photo",
+          "preview": "Your partner's photo preview"
+        },
+        "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light. Your partner's photo becomes the zombie.",
+        "disabled": "The zombie couple isn't set up yet."
+      },
+      "hug": {
+        "title": "Hug your younger self",
+        "description": "Two photos become a 15-second vertical video: you today find yourself as a child in a sunny park, kneel and hug, then golden light surrounds the child.",
+        "left": {
+          "photo": "Your photo today",
+          "preview": "Your photo today preview"
+        },
+        "right": {
+          "photo": "Your childhood photo",
+          "preview": "Your childhood photo preview"
+        },
+        "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light. Use a childhood photo of yourself.",
+        "disabled": "Hug your younger self isn't set up yet."
+      },
+      "vampire": {
+        "title": "Vampire transformation",
+        "description": "One photo becomes a 10-second vertical Halloween video: lightning strikes in a candlelit castle and you turn into a vampire, cape and all.",
+        "left": {
+          "photo": "Your photo",
+          "preview": "Your photo preview"
+        },
+        "photoHint": "JPEG, PNG or WebP, up to {size} MB. One person, facing the camera, in good light.",
+        "disabled": "The vampire transformation isn't set up yet."
+      },
+      "raindance": {
+        "title": "Raindance duo",
+        "description": "Two photos become a 15-second vertical video of the Raindance trend's dock scene: one of you waits at the end of a wooden dock at golden hour, the other walks up singing to them. Add the song yourself when you post.",
+        "left": {
+          "photo": "Photo of the one on the dock",
+          "preview": "Photo of the one on the dock preview"
+        },
+        "right": {
+          "photo": "Photo of the singer",
+          "preview": "Photo of the singer preview"
+        },
+        "photoHint": "JPEG, PNG or WebP, up to {size} MB each. One person per photo, facing the camera, in good light.",
+        "disabled": "The raindance duo isn't set up yet."
+      }
     }
   },
   "ObjectVideos": {

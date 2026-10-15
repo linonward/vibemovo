@@ -86,14 +86,8 @@ const {
   createVideo,
   createRapVideo,
   rapOptions,
-  createZombieVideo,
-  zombieOptions,
-  createHugVideo,
-  createRaindanceVideo,
-  hugOptions,
-  raindanceOptions,
-  createVampireVideo,
-  vampireOptions,
+  createEffectVideo,
+  effectOptions,
   createObjectEffectVideo,
   objectEffectOptions,
   countVideos,
@@ -765,16 +759,16 @@ test("with image moderation on, checked rap photos are stored once and submitted
   expect(ai.reference.submit).toHaveBeenCalledTimes(1);
 });
 
-const zombie = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createZombieVideo({ userId, images });
+const zombie = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createEffectVideo({ userId, kind: "zombie", images });
 
 test("the zombie couple is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
   ai.state.active = null;
-  expect(zombieOptions()).toEqual({ enabled: true, credits: 75 });
+  expect(effectOptions("zombie")).toEqual({ enabled: true, credits: 75 });
   ai.state.reference = false;
-  expect(zombieOptions().enabled).toBe(false);
+  expect(effectOptions("zombie").enabled).toBe(false);
   ai.state.reference = true;
   storage.storageConfigured.mockReturnValue(false);
-  expect(zombieOptions().enabled).toBe(false);
+  expect(effectOptions("zombie").enabled).toBe(false);
 });
 
 test("a zombie couple video stores both photos, queues one vertical Wan 3.0 job and spends 75 credits", async () => {
@@ -870,13 +864,13 @@ test("a zombie couple's second photo is deleted with the first after a day", asy
   expect(await imageKeyOf(id)).toBeNull();
 });
 
-const raindance = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createRaindanceVideo({ userId, images });
+const raindance = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createEffectVideo({ userId, kind: "raindance", images });
 
 test("the raindance duo is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
   ai.state.active = null;
-  expect(raindanceOptions()).toEqual({ enabled: true, credits: 75 });
+  expect(effectOptions("raindance")).toEqual({ enabled: true, credits: 75 });
   ai.state.reference = false;
-  expect(raindanceOptions().enabled).toBe(false);
+  expect(effectOptions("raindance").enabled).toBe(false);
 });
 
 test("a raindance duo stores both photos, queues one vertical Wan 3.0 job and spends 75 credits", async () => {
@@ -913,13 +907,13 @@ test("a raindance duo with a photo that isn't an image spends nothing", async ()
   expect(await getBalance(userId)).toBe(before);
 });
 
-const hug = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createHugVideo({ userId, images });
+const hug = (images: [Uint8Array, Uint8Array] = [jpeg, png]) => createEffectVideo({ userId, kind: "hug", images });
 
 test("the younger-self hug is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
   ai.state.active = null;
-  expect(hugOptions()).toEqual({ enabled: true, credits: 75 });
+  expect(effectOptions("hug")).toEqual({ enabled: true, credits: 75 });
   ai.state.reference = false;
-  expect(hugOptions().enabled).toBe(false);
+  expect(effectOptions("hug").enabled).toBe(false);
 });
 
 test("a younger-self hug stores both photos, queues one vertical Wan 3.0 job and spends 75 credits", async () => {
@@ -948,13 +942,13 @@ test("a younger-self hug with a photo that isn't an image spends nothing", async
   expect(await getBalance(userId)).toBe(before);
 });
 
-const vampire = (image: Uint8Array = jpeg) => createVampireVideo({ userId, image });
+const vampire = (image: Uint8Array = jpeg) => createEffectVideo({ userId, kind: "vampire", images: [image] });
 
 test("the vampire transformation is on with a Bailian key and storage, whatever VIDEO_PROVIDER says", () => {
   ai.state.active = null;
-  expect(vampireOptions()).toEqual({ enabled: true, credits: 50 });
+  expect(effectOptions("vampire")).toEqual({ enabled: true, credits: 50 });
   ai.state.reference = false;
-  expect(vampireOptions().enabled).toBe(false);
+  expect(effectOptions("vampire").enabled).toBe(false);
 });
 
 test("a vampire transformation stores one photo, queues one 10-second vertical Wan 3.0 job and spends 50 credits", async () => {
@@ -1130,4 +1124,17 @@ test.each(["block", "review", "allow"])("Waffo prompt verdict %s gates generatio
     expect(storage.putObject).not.toHaveBeenCalled();
     expect(seeapi.submit).not.toHaveBeenCalled();
   }
+});
+
+test.each([
+  ["an unknown effect", "not-an-effect", [jpeg]],
+  ["one photo for a two-photo effect", "zombie", [jpeg]],
+  ["two photos for a one-photo effect", "vampire", [jpeg, png]],
+] as const)("%s spends nothing", async (_, kind, images) => {
+  const before = await getBalance(userId);
+
+  await expect(createEffectVideo({ userId, kind, images: [...images] })).rejects.toThrow(InvalidVideoRequestError);
+
+  expect(storage.putObject).not.toHaveBeenCalled();
+  expect(await getBalance(userId)).toBe(before);
 });

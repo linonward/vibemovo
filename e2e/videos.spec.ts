@@ -177,6 +177,28 @@ for (const { route, title, off, credits } of EFFECTS) {
   });
 }
 
+// /api/videos/<kind> serves every photo effect; any other segment is no route.
+test("each photo effect's route answers at /api/videos/<kind>", async ({ page, request }) => {
+  const headers = { origin: BASE_URL };
+  expect((await request.post("/api/videos/zombie", { multipart: {}, headers })).status()).toBe(401);
+
+  await signIn(page);
+  const missing = await page.request.post("/api/videos/zombie", {
+    multipart: { image1: { name: "a.png", mimeType: "image/png", buffer: png } },
+    headers,
+  });
+  expect(missing.status()).toBe(400);
+  expect(await missing.json()).toMatchObject({ error: "INVALID_REQUEST" });
+  const off = await page.request.post("/api/videos/vampire", {
+    multipart: { image1: { name: "a.png", mimeType: "image/png", buffer: greyPng(320, 320) } },
+    headers,
+  });
+  expect(off.status()).toBe(503);
+  expect(await off.json()).toMatchObject({ error: "VIDEOS_DISABLED" });
+  const unknown = await page.request.post("/api/videos/not-an-effect", { multipart: {}, headers });
+  expect(unknown.status()).toBe(404);
+});
+
 test("a photo too small for Bailian is turned away as soon as it is picked", async ({ page }) => {
   await signIn(page);
   await page.goto("/en/videos/rap");

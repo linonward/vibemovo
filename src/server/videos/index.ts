@@ -28,21 +28,6 @@ import {
   RAP_MAX_NAME_LENGTH,
   RAP_RATIO,
   RAP_RESOLUTION,
-  ZOMBIE_CREDITS,
-  ZOMBIE_POSTER_MS,
-  ZOMBIE_RATIO,
-  ZOMBIE_TITLE,
-  HUG_CREDITS,
-  HUG_RATIO,
-  HUG_TITLE,
-  RAINDANCE_CREDITS,
-  RAINDANCE_POSTER_MS,
-  RAINDANCE_RATIO,
-  RAINDANCE_TITLE,
-  VAMPIRE_CREDITS,
-  VAMPIRE_DURATION,
-  VAMPIRE_RATIO,
-  VAMPIRE_TITLE,
   OBJECT_EFFECT_DURATION,
   UPLOAD_EXPIRY_BATCH,
   UPLOAD_RETENTION_MS,
@@ -59,10 +44,7 @@ import {
 } from "./config";
 import { type RapLanguage, type RapLines, rapPrompt, writeLyrics } from "./rap";
 import { posterFrame } from "./poster";
-import { zombiePrompt } from "./zombie";
-import { hugPrompt } from "./hug";
-import { raindancePrompt } from "./raindance";
-import { vampirePrompt } from "./vampire";
+import { type PhotoEffect, photoEffect, type PhotoEffectKind } from "./photo-effects";
 import { isObjectEffect, OBJECT_EFFECT_TITLES, OBJECT_EFFECTS, objectEffectPrompt } from "./effects";
 import { checkImageSize, type ImageLimits, imageSize } from "./image-size";
 import { video } from "./schema";
@@ -83,6 +65,7 @@ export class InvalidImageSizeError extends Error {
 }
 
 export { ContentBlockedError, ModerationUnavailableError };
+export { PHOTO_EFFECTS, photoEffect, type PhotoEffectKind } from "./photo-effects";
 
 // Providers' codes for a prompt or image their moderation refused: fal's
 // error type, and Bailian's codes (as for images).
@@ -264,8 +247,8 @@ function blocked(error: unknown): unknown {
     : error;
 }
 
-// The photo effects on Wan 3.0 (rap duo, zombie couple, younger-self hug,
-// vampire transformation, raindance duo) need Bailian and storage, whatever VIDEO_PROVIDER says.
+// The rap duo and the photo effects (PHOTO_EFFECTS) run on Wan 3.0, so they
+// need Bailian and storage, whatever VIDEO_PROVIDER says.
 function referenceEnabled() {
   return getReferenceVideoProvider() !== null && storageConfigured();
 }
@@ -274,20 +257,8 @@ export function rapOptions(): { enabled: boolean; credits: number } {
   return { enabled: referenceEnabled(), credits: RAP_CREDITS };
 }
 
-export function zombieOptions(): { enabled: boolean; credits: number } {
-  return { enabled: referenceEnabled(), credits: ZOMBIE_CREDITS };
-}
-
-export function hugOptions(): { enabled: boolean; credits: number } {
-  return { enabled: referenceEnabled(), credits: HUG_CREDITS };
-}
-
-export function vampireOptions(): { enabled: boolean; credits: number } {
-  return { enabled: referenceEnabled(), credits: VAMPIRE_CREDITS };
-}
-
-export function raindanceOptions(): { enabled: boolean; credits: number } {
-  return { enabled: referenceEnabled(), credits: RAINDANCE_CREDITS };
+export function effectOptions(kind: PhotoEffectKind): { enabled: boolean; credits: number } {
+  return { enabled: referenceEnabled(), credits: (photoEffect(kind) as PhotoEffect).credits };
 }
 
 // Two photos and two names become a 15-second video where each person raps
@@ -316,55 +287,22 @@ export async function createRapVideo(input: {
   });
 }
 
-// Two photos become a 15-second vertical video: the survivor (the first
-// photo) hugs their partner (the second), now a zombie.
-export function createZombieVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
-  return createReferenceVideo({
-    ...input,
-    text: null,
-    credits: ZOMBIE_CREDITS,
-    ratio: ZOMBIE_RATIO,
-    posterMs: ZOMBIE_POSTER_MS,
-    prompt: async () => ({ title: ZOMBIE_TITLE, prompt: zombiePrompt() }),
-  });
-}
-
-// Two photos become a 15-second vertical video: the person today (the
-// first photo) hugs themselves as a child (the second).
-export function createHugVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
-  return createReferenceVideo({
-    ...input,
-    text: null,
-    credits: HUG_CREDITS,
-    ratio: HUG_RATIO,
-    prompt: async () => ({ title: HUG_TITLE, prompt: hugPrompt() }),
-  });
-}
-
-// Two photos become a 15-second vertical video on a dock at golden hour: the
-// first photo waits at the end, the second walks up singing to them.
-export function createRaindanceVideo(input: { userId: string; images: [Uint8Array, Uint8Array] }): Promise<Video> {
-  return createReferenceVideo({
-    ...input,
-    text: null,
-    credits: RAINDANCE_CREDITS,
-    ratio: RAINDANCE_RATIO,
-    posterMs: RAINDANCE_POSTER_MS,
-    prompt: async () => ({ title: RAINDANCE_TITLE, prompt: raindancePrompt() }),
-  });
-}
-
-// One photo becomes a 10-second vertical video where the person turns into
-// a vampire.
-export function createVampireVideo(input: { userId: string; image: Uint8Array }): Promise<Video> {
+// A photo effect's photos, image1 first, become its video. An unknown kind,
+// or the wrong number of photos, is an InvalidVideoRequestError.
+export async function createEffectVideo(input: { userId: string; kind: string; images: Uint8Array[] }): Promise<Video> {
+  const effect = photoEffect(input.kind);
+  if (!effect || input.images.length !== effect.photos) {
+    throw new InvalidVideoRequestError(`${input.kind} takes ${effect?.photos ?? 0} photos`);
+  }
   return createReferenceVideo({
     userId: input.userId,
-    images: [input.image],
+    images: input.images as [Uint8Array] | [Uint8Array, Uint8Array],
     text: null,
-    credits: VAMPIRE_CREDITS,
-    duration: VAMPIRE_DURATION,
-    ratio: VAMPIRE_RATIO,
-    prompt: async () => ({ title: VAMPIRE_TITLE, prompt: vampirePrompt() }),
+    credits: effect.credits,
+    duration: effect.duration,
+    ratio: effect.ratio,
+    posterMs: effect.posterMs,
+    prompt: async () => ({ title: effect.title, prompt: effect.prompt() }),
   });
 }
 

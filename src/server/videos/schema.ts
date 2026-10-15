@@ -4,16 +4,15 @@ import { VIDEO_PROVIDER_IDS } from "@/server/ai/video/types";
 import { generationColumns } from "@/server/generations/columns";
 
 // One row per generation. The start image and the MP4 live in object
-// storage; a two-photo video (rap duo, zombie couple, younger-self hug,
-// raindance duo)
-// also stores its second photo as <id>-2.<ext>.
+// storage; a two-photo video (the rap duo, a two-photo effect) also stores
+// its second photo as <id>-2.<ext>.
 export const video = pgTable(
   "video",
   {
     ...generationColumns(),
     prompt: text("prompt").notNull(),
     // Seconds: one of VIDEO_DURATIONS, RAP_DURATION for a two-photo video,
-    // or VAMPIRE_DURATION for a vampire transformation.
+    // or a one-photo effect's duration (PHOTO_EFFECTS).
     duration: integer("duration").notNull(),
     // The provider that took the job; it alone can finish it.
     provider: text("provider", { enum: VIDEO_PROVIDER_IDS }).notNull(),

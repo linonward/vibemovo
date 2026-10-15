@@ -1,3 +1,6 @@
+import { RAP_DURATION } from "./config";
+import type { PhotoEffect } from "./photo-effects";
+
 // The younger-self hug, after the "hug your younger self" trend: a photo of
 // the person today and one of them as a child become a 15-second vertical
 // video. The adult finds the child, kneels and hugs them; then the child
@@ -21,3 +24,14 @@ Beat three, 11 to 15 seconds, the camera slowly rises above the two: 图2 dissol
 Style: photorealistic, natural skin texture, sharp focus, 35mm film look, warm golden grade, soft lens flare. A warm family moment, not romantic.
 No text, no logos, no extra people, the two never swap faces.`;
 }
+
+// Two photos: the person today, then the same person as a child.
+export const hug = {
+  kind: "hug",
+  title: "Hug your younger self",
+  photos: 2,
+  duration: RAP_DURATION,
+  ratio: "9:16",
+  credits: 5 * RAP_DURATION,
+  prompt: hugPrompt,
+} as const satisfies PhotoEffect;

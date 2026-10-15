@@ -4,6 +4,8 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { renderWithIntl } from "@/test/intl";
 import { CreditsProvider } from "./credits";
 import { AppSidebar } from "./app-sidebar";
+import { photoEffectKinds } from "@/lib/photo-effects";
+import en from "../../../messages/en.json";
 
 let pathname = "/dashboard";
 vi.mock("@/i18n/navigation", () => ({
@@ -179,7 +181,10 @@ test("groups the tools under Create, and billing and API keys under Account", ()
     within(within(nav).getByRole("list", { name: group }))
       .getAllByRole("link")
       .map((link) => link.textContent);
-  expect(names("Create")).toEqual(["AI chat", "Image generator", "All images", "Video generator", "Rap duo", "Zombie couple", "Hug your younger self", "Vampire transformation", "Raindance duo", "Object effects", "All videos"]);
+  // Every photo effect, by its title, between the rap duo and the object effects.
+  const effects = photoEffectKinds.map((kind) => en.PhotoEffects.kinds[kind].title);
+  expect(names("Create")).toEqual(["AI chat", "Image generator", "All images", "Video generator", "Rap duo", ...effects, "Object effects", "All videos"]);
+  expect(effects.slice(0, 4)).toEqual(["Zombie couple", "Hug your younger self", "Vampire transformation", "Raindance duo"]);
   expect(names("Account")).toEqual(["Credits & billing", "API keys"]);
   expect(within(nav).queryByRole("link", { name: "Feedback" })).toBeNull();
   // The dashboard home sits above the groups, without a label.

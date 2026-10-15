@@ -10,22 +10,19 @@ import { usePendingPoll } from "@/hooks/use-pending-poll";
 import { Link } from "@/i18n/navigation";
 import type { ApiBody, ApiErrorCode, GeneratedVideo, Serialized, VideoResponse } from "@/lib/api";
 import { type ImageLimits, limitValues } from "@/lib/image-limits";
+import { PHOTO_EFFECT_KINDS, type PhotoEffectKind } from "@/lib/photo-effects";
+import { useEffectMessages } from "./effect-messages";
 import { type Side, usePhotoPicks } from "./use-photo-picks";
 import { VideoList } from "./video-list";
 
 type Video = GeneratedVideo;
 
-// The photo effects without words: their route and their photos, sent as
-// image1 and image2 in this order.
-export const EFFECT_KINDS = {
-  zombie: { endpoint: "/api/videos/zombie", sides: ["left", "right"] },
-  hug: { endpoint: "/api/videos/hug", sides: ["left", "right"] },
-  vampire: { endpoint: "/api/videos/vampire", sides: ["left"] },
-  raindance: { endpoint: "/api/videos/raindance", sides: ["left", "right"] },
-  object: { endpoint: "/api/videos/effects", sides: ["left"] },
-} as const satisfies Record<string, { endpoint: string; sides: readonly Side[] }>;
+// A photo effect's photos, sent as image1 and image2 in this order.
+export function effectSides(photos: 1 | 2): readonly Side[] {
+  return photos === 2 ? ["left", "right"] : ["left"];
+}
 
-export type EffectKind = keyof typeof EFFECT_KINDS;
+export type EffectKind = PhotoEffectKind | "object";
 
 // The object effects, as ObjectVideos.effects names them. The page passes
 // the server's list, so an effect without copy fails the typecheck.
@@ -61,19 +58,13 @@ const ERRORS = {
 const parse = (video: Serialized<Video>): Video => ({ ...video, createdAt: new Date(video.createdAt) });
 
 export function EffectGenerator(props: EffectGeneratorProps) {
-  const { endpoint, sides } = EFFECT_KINDS[props.kind];
-  // Literal names, so the client messages test can check that the browser
-  // gets them. The namespaces share their keys, except that a one-photo
-  // effect has no "right" (it never reads them, having no right side) and
-  // ObjectVideos adds the effect names.
-  const messages = {
-    zombie: useTranslations("ZombieVideos"),
-    hug: useTranslations("HugVideos"),
-    vampire: useTranslations("VampireVideos"),
-    raindance: useTranslations("RaindanceVideos"),
-    object: useTranslations("ObjectVideos"),
-  };
-  const t = messages[props.kind] as typeof messages.zombie;
+  // Object effects post to one route, with the effect's name.
+  const endpoint = props.kind === "object" ? "/api/videos/effects" : `/api/videos/${props.kind}`;
+  const sides = effectSides(props.kind === "object" ? 1 : PHOTO_EFFECT_KINDS[props.kind].photos);
+  // A one-photo effect has no "right" copy; it never reads it, having no
+  // right side.
+  const t = useEffectMessages(props.kind);
+  const objectMessages = useTranslations("ObjectVideos");
   const { balance, adjust: adjustCredits } = useCreditBalance(props.balance);
   const [videos, setVideos] = useState(props.videos);
   const [submitting, setSubmitting] = useState(false);
@@ -163,7 +154,7 @@ export function EffectGenerator(props: EffectGeneratorProps) {
 
         {props.effects && (
           <fieldset className="flex flex-col gap-2">
-            <legend className="mb-2 text-sm font-medium">{messages.object("effect")}</legend>
+            <legend className="mb-2 text-sm font-medium">{objectMessages("effect")}</legend>
             <div className="flex flex-wrap gap-2">
               {props.effects.map((value) => (
                 <label
@@ -178,7 +169,7 @@ export function EffectGenerator(props: EffectGeneratorProps) {
                     onChange={() => setEffect(value)}
                     className="sr-only"
                   />
-                  {messages.object(`effects.${value}`)}
+                  {objectMessages(`effects.${value}`)}
                 </label>
               ))}
             </div>

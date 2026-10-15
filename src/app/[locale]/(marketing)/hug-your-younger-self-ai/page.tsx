@@ -5,7 +5,8 @@ import type { Locale } from "@/i18n/routing";
 import { postLocales, relatedPosts } from "@/lib/content";
 import { languageAlternates } from "@/lib/seo";
 import { signupCredits } from "@/server/credits/config";
-import { HUG_CREDITS, RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES } from "@/server/videos/config";
+import { RAP_IMAGE_LIMITS, RAP_MAX_IMAGE_BYTES } from "@/server/videos/config";
+import { hug } from "@/server/videos/hug";
 
 const PATH = "/hug-your-younger-self-ai";
 // The step-by-step guide to the younger-self hug, linked where the locale has it.
@@ -31,7 +32,7 @@ export default async function Page({ params }: PageProps<"/[locale]/hug-your-you
     <EffectLanding
       kind="hug"
       facts={{
-        credits: HUG_CREDITS,
+        credits: hug.credits,
         signup: signupCredits,
         maxImageBytes: RAP_MAX_IMAGE_BYTES,
         imageLimits: RAP_IMAGE_LIMITS,
